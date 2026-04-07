@@ -59,8 +59,5 @@ RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b /usr/local/bin
 # 非 root（Cursor Cloud Agents 推奨: USER + ホームを WORKDIR）
 RUN useradd -m -s /usr/bin/zsh -u 1000 developer
 
-COPY .zshrc /home/developer/.zshrc
-RUN chown developer:developer /home/developer/.zshrc
-
 USER developer
 WORKDIR /home/developer
