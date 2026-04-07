@@ -56,8 +56,42 @@ COPY --from=git-builder /usr/local/ /usr/local/
 # Starship — https://starship.rs/（非対話: -y、配置先: /usr/local/bin）
 RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b /usr/local/bin
 
+########################################################
+# DOCKER INSTALLATION
+########################################################
+
+# Docker をインストール
+RUN install -m 0755 -d /etc/apt/keyrings && \
+    apt-get update && apt-get install -y --no-install-recommends gnupg && \
+    curl --retry 3 --retry-delay 5 -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
+    chmod a+r /etc/apt/keyrings/docker.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        docker-ce \
+        docker-ce-cli \
+        containerd.io \
+        docker-buildx-plugin \
+        docker-compose-plugin \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y --no-install-recommends fuse-overlayfs && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /etc/docker && \
+    printf '%s\n' '{' \
+    '  "storage-driver": "fuse-overlayfs"' \
+    '}' > /etc/docker/daemon.json
+RUN apt-get update && apt-get install -y --no-install-recommends iptables && rm -rf /var/lib/apt/lists/*
+RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
+    update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+
+########################################################
+# CONFIG DEVELOPER USER
+########################################################
+
 # 非 root（Cursor Cloud Agents 推奨: USER + ホームを WORKDIR）
 RUN useradd -m -s /usr/bin/zsh -u 1000 developer
+# docker グループが存在しない場合は作成し、developer ユーザーを追加する
+RUN groupadd -f docker && usermod -aG docker developer
 
 USER developer
 WORKDIR /home/developer
