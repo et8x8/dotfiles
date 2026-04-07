@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# Cloud Agent: paths in environment.json build.* are relative to .cursor/
+# Cloud Agent: build.context はリポジトリルート（ルートの .zshrc を COPY するため）
 
 FROM debian:bookworm-slim AS git-builder
 
