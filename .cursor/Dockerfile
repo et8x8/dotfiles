@@ -53,8 +53,14 @@ RUN apt-get update \
 
 COPY --from=git-builder /usr/local/ /usr/local/
 
+# Starship — https://starship.rs/（非対話: -y、配置先: /usr/local/bin）
+RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b /usr/local/bin
+
 # 非 root（Cursor Cloud Agents 推奨: USER + ホームを WORKDIR）
 RUN useradd -m -s /usr/bin/zsh -u 1000 developer
+
+COPY .zshrc /home/developer/.zshrc
+RUN chown developer:developer /home/developer/.zshrc
 
 USER developer
 WORKDIR /home/developer
