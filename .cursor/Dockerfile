@@ -49,6 +49,7 @@ RUN apt-get update \
         libcurl4 \
         libexpat1 \
         openssh-client \
+        sudo \
         zsh \
     && rm -rf /var/lib/apt/lists/*
 
@@ -93,6 +94,10 @@ RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
 RUN useradd -m -s /usr/bin/zsh -u 1000 developer
 # docker グループが存在しない場合は作成し、developer ユーザーを追加する
 RUN groupadd -f docker && usermod -aG docker developer
+
+# Cursor Cloud 推奨: 非対話で sudo 可能（https://forum.cursor.com/t/cloud-agent-with-dockerfile/141854）
+RUN printf '%s\n' 'developer ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/developer \
+    && chmod 0440 /etc/sudoers.d/developer
 
 # Nix シングルユーザー用: /nix をビルドユーザー所有にしてから公式 install（--no-daemon）。systemd 不要。
 RUN install -d -m 0755 /nix && chown 1000:1000 /nix
