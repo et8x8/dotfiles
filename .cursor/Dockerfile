@@ -45,6 +45,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
+        xz-utils \
         libcurl4 \
         libexpat1 \
         openssh-client \
@@ -93,5 +94,21 @@ RUN useradd -m -s /usr/bin/zsh -u 1000 developer
 # docker グループが存在しない場合は作成し、developer ユーザーを追加する
 RUN groupadd -f docker && usermod -aG docker developer
 
+# Nix シングルユーザー用: /nix をビルドユーザー所有にしてから公式 install（--no-daemon）。systemd 不要。
+RUN install -d -m 0755 /nix && chown 1000:1000 /nix
+
 USER developer
 WORKDIR /home/developer
+
+# https://nixos.org/manual/nix/stable/installation/installing-binary.html（Linux・systemd なしは single-user）
+# sandbox = false はコンテナ内ビルド向け。flakes は nix profile / nix run 等でパッケージ追加しやすくする。
+# zshrc を Nix でホームに置く: Home Manager の home.file.".zshrc".text や programs.zsh.initContent
+#   https://nix-community.github.io/home-manager/options.xhtml
+RUN curl -fsSL https://nixos.org/nix/install | sh -s -- --no-daemon \
+    && mkdir -p /home/developer/.config/nix \
+    && printf '%s\n' \
+        'experimental-features = nix-command flakes' \
+        'sandbox = false' \
+        > /home/developer/.config/nix/nix.conf
+
+ENV PATH="/home/developer/.nix-profile/bin:/usr/local/bin:/usr/bin:/bin"
