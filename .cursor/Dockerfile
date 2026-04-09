@@ -100,15 +100,8 @@ RUN install -d -m 0755 /nix && chown 1000:1000 /nix
 USER developer
 WORKDIR /home/developer
 
+# 開発・検証用: Nix の CLI のみ（設定ファイルはリポジトリや実マシン側の dotfiles / Nix 構成で管理すること）
 # https://nixos.org/manual/nix/stable/installation/installing-binary.html（Linux・systemd なしは single-user）
-# sandbox = false はコンテナ内ビルド向け。flakes は nix profile / nix run 等でパッケージ追加しやすくする。
-# zshrc を Nix でホームに置く: Home Manager の home.file.".zshrc".text や programs.zsh.initContent
-#   https://nix-community.github.io/home-manager/options.xhtml
-RUN curl -fsSL https://nixos.org/nix/install | sh -s -- --no-daemon \
-    && mkdir -p /home/developer/.config/nix \
-    && printf '%s\n' \
-        'experimental-features = nix-command flakes' \
-        'sandbox = false' \
-        > /home/developer/.config/nix/nix.conf
+RUN curl -fsSL https://nixos.org/nix/install | sh -s -- --no-daemon
 
 ENV PATH="/home/developer/.nix-profile/bin:/usr/local/bin:/usr/bin:/bin"
