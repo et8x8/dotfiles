@@ -45,9 +45,11 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
+        xz-utils \
         libcurl4 \
         libexpat1 \
         openssh-client \
+        sudo \
         zsh \
     && rm -rf /var/lib/apt/lists/*
 
@@ -75,7 +77,7 @@ RUN install -m 0755 -d /etc/apt/keyrings && \
         docker-compose-plugin \
     && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y --no-install-recommends fuse-overlayfs && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends fuse-overlayfs gosu && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /etc/docker && \
     printf '%s\n' '{' \
     '  "storage-driver": "fuse-overlayfs"' \
@@ -93,5 +95,26 @@ RUN useradd -m -s /usr/bin/zsh -u 1000 developer
 # docker グループが存在しない場合は作成し、developer ユーザーを追加する
 RUN groupadd -f docker && usermod -aG docker developer
 
+# Cursor Cloud 推奨: 非対話で sudo 可能（https://forum.cursor.com/t/cloud-agent-with-dockerfile/141854）
+RUN printf '%s\n' 'developer ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/developer \
+    && chmod 0440 /etc/sudoers.d/developer
+
+# Nix シングルユーザー用: /nix をビルドユーザー所有にしてから公式 install（--no-daemon）。systemd 不要。
+RUN install -d -m 0755 /nix && chown 1000:1000 /nix
+
 USER developer
 WORKDIR /home/developer
+
+# 開発・検証用: Nix の CLI のみ（設定ファイルはリポジトリや実マシン側の dotfiles / Nix 構成で管理すること）
+# https://nixos.org/manual/nix/stable/installation/installing-binary.html（Linux・systemd なしは single-user）
+RUN curl -fsSL https://nixos.org/nix/install | sh -s -- --no-daemon
+
+ENV PATH="/home/developer/.nix-profile/bin:/usr/local/bin:/usr/bin:/bin"
+
+# 起動時に dockerd を立ち上げてから developer に降りる（検証・開発用。Docker-in-Docker は多くの場合 --privileged が必要）
+USER root
+WORKDIR /home/developer
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["zsh", "-l"]
