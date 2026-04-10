@@ -111,10 +111,4 @@ RUN curl -fsSL https://nixos.org/nix/install | sh -s -- --no-daemon
 
 ENV PATH="/home/developer/.nix-profile/bin:/usr/local/bin:/usr/bin:/bin"
 
-# 起動時に dockerd を立ち上げてから developer に降りる（検証・開発用。Docker-in-Docker は多くの場合 --privileged が必要）
-USER root
-WORKDIR /home/developer
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["zsh", "-l"]
