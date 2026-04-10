@@ -77,12 +77,11 @@ RUN install -m 0755 -d /etc/apt/keyrings && \
         docker-compose-plugin \
     && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y --no-install-recommends fuse-overlayfs gosu && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends fuse-overlayfs iptables && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /etc/docker && \
     printf '%s\n' '{' \
     '  "storage-driver": "fuse-overlayfs"' \
     '}' > /etc/docker/daemon.json
-RUN apt-get update && apt-get install -y --no-install-recommends iptables && rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
     update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 
