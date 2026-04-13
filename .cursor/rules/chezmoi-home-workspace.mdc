@@ -1,0 +1,9 @@
+---
+description: Dotfile sync via chezmoi from this checkout into `$HOME`, gated by a successful dry-run (exact commands below).
+globs: home/**
+alwaysApply: false
+---
+
+1. `chezmoi init -S /workspace -D "$HOME" -n --apply`
+2. `chezmoi init -S /workspace -D "$HOME" --apply` — run only after step 1 succeeds with acceptable output.
+3. `chezmoi apply -S /workspace -D "$HOME" -n` then `chezmoi apply -S /workspace -D "$HOME"` — use instead of 1–2 when `init` is not appropriate; same dry-run gate before the second command.
