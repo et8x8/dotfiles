@@ -1,12 +1,9 @@
 ---
-description: After editing chezmoi sources under home/, verify with chezmoi against /workspace (dry-run first, then apply).
+description: Dotfile sync via chezmoi from this checkout into `$HOME`, gated by a successful dry-run (exact commands below).
 globs: home/**
 alwaysApply: false
 ---
 
-- When you change files under `home/` (the chezmoi source tree for dotfiles in this repo), validate the target state before and after without guessing paths: use `-S /workspace` as the source directory.
-- Run a dry run first, then apply if it succeeds:
-  1. `chezmoi init -S /workspace -D "$HOME" -n --apply`
-  2. If that exits successfully and the output looks correct, run `chezmoi init -S /workspace -D "$HOME" --apply` (same command without `-n`).
-- Treat a non-zero exit code or unexpected changes in the dry-run output as a failure; fix the source under `home/` before running the non-dry-run command.
-- If `chezmoi init` has already been run for this machine and you only need to re-check edits under `home/`, you may use `chezmoi apply -S /workspace -D "$HOME" -n` followed by `chezmoi apply -S /workspace -D "$HOME"` instead of `init` again.
+1. `chezmoi init -S /workspace -D "$HOME" -n --apply`
+2. `chezmoi init -S /workspace -D "$HOME" --apply` — run only after step 1 succeeds with acceptable output.
+3. `chezmoi apply -S /workspace -D "$HOME" -n` then `chezmoi apply -S /workspace -D "$HOME"` — use instead of 1–2 when `init` is not appropriate; same dry-run gate before the second command.
