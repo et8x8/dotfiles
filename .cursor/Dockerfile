@@ -98,16 +98,10 @@ RUN groupadd -f docker && usermod -aG docker developer
 RUN printf '%s\n' 'developer ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/developer \
     && chmod 0440 /etc/sudoers.d/developer
 
-# Nix シングルユーザー用: /nix をビルドユーザー所有にしてから公式 install（--no-daemon）。systemd 不要。
-RUN install -d -m 0755 /nix && chown 1000:1000 /nix
+# chezmoi — https://www.chezmoi.io/
+RUN sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b /usr/local/bin
 
 USER developer
 WORKDIR /home/developer
-
-# 開発・検証用: Nix の CLI のみ（設定ファイルはリポジトリや実マシン側の dotfiles / Nix 構成で管理すること）
-# https://nixos.org/manual/nix/stable/installation/installing-binary.html（Linux・systemd なしは single-user）
-RUN curl -fsSL https://nixos.org/nix/install | sh -s -- --no-daemon
-
-ENV PATH="/home/developer/.nix-profile/bin:/usr/local/bin:/usr/bin:/bin"
 
 CMD ["zsh", "-l"]
