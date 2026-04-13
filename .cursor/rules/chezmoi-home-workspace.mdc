@@ -1,8 +1,10 @@
 ---
-description: Dotfile sync via chezmoi from this checkout into `$HOME`, gated by a successful dry-run (exact commands below).
+description: Dotfile sync via chezmoi from this checkout into `$HOME` when the modified repository root is exactly `/workspace`; gated by a successful dry-run (exact commands below).
 globs: home/**
 alwaysApply: false
 ---
+
+**When to run:** Execute the numbered steps below only if the path of the repository you are currently modifying is exactly `/workspace`. For Git repositories, confirm with `git rev-parse --show-toplevel` (must print `/workspace` with no trailing slash). If the workspace or repository root is anything else, do not run these chezmoi commands and ignore this rule.
 
 1. `chezmoi init -S /workspace -D "$HOME" -n --apply`
 2. `chezmoi init -S /workspace -D "$HOME" --apply` — run only after step 1 succeeds with acceptable output.
