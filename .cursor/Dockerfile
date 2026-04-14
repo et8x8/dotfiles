@@ -58,6 +58,15 @@ COPY --from=git-builder /usr/local/ /usr/local/
 # Starship — https://starship.rs/（非対話: -y、配置先: /usr/local/bin）
 RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b /usr/local/bin
 
+# lazygit — https://github.com/jesseduffield/lazygit（本イメージは linux/x86_64 のみ）
+ARG LAZYGIT_VERSION=0.61.1
+ARG LAZYGIT_SHA256=1b91e660700f2332696726b635202576b543e2bc49b639830dccd26bc5160d5d
+RUN curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_linux_x86_64.tar.gz" -o /tmp/lazygit.tar.gz \
+    && echo "${LAZYGIT_SHA256}  /tmp/lazygit.tar.gz" | sha256sum -c - \
+    && tar -xzf /tmp/lazygit.tar.gz -C /usr/local/bin lazygit \
+    && chmod 0755 /usr/local/bin/lazygit \
+    && rm -f /tmp/lazygit.tar.gz
+
 ########################################################
 # DOCKER INSTALLATION
 ########################################################
