@@ -1,0 +1,8 @@
+---
+description: Cursor cloud container image—dockerd lifecycle and post-edit build verification.
+globs: .cursor/Dockerfile
+alwaysApply: false
+---
+
+- When the Docker CLI reports the daemon is down, start `dockerd`.
+- After changes to this Dockerfile, verify the image build using the `build` fields in `.cursor/environment.json` (for example `context` and `dockerfile`).
