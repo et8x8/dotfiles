@@ -2,5 +2,6 @@
   "build": {
     "context": ".",
     "dockerfile": "Dockerfile"
-  }
+  },
+  "install": "if [ -n \"${CHEZMOI_REPOSITORY:-}\" ]; then if [ -d \"$HOME/.local/share/chezmoi/.git\" ]; then chezmoi update || chezmoi apply; else chezmoi init --apply \"${CHEZMOI_REPOSITORY}\"; fi; fi"
 }

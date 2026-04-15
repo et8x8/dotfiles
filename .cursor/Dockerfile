@@ -107,8 +107,10 @@ RUN groupadd -f docker && usermod -aG docker developer
 RUN printf '%s\n' 'developer ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/developer \
     && chmod 0440 /etc/sudoers.d/developer
 
-# chezmoi — https://www.chezmoi.io/
-RUN sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b /usr/local/bin
+# chezmoi — https://www.chezmoi.io/（未インストールの場合のみ）
+RUN if ! command -v chezmoi >/dev/null 2>&1; then \
+        sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b /usr/local/bin; \
+    fi
 
 USER developer
 WORKDIR /home/developer
