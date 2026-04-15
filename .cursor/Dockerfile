@@ -40,7 +40,11 @@ FROM debian:bookworm-slim
 ARG GIT_VERSION=2.53.0
 ENV GIT_VERSION=${GIT_VERSION}
 
+# ghq 公式バイナリ（https://github.com/x-motemen/ghq/releases）。ビルド対象 Debian の dpkg アーキのみ
+ARG GHQ_VERSION=v1.10.1
+
 # libssl3 / zlib1g は libcurl4 の依存で入る。curl CLI はスクリプト・ツール取得用
+# fzf — https://github.com/junegunn/fzf/blob/master/README.md（Debian: apt install fzf）
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
@@ -51,12 +55,22 @@ RUN apt-get update \
         openssh-client \
         sudo \
         zsh \
+        fzf \
+        unzip \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=git-builder /usr/local/ /usr/local/
 
 # Starship — https://starship.rs/（非対話: -y、配置先: /usr/local/bin）
 RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b /usr/local/bin
+
+# ghq — README.adoc「Built binaries are available from GitHub Releases」
+RUN set -eux \
+    && arch="$(dpkg --print-architecture)" \
+    && curl -fsSL "https://github.com/x-motemen/ghq/releases/download/${GHQ_VERSION}/ghq_linux_${arch}.zip" -o /tmp/ghq.zip \
+    && unzip -q /tmp/ghq.zip -d /tmp \
+    && install -m 0755 "/tmp/ghq_linux_${arch}/ghq" /usr/local/bin/ghq \
+    && rm -rf /tmp/ghq.zip "/tmp/ghq_linux_${arch}"
 
 ########################################################
 # DOCKER INSTALLATION
