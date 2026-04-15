@@ -1,2 +1,11 @@
+autoload -Uz compinit
+compinit
+
+# fzf
+source <(fzf --zsh)
+
+# chezmoi
+source <(chezmoi completion zsh)
+
 # Starship prompt — https://starship.rs/
 eval "$(starship init zsh)"
