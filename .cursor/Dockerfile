@@ -99,9 +99,8 @@ RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
 ########################################################
 
 # 非 root（Cursor Cloud Agents 推奨: USER + ホームを WORKDIR）
-RUN useradd -m -s /usr/bin/zsh -u 1000 developer
-# docker グループが存在しない場合は作成し、developer ユーザーを追加する
-RUN groupadd -f docker && usermod -aG docker developer
+# docker グループは docker-ce の postinst で作られる。無ければ useradd が失敗しビルドで検知する。
+RUN useradd -m -s /usr/bin/zsh -u 1000 -G docker developer
 
 # Cursor Cloud 推奨: 非対話で sudo 可能（https://forum.cursor.com/t/cloud-agent-with-dockerfile/141854）
 RUN printf '%s\n' 'developer ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/developer \
