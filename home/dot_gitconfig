@@ -1,0 +1,43 @@
+[ghq]
+	root = /Users/hayato/.ghq/src
+[core]
+	editor = cursor --wait
+	quotepath = false
+	pager = nkf -w | LESSCHARSET=utf-8 LESS=-RSX less
+	excludesfile = /Users/hayato/.gitignore_global
+	ignorecase = false
+	safecrlf = true
+	autocrlf = false
+[color]
+	ui = true
+[color "diff"]
+	meta = yellow
+[alias]
+	s = status --short
+[diff]
+	tool = cursor
+[difftool "cursor"]
+	cmd = cursor --wait --diff $LOCAL $REMOTE
+[difftool "vscode"]
+	cmd = code --wait --diff $LOCAL $REMOTE
+[merge]
+	tool = cursor
+[mergetool "cursor"]
+	cmd = cursor --wait --merge $REMOTE $LOCAL $BASE $MERGED
+	trustExitCode = true
+[rebase]
+	autostash = true
+[pager]
+	log = diff-highlight | less
+	show = diff-highlight | less
+	diff = diff-highlight | less
+[user]
+	name = et8x8
+	email = 58-slicers.moxie@icloud.com
+[difftool]
+	prompt = false
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
