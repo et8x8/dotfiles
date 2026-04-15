@@ -1,8 +1,9 @@
 ---
 description: Cursor cloud container image—dockerd lifecycle and post-edit build verification.
 globs: .cursor/Dockerfile
-alwaysApply: false
+alwaysApply: true
 ---
 
-- When the Docker CLI reports the daemon is down, start `dockerd`.
+- If `docker` fails because the daemon is unreachable—**including** missing `/var/run/docker.sock`, "connection refused", permission errors on the socket, or any message equivalent to "Cannot connect to the Docker daemon"—you **must** try to start `dockerd` (using `sudo` when the environment allows it) and **retry** the Docker command. Do **not** skip `docker build` or other Docker work only because the socket was missing or the first connection attempt failed; always attempt a daemon start first unless it is provably impossible in this environment (for example, no privilege path exists after checking).
+- When the Docker CLI reports the daemon is down for other reasons, start `dockerd` and retry as above.
 - After changes to this Dockerfile, verify the image build using the `build` fields in `.cursor/environment.json` (for example `context` and `dockerfile`).
