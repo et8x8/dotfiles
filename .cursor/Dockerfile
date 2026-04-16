@@ -35,12 +35,20 @@ RUN apt-get update \
         xz-utils curl \
     && rm -rf /var/lib/apt/lists/*
 
+# ghq — https://github.com/x-motemen/ghq/blob/master/README.adoc#installing（go install …@version）
+# Go ツールチェーンは本ステージのみ。最終イメージへはバイナリのみ COPY
+FROM golang:1.26-bookworm AS ghq-builder
+ARG GHQ_VERSION=v1.10.1
+ENV CGO_ENABLED=0
+RUN go install -ldflags="-s -w" "github.com/x-motemen/ghq@${GHQ_VERSION}"
+
 FROM debian:bookworm-slim
 
 ARG GIT_VERSION=2.53.0
 ENV GIT_VERSION=${GIT_VERSION}
 
 # libssl3 / zlib1g は libcurl4 の依存で入る。curl CLI はスクリプト・ツール取得用
+# fzf — https://github.com/junegunn/fzf#linux-packages（Debian/Ubuntu: apt install fzf）
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
@@ -51,9 +59,11 @@ RUN apt-get update \
         openssh-client \
         sudo \
         zsh \
+        fzf \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=git-builder /usr/local/ /usr/local/
+COPY --from=ghq-builder /go/bin/ghq /usr/local/bin/ghq
 
 # Starship — https://starship.rs/（非対話: -y、配置先: /usr/local/bin）
 RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b /usr/local/bin
