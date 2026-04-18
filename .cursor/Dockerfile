@@ -42,6 +42,14 @@ ARG GHQ_VERSION=v1.10.1
 ENV CGO_ENABLED=0
 RUN go install -ldflags="-s -w" "github.com/x-motemen/ghq@${GHQ_VERSION}"
 
+# lazygit — https://github.com/jesseduffield/lazygit（go install で対象アーキテクチャ向けバイナリを生成）
+FROM golang:1.26-bookworm AS lazygit-builder
+ARG LAZYGIT_VERSION=0.61.1
+ENV CGO_ENABLED=0
+RUN BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    && go install -ldflags="-s -w -X main.version=v${LAZYGIT_VERSION} -X main.commit=unknown -X main.date=${BUILD_DATE} -X main.buildSource=docker" \
+        "github.com/jesseduffield/lazygit@v${LAZYGIT_VERSION}"
+
 FROM debian:bookworm-slim
 
 ARG GIT_VERSION=2.53.0
@@ -64,18 +72,10 @@ RUN apt-get update \
 
 COPY --from=git-builder /usr/local/ /usr/local/
 COPY --from=ghq-builder /go/bin/ghq /usr/local/bin/ghq
+COPY --from=lazygit-builder /go/bin/lazygit /usr/local/bin/lazygit
 
 # Starship — https://starship.rs/（非対話: -y、配置先: /usr/local/bin）
 RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b /usr/local/bin
-
-# lazygit — https://github.com/jesseduffield/lazygit（本イメージは linux/x86_64 のみ）
-ARG LAZYGIT_VERSION=0.61.1
-ARG LAZYGIT_SHA256=1b91e660700f2332696726b635202576b543e2bc49b639830dccd26bc5160d5d
-RUN curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_linux_x86_64.tar.gz" -o /tmp/lazygit.tar.gz \
-    && echo "${LAZYGIT_SHA256}  /tmp/lazygit.tar.gz" | sha256sum -c - \
-    && tar -xzf /tmp/lazygit.tar.gz -C /usr/local/bin lazygit \
-    && chmod 0755 /usr/local/bin/lazygit \
-    && rm -f /tmp/lazygit.tar.gz
 
 ########################################################
 # DOCKER INSTALLATION
