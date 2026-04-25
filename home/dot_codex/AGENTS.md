@@ -1,0 +1,4 @@
+- **Japanese-only chat** - All conversational dialogue with the user in chat must be in Japanese.
+- **Preserve existing behavior** - Do not change existing behavior unless explicitly requested to do so.
+- **Maintain predictable defaults** - Do not change default behavior so that users are not surprised.
+- **Do not use emojis** - Unless explicitly requested by users, do not use emojis in GitHub issues, commit messages, or development-related content
