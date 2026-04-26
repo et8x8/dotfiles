@@ -1,10 +1,10 @@
 [ghq]
-	root = /Users/hayato/.ghq/src
+	root = ~/.ghq/src
 [core]
 	editor = cursor --wait
 	quotepath = false
 	pager = nkf -w | LESSCHARSET=utf-8 LESS=-RSX less
-	excludesfile = /Users/hayato/.gitignore_global
+	excludesfile = ~/.gitignore_global
 	ignorecase = false
 	safecrlf = true
 	autocrlf = false
