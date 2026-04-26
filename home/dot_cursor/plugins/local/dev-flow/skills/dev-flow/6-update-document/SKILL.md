@@ -1,11 +1,21 @@
 ---
-name: update-document
-description: 開発者向け (`docs/developer/`) と利用者向け (`docs/user/`) のドキュメントを生成・更新する。それぞれを別ディレクトリで分けて記載し、AI エージェント専用情報は記載しない。開発者向けで振る舞い・仕様を扱う場合は可能な限り `docs/spec/` や ADR を参照する形で記述する。
+name: 6-update-document
+description: dev-flow 名前空間 (順序 6/8)。開発者向け (docs/developer/) と利用者向け (docs/user/) のドキュメントを生成・更新する。別ディレクトリで分け、AI エージェント専用情報は記載しない。振る舞い・仕様は可能な限り docs/spec/ や ADR を参照する形で記述する。
 ---
 
 # update-document (Document 工程)
 
 人間向けのドキュメントを生成する。**開発者向け**と**利用者向け**を必ず分ける。AI エージェント向けのドキュメント (例: `AGENTS.md`) は対象外。
+
+## 親エージェントが Document 工程を進めるとき
+
+**`document-author` サブエージェントを spawn** する。
+
+1. `docs/spec/` 実装コード `docs/developer/` `docs/user/` を読み、ドキュメントの差分を特定する。
+2. 本 Skill (`6-update-document`) の手順に従い、開発者向け・利用者向けドキュメントを更新させる。
+3. 完了したら、更新したファイル一覧を報告する。
+
+引数は任意。何も無ければ全機能のドキュメント差分を反映する。
 
 ## 入力
 
@@ -89,4 +99,4 @@ docs/user/        # 利用者向け (使い方、チュートリアル、FAQ 等
 
 ## 完了後
 
-ドキュメントが完成したら、ユーザーに最終確認を取る。承認後、`/done` を呼び出して Done 工程に進む。
+ドキュメントが完成したら、ユーザーに最終確認を取る。承認後、`7-advance-to-done` skill (`done-runner`) で Done 工程に進む。

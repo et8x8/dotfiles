@@ -1,11 +1,21 @@
 ---
-name: update-test
-description: Spec (EARS 要件) を元にテストコードを作成・更新する。生成後にテストを実行し、未実装であること (失敗すること) を確認する。Spec にない振る舞いをテストしてはならず、Spec と矛盾するテストを書いてもならない。実装の都合で Test を書き換えることも禁止。
+name: 4-update-test
+description: dev-flow 名前空間 (順序 4/8)。Spec (EARS 要件) を元にテストコードを作成・更新する。生成後にテストを実行し、未実装であること (失敗) を確認する。Spec にない振る舞いをテストしてはならず、Spec と矛盾するテストを書いてもならない。実装の都合で Test を書き換えることも禁止。
 ---
 
 # update-test (Test 工程)
 
 Spec の各要件 (REQ-XXX-NNN) を、実行可能なテストコードに変換する。生成直後に**失敗**することを確認し、その後 Implementation 工程に進む。
+
+## 親エージェントが Test 工程を進めるとき
+
+**`test-author` サブエージェントを spawn** する。
+
+1. `docs/spec/` を読み、現状のテストとの差分を把握する。
+2. 本 Skill (`4-update-test`) の手順に従い、テストコードの作成 / 更新とテスト実行による**失敗**の確認をさせる。
+3. 完了したら、追加 / 変更 / 削除されたテスト ID と実行結果 (期待通り失敗したか) を報告する。
+
+引数は任意。何も無ければ Spec 全体に対応するテストの差分を反映する。
 
 ## 入力
 
@@ -90,4 +100,4 @@ def test_REQ_AUTH_002_rejects_empty_password():
 
 ## 完了後
 
-すべての新規 / 変更テストが「期待通りに失敗する」ことを確認したら、`/implement` を呼び出して Implementation 工程に進む。
+すべての新規 / 変更テストが「期待通りに失敗する」ことを確認したら、`5-update-implementation` skill (`implementer`) で Implementation 工程に進む。

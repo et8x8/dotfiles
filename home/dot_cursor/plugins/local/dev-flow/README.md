@@ -22,24 +22,26 @@ AI エージェント前提の開発プロセスを Cursor 上で実行するた
 
 ## 提供物
 
-### Slash Commands
+### Skills (名前空間 `dev-flow`)
 
-各工程は `commands/` で定義したスラッシュコマンドから起動する。各コマンドは対応する Subagent を spawn してコンテキストを工程ごとに分離する。
+`skills/dev-flow/` 以下。Skill 名は **1 桁の数字 + ハイフン** で先頭に順序を表し、他プラグインの Skill と混ざらないようディレクトリで名前空間を分離している。
 
-| コマンド | 用途 |
+各 Skill の本文に「親エージェントがその工程を進めるとき」の手順 (どの Subagent を spawn するか) を含める。現在地の軽量表示は `1-dev-flow-overview` に含まれる。
+
+| Skill | 用途 |
 | --- | --- |
-| `/adr` | ADR (Draft) を作成・編集・削除する |
-| `/spec` | ADR を元に Spec (EARS) を作成・更新する |
-| `/test` | Spec を元に Test を生成し、失敗することを確認する |
-| `/implement` | Test を満たす実装を行い、テストが通ることを確認する |
-| `/document` | 実装を元に開発者向け / 利用者向けドキュメントを生成する |
-| `/done` | ADR を Active に移行し、git commit して工程を完了する |
-| `/audit` | 各工程間の整合性とプロセス遵守を監査する |
-| `/status` | 現在の工程位置と次に進めるアクションを表示する |
+| `1-dev-flow-overview` | プロセス全体像・現在地判定・status 相当 (最初に必ず参照) |
+| `2-update-adr` | ADR 工程 |
+| `3-update-spec` | Spec 工程 (EARS 記法) |
+| `4-update-test` | Test 工程 |
+| `5-update-implementation` | Implementation 工程 |
+| `6-update-document` | Document 工程 |
+| `7-advance-to-done` | Done 工程 |
+| `8-audit-flow` | 監査チェックリスト |
 
 ### Subagents
 
-各工程をコンテキスト分離して実行する専門エージェント。スラッシュコマンドから自動的に呼び出されるが、明示的に指名しても良い。
+各工程をコンテキスト分離して実行する専門エージェント。Skill 本文の指示に従い spawn する。
 
 - `adr-author` … ADR Draft の作成・編集・削除
 - `spec-author` … Spec の生成 / 更新
@@ -48,19 +50,6 @@ AI エージェント前提の開発プロセスを Cursor 上で実行するた
 - `document-author` … 開発者 / 利用者向けドキュメント生成
 - `done-runner` … Active 移行 + commit
 - `flow-auditor` … 工程間の整合性監査
-
-### Skills
-
-各工程の手順・成果物テンプレート・チェックリストを記載した Skill。Subagent はこれを参照しながら作業する。
-
-- `dev-flow-overview` … プロセス全体像 (最初に必ず参照)
-- `update-adr` … ADR 工程
-- `update-spec` … Spec 工程 (EARS 記法)
-- `update-test` … Test 工程
-- `update-implementation` … Implementation 工程
-- `update-document` … Document 工程
-- `advance-to-done` … Done 工程
-- `audit-flow` … 監査チェックリスト
 
 ### Rules
 

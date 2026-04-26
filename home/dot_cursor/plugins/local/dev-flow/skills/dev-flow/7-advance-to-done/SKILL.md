@@ -1,11 +1,33 @@
 ---
-name: advance-to-done
-description: 全工程 (ADR → Spec → Test → Implementation → Document) が完了した状態で、ADR を Draft から Active に移行し、git commit して工程を完了する。Active 移行時は ADR のディレクトリ名 / ファイル名先頭に `git describe --tags | sed 's/-g[0-9a-f]*$//'` の出力をバージョンプレフィックスとして付与する。実行前に必ずユーザーの承認を得る。
+name: 7-advance-to-done
+description: >-
+  dev-flow 名前空間 (順序 7/8)。全工程完了後に ADR を Draft から Active に移行し git commit する。
+  Active 移行時は ADR 名先頭にバージョンプレフィックスを付与する (本文の git describe + sed 手順)。
+  実行前に必ずユーザー承認を得る。
 ---
 
 # advance-to-done (Done 工程)
 
 すべての成果物が揃った状態で、ADR Draft を Active に昇格させ、`git commit` で確定する。これより前のすべての工程の整合性を最終確認するのもこの工程の役割。
+
+## 親エージェントが Done 工程を進めるとき
+
+**`done-runner` サブエージェントを spawn** する。**ユーザー承認が必須**。
+
+1. `done-runner` は最初に `8-audit-flow` skill のチェックリストで全工程の整合性を最終確認する。
+2. 違反があれば commit せず、対応する工程の Skill に戻るよう案内する。
+3. 整合が取れていれば、変更概要をユーザーに提示し**承認を求める**。
+4. 承認を得たら `git describe --tags | sed 's/-g[0-9a-f]*$//'` でバージョンプレフィックスを取得し、ADR を `docs/adr/draft/` から `docs/adr/active/` へ `git mv` で移動する。
+5. 必要なら supersede 対象を `docs/adr/archive/` に移動する (判断に迷えばユーザー確認)。
+6. プロジェクトの commit メッセージ規約に従って `git commit` する (フック回避禁止)。
+7. 完了したら commit SHA / Active 化された ADR / Archive 化された ADR を報告する。
+
+引数は任意。コミットメッセージのヒントを渡せる (省略時は `done-runner` が自動生成し、ユーザーに最終確認する)。
+
+### 失敗時
+
+- ユーザーが承認しなければ何もせず終了する。
+- `git describe --tags` が使えない (タグ無し) 場合は、ユーザーに対応方針を確認するまで進まない。
 
 ## 前提条件
 
@@ -17,7 +39,7 @@ description: 全工程 (ADR → Spec → Test → Implementation → Document) �
 
 ### 1. 最終整合性チェック
 
-`/audit` (`audit-flow` skill) を呼び出すか、または以下を手動で確認:
+`8-audit-flow` skill (`flow-auditor` を spawn) を実行するか、または以下を手動で確認:
 
 - Draft ADR の Open Question がすべて解消されている。
 - Spec が Draft + Active ADR を反映している。

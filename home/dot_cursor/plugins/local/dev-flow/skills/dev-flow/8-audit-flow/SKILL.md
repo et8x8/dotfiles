@@ -1,11 +1,23 @@
 ---
-name: audit-flow
-description: 開発プロセス (ADR → Spec → Test → Implementation → Document → Done) 全工程の整合性を監査する。各工程の成果物が前工程の成果物と整合しているか、後工程の都合で前工程が改変されていないか、不要なコードや古い記述が残っていないか等をチェックリストに沿って検査する。
+name: 8-audit-flow
+description: dev-flow 名前空間 (順序 8/8)。開発プロセス (ADR → Spec → Test → Implementation → Document → Done) 全工程の整合性を監査する。各成果物が前工程と整合しているか、後工程から前工程が改変されていないか等をチェックリストに沿って検査する。違反があれば修正は行わず、対応工程の Skill に戻る指示を出す。
 ---
 
 # audit-flow (監査)
 
 各工程の遵守状況を網羅的にチェックする。違反があれば**修正は行わず**、対応する工程 (Skill / Subagent) に戻る指示を出す。
+
+## 親エージェントが監査のみ行うとき
+
+**`flow-auditor` サブエージェントを spawn** する。
+
+1. 本 Skill (`8-audit-flow`) のチェックリスト A〜F を上から順に検査させる。
+2. 違反を全件まとめた監査レポート (Markdown) をユーザーに提示する。
+3. 違反があれば対応する工程の Skill (`2-update-adr` `3-update-spec` `4-update-test` `5-update-implementation` `6-update-document`) を案内する。
+
+引数は任意。特定セクション (A: ADR / B: Spec / ...) のみ検査したい場合はセクション名を渡す。
+
+読み取りのみ。成果物の修正は行わない。
 
 ## 入力
 
@@ -73,19 +85,19 @@ description: 開発プロセス (ADR → Spec → Test → Implementation → Do
 # Audit Report (<YYYY-MM-DD HH:MM>)
 
 ## サマリ
-- ✅ 整合: <N> 項目
-- ⚠️ 警告: <N> 項目
-- ❌ 違反: <N> 項目
+- 整合 (OK): <N> 項目
+- 警告: <N> 項目
+- 違反: <N> 項目
 
-## 違反 (❌)
+## 違反
 1. **[D-2]** Spec REQ-AUTH-002 にない振る舞い `auth_log_to_syslog` が `auth/service.py:123` に実装されている。
-   - 対応: `/spec` に戻り、ADR-0007 を見直す → Spec を更新 → 必要なら Test/Implementation を再生成。
+   - 対応: `3-update-spec` skill に戻り、ADR-0007 を見直す → Spec を更新 → 必要なら Test/Implementation を再生成。
 
-## 警告 (⚠️)
+## 警告
 1. **[B-3]** REQ-AUTH-005 が Source として参照する ADR が存在しない (リンク切れ)。
-   - 対応: Spec を `/spec` で見直す。
+   - 対応: Spec を `3-update-spec` skill で見直す。
 
-## 整合 (✅)
+## 整合 (OK サマリ)
 - A: 4/5 項目
 - B: 5/6 項目
 ...
@@ -98,4 +110,4 @@ description: 開発プロセス (ADR → Spec → Test → Implementation → Do
 
 ## 完了後
 
-報告を受けたユーザーが、対応すべき工程の Slash Command (`/adr` `/spec` `/test` `/implement` `/document`) を呼ぶ。Audit 自身は何もコミットしない。
+報告を受けたユーザーが、対応すべき工程の Skill (`2-update-adr` 〜 `6-update-document`) を読み込み、必要なら Subagent を spawn する。Audit 自身は何もコミットしない。

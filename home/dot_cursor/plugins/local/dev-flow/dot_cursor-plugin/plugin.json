@@ -1,7 +1,7 @@
 {
   "name": "dev-flow",
   "version": "0.1.0",
-  "description": "AI agent first development process. Provides slash commands, subagents, skills and rules to enforce ADR \u2192 Spec \u2192 Test \u2192 Implementation \u2192 Document \u2192 Done flow.",
+  "description": "AI agent first development process. Provides numbered dev-flow skills, subagents, and rules to enforce ADR \u2192 Spec \u2192 Test \u2192 Implementation \u2192 Document \u2192 Done flow.",
   "author": {
     "name": "hayato"
   },

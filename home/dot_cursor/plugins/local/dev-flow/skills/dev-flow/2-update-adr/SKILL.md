@@ -1,11 +1,28 @@
 ---
-name: update-adr
-description: ADR (Architecture Decision Record) の Draft 段階での作成・編集・削除を行う。設計判断や技術選定、代替案、ユーザーへの質問 (Open Question) をすべて Draft 段階で確定させる。新規実装・既存修正・機能削除いずれでも ADR を作成する。Spec 以降の工程に進む前に必ず実行する。
+name: 2-update-adr
+description: dev-flow 名前空間 (順序 2/8)。ADR (Architecture Decision Record) の Draft 段階での作成・編集・削除。設計判断・技術選定・代替案・Open Question を Draft で確定させる。新規実装・既存修正・機能削除いずれでも ADR を作成する。Spec 以降に進む前に必須。
 ---
 
 # update-adr (ADR Draft 工程)
 
 設計の意思決定を `docs/adr/draft/` 配下に Markdown で記録する。**この工程ですべての不確定情報を解消する**。Spec 以降の工程は確定情報しか取り扱わない。
+
+## 親エージェントが ADR 工程を進めるとき
+
+コンテキスト分離のため **`adr-author` サブエージェントを spawn** する。
+
+1. 現在のリポジトリ状態 (`git status`) と `docs/adr/draft/` の内容を確認する。
+2. `adr-author` にユーザー要求または既存 Draft への変更指示を渡す。
+3. 本 Skill (`2-update-adr`) の手順に従って ADR を Draft で作成・編集・削除させる。
+4. 完了したら解消された Open Question / 残存する確認事項をユーザーに報告する。
+
+### 引数 (任意)
+
+- 作成したい ADR のトピック / 要求事項
+- 編集したい既存 Draft のヒント (番号 / タイトル)
+- 削除したい Draft の番号
+
+引数が無い場合は、`adr-author` が現状を分析しユーザーに必要事項を質問する。
 
 ## いつ使うか
 
@@ -112,4 +129,4 @@ docs/adr/draft/<NNNN>-<kebab-case-topic>.md
 
 ## 完了後
 
-ADR が確定したら、`/spec` を呼び出して Spec 工程に進む。Spec 以降の工程に Draft 段階の変更が反映されていない箇所があれば、Spec 以降を再生成する必要がある。
+ADR が確定したら `3-update-spec` skill (必要なら `spec-author`) で Spec 工程に進む。Spec 以降の工程に Draft 段階の変更が反映されていない箇所があれば、Spec 以降を再生成する必要がある。
