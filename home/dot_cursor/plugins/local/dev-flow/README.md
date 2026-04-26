@@ -31,13 +31,13 @@ AI エージェント前提の開発プロセスを Cursor 上で実行するた
 | Skill | 用途 |
 | --- | --- |
 | `1-dev-flow-overview` | プロセス全体像・現在地判定・status 相当 (最初に必ず参照) |
-| `2-update-adr` | ADR 工程 |
-| `3-update-spec` | Spec 工程 (EARS 記法) |
-| `4-update-test` | Test 工程 |
-| `5-update-implementation` | Implementation 工程 |
-| `6-update-document` | Document 工程 |
-| `7-advance-to-done` | Done 工程 |
-| `8-audit-flow` | 監査チェックリスト |
+| `2-dev-flow-update-adr` | ADR 工程 |
+| `3-dev-flow-update-spec` | Spec 工程 (EARS 記法) |
+| `4-dev-flow-update-test` | Test 工程 |
+| `5-dev-flow-update-implementation` | Implementation 工程 |
+| `6-dev-flow-update-document` | Document 工程 |
+| `7-dev-flow-advance-to-done` | Done 工程 |
+| `8-dev-flow-audit-flow` | 監査チェックリスト |
 
 ### Subagents
 

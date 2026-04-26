@@ -14,13 +14,13 @@ AI エージェント前提の構造化開発プロセス。各工程を必ず�
 | 順序 | Skill 名 | 用途 |
 | --- | --- | --- |
 | 1 | `1-dev-flow-overview` | 全体像・現在地判定 (本 Skill) |
-| 2 | `2-update-adr` | ADR (Draft) |
-| 3 | `3-update-spec` | Spec (EARS) |
-| 4 | `4-update-test` | Test |
-| 5 | `5-update-implementation` | Implementation |
-| 6 | `6-update-document` | Document |
-| 7 | `7-advance-to-done` | Done (Active 移行 + commit) |
-| 8 | `8-audit-flow` | 全工程の整合性監査 |
+| 2 | `2-dev-flow-update-adr` | ADR (Draft) |
+| 3 | `3-dev-flow-update-spec` | Spec (EARS) |
+| 4 | `4-dev-flow-update-test` | Test |
+| 5 | `5-dev-flow-update-implementation` | Implementation |
+| 6 | `6-dev-flow-update-document` | Document |
+| 7 | `7-dev-flow-advance-to-done` | Done (Active 移行 + commit) |
+| 8 | `8-dev-flow-audit-flow` | 全工程の整合性監査 |
 
 ## 工程と Subagent の対応
 
@@ -28,13 +28,13 @@ AI エージェント前提の構造化開発プロセス。各工程を必ず�
 
 | 工程 | Subagent | Skill |
 | --- | --- | --- |
-| ADR | `adr-author` | `2-update-adr` |
-| Spec | `spec-author` | `3-update-spec` |
-| Test | `test-author` | `4-update-test` |
-| Implementation | `implementer` | `5-update-implementation` |
-| Document | `document-author` | `6-update-document` |
-| Done | `done-runner` | `7-advance-to-done` |
-| 監査 | `flow-auditor` | `8-audit-flow` |
+| ADR | `adr-author` | `2-dev-flow-update-adr` |
+| Spec | `spec-author` | `3-dev-flow-update-spec` |
+| Test | `test-author` | `4-dev-flow-update-test` |
+| Implementation | `implementer` | `5-dev-flow-update-implementation` |
+| Document | `document-author` | `6-dev-flow-update-document` |
+| Done | `done-runner` | `7-dev-flow-advance-to-done` |
+| 監査 | `flow-auditor` | `8-dev-flow-audit-flow` |
 
 ## ディレクトリ規約
 
@@ -57,7 +57,7 @@ Test / Implementation のソースは言語・フレームワークの規約に�
 ## 「今どの工程にいるか」を判定する手順
 
 1. `git status --porcelain` で変更を確認する。
-2. 変更が**ない**場合 → 直前の Done 完了状態。新規作業なら ADR (`2-update-adr` + `adr-author`) から開始する。
+2. 変更が**ない**場合 → 直前の Done 完了状態。新規作業なら ADR (`2-dev-flow-update-adr` + `adr-author`) から開始する。
 3. 変更が**ある**場合 → 変更ファイルの種類で工程を推定:
 
    | 主な変更ファイル | 推定される現在工程 |
@@ -75,16 +75,16 @@ Test / Implementation のソースは言語・フレームワークの規約に�
 サブエージェントを spawn せず現在地だけ示すとき、上記「判定する手順」に従う。
 
 1. `git status --porcelain` を実行する。
-2. 変更が無い場合 → 「直前の Done 完了状態。新規作業なら `2-update-adr` skill と `adr-author` から開始。」と表示する。
+2. 変更が無い場合 → 「直前の Done 完了状態。新規作業なら `2-dev-flow-update-adr` skill と `adr-author` から開始。」と表示する。
 3. 変更がある場合、次の対応表で「次の Skill」を案内する:
 
    | 主な変更ファイル | 推定工程 | 次の Skill |
    | --- | --- | --- |
-   | `docs/adr/draft/` のみ | ADR | `3-update-spec` |
-   | `docs/adr/draft/` + `docs/spec/` | Spec | `4-update-test` |
-   | 上記 + テストコード | Test | `5-update-implementation` |
-   | 上記 + プロダクションコード | Implementation | `6-update-document` |
-   | 上記 + `docs/developer/` `docs/user/` | Document | `7-advance-to-done` |
+   | `docs/adr/draft/` のみ | ADR | `3-dev-flow-update-spec` |
+   | `docs/adr/draft/` + `docs/spec/` | Spec | `4-dev-flow-update-test` |
+   | 上記 + テストコード | Test | `5-dev-flow-update-implementation` |
+   | 上記 + プロダクションコード | Implementation | `6-dev-flow-update-document` |
+   | 上記 + `docs/developer/` `docs/user/` | Document | `7-dev-flow-advance-to-done` |
 
 4. 推定結果と次の Skill を表示する。
 5. ユーザーの認識と食い違いそうな場合は確認を促す。
@@ -99,9 +99,9 @@ Test / Implementation のソースは言語・フレームワークの規約に�
   - `docs/adr/draft/0007-auth-jwt.md`
   - `docs/spec/auth.md`
   - `tests/auth/test_login.py` (+ 4 ファイル)
-- **次の Skill**: `5-update-implementation` (必要なら `implementer` を spawn)
+- **次の Skill**: `5-dev-flow-update-implementation` (必要なら `implementer` を spawn)
 
-整合性に不安があれば `8-audit-flow` skill (`flow-auditor`) を実行する。
+整合性に不安があれば `8-dev-flow-audit-flow` skill (`flow-auditor`) を実行する。
 ```
 
 ## 1 ブランチ 1 ADR の前提

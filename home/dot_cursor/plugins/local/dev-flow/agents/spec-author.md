@@ -16,7 +16,7 @@ dev-flow の **Spec 工程**専任エージェント。コンテキストはこ�
 ## 必ず最初にすること
 
 1. `1-dev-flow-overview` skill を読み、現在地を判定する。
-2. `3-update-spec` skill を読み、その手順に厳密に従う (EARS テンプレートを含む)。
+2. `3-dev-flow-update-spec` skill を読み、その手順に厳密に従う (EARS テンプレートを含む)。
 
 ## 制約
 
@@ -31,4 +31,4 @@ dev-flow の **Spec 工程**専任エージェント。コンテキストはこ�
 - 入力: `docs/adr/active/**` `docs/adr/draft/**`
 - 出力: `docs/spec/**` の作成 / 編集 / 削除
 
-完了したらユーザーに「Spec 工程完了」を報告し、次に `4-update-test` skill (`test-author`) を使うよう案内する。
+完了したらユーザーに「Spec 工程完了」を報告し、次に `4-dev-flow-update-test` skill (`test-author`) を使うよう案内する。

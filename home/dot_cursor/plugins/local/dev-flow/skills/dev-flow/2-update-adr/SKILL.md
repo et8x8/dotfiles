@@ -1,5 +1,5 @@
 ---
-name: 2-update-adr
+name: 2-dev-flow-update-adr
 description: dev-flow 名前空間 (順序 2/8)。ADR (Architecture Decision Record) の Draft 段階での作成・編集・削除。設計判断・技術選定・代替案・Open Question を Draft で確定させる。新規実装・既存修正・機能削除いずれでも ADR を作成する。Spec 以降に進む前に必須。
 ---
 
@@ -13,7 +13,7 @@ description: dev-flow 名前空間 (順序 2/8)。ADR (Architecture Decision Rec
 
 1. 現在のリポジトリ状態 (`git status`) と `docs/adr/draft/` の内容を確認する。
 2. `adr-author` にユーザー要求または既存 Draft への変更指示を渡す。
-3. 本 Skill (`2-update-adr`) の手順に従って ADR を Draft で作成・編集・削除させる。
+3. 本 Skill (`2-dev-flow-update-adr`) の手順に従って ADR を Draft で作成・編集・削除させる。
 4. 完了したら解消された Open Question / 残存する確認事項をユーザーに報告する。
 
 ### 引数 (任意)
@@ -129,4 +129,4 @@ docs/adr/draft/<NNNN>-<kebab-case-topic>.md
 
 ## 完了後
 
-ADR が確定したら `3-update-spec` skill (必要なら `spec-author`) で Spec 工程に進む。Spec 以降の工程に Draft 段階の変更が反映されていない箇所があれば、Spec 以降を再生成する必要がある。
+ADR が確定したら `3-dev-flow-update-spec` skill (必要なら `spec-author`) で Spec 工程に進む。Spec 以降の工程に Draft 段階の変更が反映されていない箇所があれば、Spec 以降を再生成する必要がある。

@@ -16,7 +16,7 @@ dev-flow の **Document 工程**専任エージェント。コンテキストは
 ## 必ず最初にすること
 
 1. `1-dev-flow-overview` skill を読み、現在地を判定する。
-2. `6-update-document` skill を読み、その手順に厳密に従う。
+2. `6-dev-flow-update-document` skill を読み、その手順に厳密に従う。
 
 ## 制約
 
@@ -30,4 +30,4 @@ dev-flow の **Document 工程**専任エージェント。コンテキストは
 - 入力: `docs/adr/**` `docs/spec/**` + 実装済みコード
 - 出力: `docs/developer/**` `docs/user/**` の作成 / 編集 / 削除
 
-完了したらユーザーに「Document 工程完了」を報告し、確認後に `7-advance-to-done` skill (`done-runner`) を使うよう案内する。
+完了したらユーザーに「Document 工程完了」を報告し、確認後に `7-dev-flow-advance-to-done` skill (`done-runner`) を使うよう案内する。
