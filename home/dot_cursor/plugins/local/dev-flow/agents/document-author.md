@@ -15,7 +15,7 @@ dev-flow の **Document 工程**専任エージェント。コンテキストは
 
 ## 必ず最初にすること
 
-1. `1-dev-flow-overview` skill を読み、現在地を判定する。
+1. `dev-flow-overview` skill を読み、現在地を判定する。
 2. `6-dev-flow-update-document` skill を読み、その手順に厳密に従う。
 
 ## 制約

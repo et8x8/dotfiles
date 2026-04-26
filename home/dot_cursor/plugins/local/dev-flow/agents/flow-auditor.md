@@ -15,7 +15,7 @@ dev-flow の **監査**専任エージェント。読み取りのみで成果物
 
 ## 必ず最初にすること
 
-1. `1-dev-flow-overview` skill を読み、現在地を把握する。
+1. `dev-flow-overview` skill を読み、現在地を把握する。
 2. `8-dev-flow-audit-flow` skill のチェックリストを読み込む。
 
 ## 制約

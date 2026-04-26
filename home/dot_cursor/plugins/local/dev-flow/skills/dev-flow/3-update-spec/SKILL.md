@@ -67,7 +67,7 @@ the authentication service shall reject all login attempts with HTTP 423 for 15 
 ### 1. 入力の収集
 
 1. `docs/adr/active/` 配下のすべての ADR を読む。
-2. `docs/adr/draft/` 配下の ADR を読む (1 ブランチ 1 件想定)。
+2. `docs/adr/draft/` 配下の**すべての** ADR を読む (Draft は複数ファイルありうる)。
 3. 既存の `docs/spec/` を読み、現状の振る舞いを把握する。
 
 ### 2. 差分の検出
@@ -89,14 +89,14 @@ ADR の変更内容に応じて Spec を更新する:
 
 ### 4. ADR への参照
 
-各要件には**根拠となる ADR 番号**を付記する。
+各要件には**根拠となる Draft ADR のパス** (またはプロジェクトで定めた ADR 参照形式) を付記する。
 
 ```markdown
 ## REQ-AUTH-001 (Event-driven)
 When a user submits valid credentials,
 the authentication service shall return a JWT token signed with HS256.
 
-> Source: ADR-0007 (Decision: 認証は JWT (HS256) で実装する)
+> Source: docs/adr/draft/auth-jwt.md (Decision: 認証は JWT (HS256) で実装する)
 ```
 
 ## Spec ファイルテンプレート
@@ -105,7 +105,7 @@ the authentication service shall return a JWT token signed with HS256.
 # Spec: <feature 名>
 
 最終更新: <YYYY-MM-DD>
-関連 ADR: <ADR-XXXX>, <ADR-YYYY>
+関連 ADR: docs/adr/draft/<topic-a>.md, docs/adr/draft/<topic-b>.md
 
 ## 概要
 
@@ -117,7 +117,7 @@ the authentication service shall return a JWT token signed with HS256.
 
 <EARS 形式の要件文>
 
-> Source: ADR-<NNNN>
+> Source: docs/adr/draft/<kebab-topic>.md (該当する Draft ファイルパス)
 
 ### REQ-<FEATURE>-002 ...
 

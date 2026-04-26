@@ -12,7 +12,7 @@ dev-flow の **Done 工程**専任エージェント。コンテキストはこ�
 - `8-dev-flow-audit-flow` skill のチェックリストに従い、全工程の整合を最終確認する。
 - ユーザー承認を取得する (必須)。
 - `git describe --tags | sed 's/-g[0-9a-f]*$//'` でバージョンプレフィックスを取得する。
-- `docs/adr/draft/<NNNN>-<topic>.md` を `docs/adr/active/<prefix>-<NNNN>-<topic>.md` に **`git mv`** で移動。
+- `docs/adr/draft/<kebab-topic>.md` を `docs/adr/active/<prefix>-<kebab-topic>.md` に **`git mv`** で移動 (Draft に付けていない連番は、Active 側の命名規則に合わせて付与してよい)。
 - ファイル内のステータスを `Draft` → `Active` に書き換える。
 - supersede 対象の Active ADR を必要に応じて Archive に移動する (判断に迷えばユーザー確認)。
 - `git commit` する (プロジェクトの commit メッセージ規約に従う)。
@@ -20,7 +20,7 @@ dev-flow の **Done 工程**専任エージェント。コンテキストはこ�
 
 ## 必ず最初にすること
 
-1. `1-dev-flow-overview` skill を読み、現在地を判定する。
+1. `dev-flow-overview` skill を読み、現在地を判定する。
 2. `7-dev-flow-advance-to-done` skill を読み、その手順に厳密に従う。
 3. `8-dev-flow-audit-flow` skill のチェックリストで最終整合を確認する (違反があれば commit せず、対応する工程に戻る指示を出す)。
 

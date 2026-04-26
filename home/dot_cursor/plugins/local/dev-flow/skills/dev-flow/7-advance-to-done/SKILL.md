@@ -76,10 +76,12 @@ git describe --tags | sed 's/-g[0-9a-f]*$//'
 
 ### 4. ADR の Draft → Active 移行
 
-`docs/adr/draft/<NNNN>-<topic>.md` (またはディレクトリ) を `docs/adr/active/<prefix>-<NNNN>-<topic>.md` に**移動**する。
+`docs/adr/draft/` に複数の Draft がある場合は、**ファイルごと**に Active へ移す (まとめて 1 ファイルにしない)。
+
+`docs/adr/draft/<kebab-topic>.md` (またはディレクトリ) を、プロジェクトの Active 命名規則に従ったパスへ **`git mv`** する。例 (プレフィックス + Draft 時のトピック名。Active 側にだけ連番を付ける運用でもよい):
 
 ```bash
-git mv docs/adr/draft/0007-auth-jwt.md docs/adr/active/v1.2.0-3-0007-auth-jwt.md
+git mv docs/adr/draft/auth-jwt.md docs/adr/active/v1.2.0-auth-jwt.md
 ```
 
 ファイル内のステータス記述 (`- ステータス: Draft`) も `Active` に書き換える。
@@ -99,17 +101,17 @@ git mv docs/adr/draft/0007-auth-jwt.md docs/adr/active/v1.2.0-3-0007-auth-jwt.md
 
 コミットメッセージのフォーマットはプロジェクトの規約に従う (`git log` を見て参考にする)。最低限以下を含める:
 
-- 主要な ADR タイトル / 番号
+- 主要な ADR タイトル / ファイル名
 - 何を追加 / 変更 / 削除したかの要約
 
 ```
-feat(auth): JWT-based authentication (ADR-0007)
+feat(auth): JWT-based authentication (ADR docs/adr/draft/auth-jwt.md)
 
 - Add /auth/login endpoint with HS256 JWT
 - Reject empty password with EMPTY_PASSWORD code
 - Lockout for 15 minutes after repeated failures
 
-ADR: docs/adr/active/v1.2.0-3-0007-auth-jwt.md
+ADR: docs/adr/active/v1.2.0-auth-jwt.md
 ```
 
 `git config` を変更しない。`--no-verify` 等のフック回避は禁止。

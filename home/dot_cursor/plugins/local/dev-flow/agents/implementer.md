@@ -17,7 +17,7 @@ dev-flow の **Implementation 工程**専任エージェント。コンテキス
 
 ## 必ず最初にすること
 
-1. `1-dev-flow-overview` skill を読み、現在地を判定する。
+1. `dev-flow-overview` skill を読み、現在地を判定する。
 2. `5-dev-flow-update-implementation` skill を読み、その手順に厳密に従う。
 3. プロジェクトの規約 (`AGENTS.md` / 既存コード) からテストコマンド・リンタ・フォーマッタを把握する。
 

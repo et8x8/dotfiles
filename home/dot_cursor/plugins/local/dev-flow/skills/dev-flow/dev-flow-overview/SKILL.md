@@ -1,19 +1,27 @@
 ---
-name: 1-dev-flow-overview
-description: dev-flow 名前空間。AI エージェント前提の開発プロセス (ADR → Spec → Test → Implementation → Document → Done) の全体像と現在地の判定。各工程スキル (2〜8) やサブエージェントを呼ぶ前に最初に参照する。git の差分から「今どの工程にいるか」を判定する手順を含む。
+name: dev-flow-overview
+description: >-
+  dev-flow 名前空間の参照専用コンテキスト。プロセス全体像と現在地判定 (git 差分からの工程推定)。
+  工程実行用の番号付き Skill (2〜8) とは別。Cursor の Skill パレットから単体でワークフローを進めない。
+  常に本ファイルを Read で読み取り、続けて 2-dev-flow-* 以降の Skill と Subagent を使う。
 ---
 
-# dev-flow Overview (Skill 1)
+# dev-flow Overview (参照コンテキスト)
 
 AI エージェント前提の構造化開発プロセス。各工程を必ず順序どおりに進め、コンテキストは工程ごとに分離する。
 
-## Skill の順序 (名前空間 dev-flow)
+## Skill としての位置づけ (直接は進めない)
 
-工程は次の Skill 番号どおり。番号が小さいほど上流。
+- `name` は `dev-flow-overview`。**先頭に `1-` のような工程番号は付けない** (スラッシュ等で単体起用されない前提の識別子)。
+- 本書は **ADR / Spec / … の実行本体ではない**。現在地の把握と用語の合意のために読む。
+- 作業を進めるときは **`2-dev-flow-update-adr` 以降**の Skill を読み、必要なら Subagent を spawn する。
+
+## 工程用 Skill の順序 (2〜8)
+
+番号が小さいほど上流。実行対象はこの表の **2 以降**のみ。
 
 | 順序 | Skill 名 | 用途 |
 | --- | --- | --- |
-| 1 | `1-dev-flow-overview` | 全体像・現在地判定 (本 Skill) |
 | 2 | `2-dev-flow-update-adr` | ADR (Draft) |
 | 3 | `3-dev-flow-update-spec` | Spec (EARS) |
 | 4 | `4-dev-flow-update-test` | Test |
@@ -23,8 +31,6 @@ AI エージェント前提の構造化開発プロセス。各工程を必ず�
 | 8 | `8-dev-flow-audit-flow` | 全工程の整合性監査 |
 
 ## 工程と Subagent の対応
-
-各工程は専用の Subagent と Skill を持つ。手順の詳細は**番号の Skill**を参照する。
 
 | 工程 | Subagent | Skill |
 | --- | --- | --- |
@@ -96,7 +102,7 @@ Test / Implementation のソースは言語・フレームワークの規約に�
 
 - **現在の工程**: Test
 - **未コミット変更**: 12 ファイル
-  - `docs/adr/draft/0007-auth-jwt.md`
+  - `docs/adr/draft/auth-jwt.md`
   - `docs/spec/auth.md`
   - `tests/auth/test_login.py` (+ 4 ファイル)
 - **次の Skill**: `5-dev-flow-update-implementation` (必要なら `implementer` を spawn)
@@ -104,11 +110,11 @@ Test / Implementation のソースは言語・フレームワークの規約に�
 整合性に不安があれば `8-dev-flow-audit-flow` skill (`flow-auditor`) を実行する。
 ```
 
-## 1 ブランチ 1 ADR の前提
+## Draft ADR とブランチ
 
 - 1 機能 = 1 ブランチ (git worktree 等) を前提とする。
-- `docs/adr/draft/` に複数 ADR が存在する想定はしない。複数あれば異常状態としてユーザーに確認する。
-- このため、Spec 以降の工程で「どの ADR を元にするか」を引数で受け取る必要はない。Draft 配下の全 ADR が現ブランチの作業対象。
+- **同一ブランチで Draft ADR を複数持ってよい**。設計内容・トピックごとに**別ファイル**に分ける (1 ファイルに無関係な決定を詰め込まない)。
+- Spec 以降の工程は `docs/adr/draft/` 配下の**すべての** Draft を入力とする (特定の 1 件だけを引数で指定する前提にしない)。
 
 ## 厳守事項
 
@@ -119,6 +125,6 @@ Test / Implementation のソースは言語・フレームワークの規約に�
 - 古い記述は修正または削除する。将来のためにも残さない。
 - 各工程はコンテキスト分離して実行する (対応 Subagent を spawn する)。
 
-## このスキルの使い方
+## このファイルの使い方
 
-新しい作業を始める / 続きを再開するとき、まず本 Skill で現在地を特定する。次に、対応する工程の **Skill** を読み込み、必要なら表の **Subagent** を spawn する。
+新しい作業を始める / 続きを再開するとき、**Read で本ファイルを読み**現在地を把握する。工程を実行するときは **Skill `2-dev-flow-update-adr` 以降**を読み込み、必要なら表の Subagent を spawn する。

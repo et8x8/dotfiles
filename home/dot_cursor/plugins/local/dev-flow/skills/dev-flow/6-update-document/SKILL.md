@@ -60,7 +60,7 @@ docs/user/        # 利用者向け (使い方、チュートリアル、FAQ 等
 ## 認証フロー
 
 詳細な振る舞い定義は [Spec: auth](../spec/auth.md) を参照。
-設計判断の背景は [ADR-0007](../adr/active/v1.2.0-3-0007-auth-jwt.md) を参照。
+設計判断の背景は [ADR: auth-jwt](../adr/active/v1.2.0-auth-jwt.md) を参照。
 
 ここではモジュール間の責務とデータフローのみ記述する:
 

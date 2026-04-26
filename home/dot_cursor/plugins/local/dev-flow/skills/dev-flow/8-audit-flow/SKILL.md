@@ -91,7 +91,7 @@ description: dev-flow 名前空間 (順序 8/8)。開発プロセス (ADR → Sp
 
 ## 違反
 1. **[D-2]** Spec REQ-AUTH-002 にない振る舞い `auth_log_to_syslog` が `auth/service.py:123` に実装されている。
-   - 対応: `3-dev-flow-update-spec` skill に戻り、ADR-0007 を見直す → Spec を更新 → 必要なら Test/Implementation を再生成。
+   - 対応: `3-dev-flow-update-spec` skill に戻り、該当 Draft ADR (例: `docs/adr/draft/auth-jwt.md`) を見直す → Spec を更新 → 必要なら Test/Implementation を再生成。
 
 ## 警告
 1. **[B-3]** REQ-AUTH-005 が Source として参照する ADR が存在しない (リンク切れ)。

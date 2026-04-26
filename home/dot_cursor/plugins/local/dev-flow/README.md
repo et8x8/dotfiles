@@ -4,7 +4,7 @@ AI エージェント前提の開発プロセスを Cursor 上で実行するた
 
 「ADR → Spec → Test → Implementation → Document → Done」を一本化されたフローで進め、各工程の成果物が常に整合するよう Skills / Subagents / Rules で支援する。
 
-> 前提: 1 機能 = 1 ブランチ (git worktree など) で開発する。Active な ADR はブランチ単位で 1 件しか想定しないため、各工程で「どの ADR か」を指定する必要はない。`docs/adr/draft/` にある ADR が現ブランチの作業対象 ADR となる。
+> 前提: 1 機能 = 1 ブランチ (git worktree など) で開発する。`docs/adr/draft/` にある Draft ADR は**設計トピックごとに複数ファイル**に分けてよい。Spec 以降は Draft 配下の**すべて**を入力とする (特定 1 件だけを引数で指定する前提にしない)。
 
 ## ディレクトリ構成 (このプラグインを利用するリポジトリ側)
 
@@ -24,13 +24,13 @@ AI エージェント前提の開発プロセスを Cursor 上で実行するた
 
 ### Skills (名前空間 `dev-flow`)
 
-`skills/dev-flow/` 以下。Skill 名は **1 桁の数字 + ハイフン** で先頭に順序を表し、他プラグインの Skill と混ざらないようディレクトリで名前空間を分離している。
+`skills/dev-flow/` 以下。ディレクトリで名前空間を分離する。**工程実行用**の Skill (`2-dev-flow-*` 〜) は **先頭に順序用の数字 + ハイフン** を付ける。`dev-flow-overview` は参照専用で番号を付けず、ワークフローを単体起用しない。
 
-各 Skill の本文に「親エージェントがその工程を進めるとき」の手順 (どの Subagent を spawn するか) を含める。現在地の軽量表示は `1-dev-flow-overview` に含まれる。
+各工程 Skill の本文に「親エージェントがその工程を進めるとき」の手順 (どの Subagent を spawn するか) を含める。現在地の軽量表示は `dev-flow-overview` に含まれる。
 
 | Skill | 用途 |
 | --- | --- |
-| `1-dev-flow-overview` | プロセス全体像・現在地判定・status 相当 (最初に必ず参照) |
+| `dev-flow-overview` | プロセス全体像・現在地判定 (参照専用。Read で読み、単体では工程を進めない) |
 | `2-dev-flow-update-adr` | ADR 工程 |
 | `3-dev-flow-update-spec` | Spec 工程 (EARS 記法) |
 | `4-dev-flow-update-test` | Test 工程 |
@@ -62,5 +62,5 @@ AI エージェント前提の開発プロセスを Cursor 上で実行するた
 ## 設計上の前提
 
 - **言語非依存**: Test の実行コマンドや Implementation のファイル配置はリポジトリ側の規約に従う (`AGENTS.md` 等から推測)。
-- **ADR は 1 ブランチ 1 件**: 複数の Draft が同時に存在しない前提。複数になる場合は手動で対象を指定する必要がある。
+- **Draft ADR はトピック別に複数可**: Active 化のタイミングや命名は `7-dev-flow-advance-to-done` とプロジェクト規約に従う。
 - **「Done」までは未コミット**: 未コミットの差分があるということは、いずれかの工程の途中である。コミット済み = Done 完了。

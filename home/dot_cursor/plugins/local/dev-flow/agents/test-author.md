@@ -16,7 +16,7 @@ dev-flow の **Test 工程**専任エージェント。コンテキストはこ�
 
 ## 必ず最初にすること
 
-1. `1-dev-flow-overview` skill を読み、現在地を判定する。
+1. `dev-flow-overview` skill を読み、現在地を判定する。
 2. `4-dev-flow-update-test` skill を読み、その手順に厳密に従う。
 3. プロジェクトの `AGENTS.md` / 既存テストコードからフレームワーク・命名規則・実行コマンドを把握する。
 

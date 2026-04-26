@@ -19,8 +19,8 @@ description: dev-flow 名前空間 (順序 2/8)。ADR (Architecture Decision Rec
 ### 引数 (任意)
 
 - 作成したい ADR のトピック / 要求事項
-- 編集したい既存 Draft のヒント (番号 / タイトル)
-- 削除したい Draft の番号
+- 編集したい既存 Draft のヒント (ファイル名 / タイトル)
+- 削除したい Draft のファイル名
 
 引数が無い場合は、`adr-author` が現状を分析しユーザーに必要事項を質問する。
 
@@ -33,19 +33,19 @@ description: dev-flow 名前空間 (順序 2/8)。ADR (Architecture Decision Rec
 ## 出力先
 
 ```
-docs/adr/draft/<NNNN>-<kebab-case-topic>.md
+docs/adr/draft/<kebab-case-topic>.md
 ```
 
-- `<NNNN>` は連番 (4 桁ゼロ詰め)。既存 Draft / Active / Archive を全部見て、最大値 + 1 を採用する。
-- 番号体系がプロジェクトで既に確立されていれば**そちら優先**。`docs/adr/active/` 配下の既存 ADR の命名を参考にする。
-- ディレクトリ単位で管理しているプロジェクトなら、`docs/adr/draft/<NNNN>-<topic>/index.md` のように合わせる。
+- **Draft には連番 (`0001` 等) を付けない**。トピックを表す **kebab-case のファイル名** とする (例: `auth-jwt.md`, `api-rate-limiting.md`)。
+- 既存の `docs/adr/active/` `docs/adr/archive/` の命名規則にプロジェクトで慣習があれば**そちらに合わせる** (Active 側にだけ連番やプレフィックスがある場合もある)。
+- ディレクトリ単位で管理しているプロジェクトなら、`docs/adr/draft/<kebab-topic>/index.md` のように合わせる。
 
 ## 手順
 
 ### 1. 状況の把握
 
 1. `git status` で Draft 段階の差分を確認する。
-2. `docs/adr/draft/` `docs/adr/active/` `docs/adr/archive/` を一覧し、既存 ADR の命名規則・連番を把握する。
+2. `docs/adr/draft/` `docs/adr/active/` `docs/adr/archive/` を一覧し、既存 ADR の命名規則を把握する (Draft はトピック名、Active は別規則のことがある)。
 3. 関連する既存コードベース (関係する機能・モジュール) を読み、現状を理解する。
 
 ### 2. ADR の作成 / 編集 / 削除
@@ -85,7 +85,7 @@ docs/adr/draft/<NNNN>-<kebab-case-topic>.md
 ## ADR テンプレート
 
 ```markdown
-# ADR-<NNNN>: <タイトル>
+# ADR: <タイトル>
 
 - ステータス: Draft
 - 日付: <YYYY-MM-DD>
@@ -125,7 +125,8 @@ docs/adr/draft/<NNNN>-<kebab-case-topic>.md
 - Draft の段階で不確定情報を残したまま「次の工程に進める」と判定すること。
 - 検証用コード・モックを Test や Implementation のソースツリーに含めること。
 - 既存 Active ADR を編集・削除すること (Active は不変。Archive への移動のみ可)。
-- 1 ブランチで複数 Draft を作ること (1 ブランチ 1 ADR を前提とする。複数必要な場合はユーザーに確認)。
+- **Draft ファイル名に連番だけを振って**トピックがファイル名から読み取れないようにすること (意味のある kebab-case にする)。
+- 無関係な設計判断を 1 つの Draft ADR に詰め込み、トピックを分けるべきところでファイルを分けないこと。
 
 ## 完了後
 

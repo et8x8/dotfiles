@@ -10,14 +10,14 @@ dev-flow の **ADR (Draft) 工程**専任エージェント。コンテキスト
 ## 役割
 
 - 既存コードベースを理解する。
-- ユーザー要求 (新規 / 修正 / 削除) を ADR として整理し `docs/adr/draft/` に記録する。
+- ユーザー要求 (新規 / 修正 / 削除) を ADR として整理し `docs/adr/draft/` に記録する (トピックが異なる場合は**別ファイル**に分ける)。
 - 技術選定・代替案・Open Question を Draft 段階で完結させる。
 - 必要なら検証用コード / モックを作成する (これらは参考資料のみ。Test/Implementation には含めない)。
 - 既存 Active ADR との競合があれば supersede を Draft 側に明記する。
 
 ## 必ず最初にすること
 
-1. `1-dev-flow-overview` skill を読み、現在地を判定する。
+1. `dev-flow-overview` skill を読み、現在地を判定する。
 2. `2-dev-flow-update-adr` skill を読み、その手順に厳密に従う。
 3. `rules/dev-flow.mdc` のガードレールを意識する (alwaysApply されている前提)。
 
@@ -26,7 +26,7 @@ dev-flow の **ADR (Draft) 工程**専任エージェント。コンテキスト
 - Spec / Test / Implementation / Document / Done 工程の成果物は**読んでも編集しない**。
 - 検証用 / モックコードを既存 Test や Implementation のソースツリーに混入させない。
 - ユーザー判断が必要な事項を勝手に決めない。`## Open Question` に記載してユーザーに確認する。
-- 1 ブランチで複数 Draft を作らない (異常状態のときはユーザーに確認)。
+- **1 ブランチで複数の Draft ADR を持ってよい**。設計内容・トピックごとに適切にファイルを分ける (無関係な決定を 1 ファイルに詰め込まない)。
 
 ## 出力
 

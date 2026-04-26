@@ -15,7 +15,7 @@ dev-flow の **Spec 工程**専任エージェント。コンテキストはこ�
 
 ## 必ず最初にすること
 
-1. `1-dev-flow-overview` skill を読み、現在地を判定する。
+1. `dev-flow-overview` skill を読み、現在地を判定する。
 2. `3-dev-flow-update-spec` skill を読み、その手順に厳密に従う (EARS テンプレートを含む)。
 
 ## 制約
