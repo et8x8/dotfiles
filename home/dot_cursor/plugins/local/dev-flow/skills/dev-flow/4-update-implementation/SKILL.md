@@ -1,5 +1,5 @@
 ---
-name: 5-dev-flow-update-implementation
+name: 4-dev-flow-update-implementation
 description: dev-flow 名前空間 (順序 5/8)。Spec と Test を満たすプロダクションコードを実装する。実装後にテストを実行し、すべて成功することを確認する。Spec / Test に記載のない実装は禁止。矛盾する実装も禁止。実装の都合で Test を書き換えることも禁止。未使用コードや「将来のための」コードは残さない。
 ---
 
@@ -12,7 +12,7 @@ Test 工程で生成された (失敗状態の) テストを通すコードを�
 **`implementer` サブエージェントを spawn** する。
 
 1. `docs/spec/` とテストコードを読み、未実装の要件を特定する。
-2. 本 Skill (`5-dev-flow-update-implementation`) の手順に従い、テストを通すコードを実装させ、実装後に全テストの**成功**を確認させる。
+2. 本 Skill (`4-dev-flow-update-implementation`) の手順に従い、テストを通すコードを実装させ、実装後に全テストの**成功**を確認させる。
 3. 完了したら、変更したファイル一覧とテスト結果 (PASS 数 / 既存テストの回帰なし) を報告する。
 
 引数は任意。何も無ければ失敗中のテストすべてを通す実装を行う。
@@ -60,7 +60,7 @@ Test 工程で生成された (失敗状態の) テストを通すコードを�
 3. **既存のテスト**が回帰していない (壊していない) ことも確認する。
 4. 失敗が残る場合:
    - 実装の不備 → 実装を修正して再実行。
-   - テストが間違っている (実装の都合で書き換えたい) → **禁止**。Spec に立ち返り、必要なら ADR から見直す。`3-dev-flow-update-spec` または `2-dev-flow-update-adr` に戻る。
+   - テストが間違っている (実装の都合で書き換えたい) → **禁止**。Spec に立ち返り、必要なら ADR から見直す。`2-dev-flow-update-spec` または `1-dev-flow-update-adr` に戻る。
 
 実行結果 (PASS 数 / FAIL 数 / 該当テストの ID) をユーザーに簡潔に報告する。
 
@@ -89,4 +89,6 @@ Test 工程で生成された (失敗状態の) テストを通すコードを�
 
 ## 完了後
 
-すべてのテストが通ったら、`6-dev-flow-update-document` skill (`document-author`) で Document 工程に進む。
+すべてのテストが通ったら、`5-dev-flow-update-document` skill (`document-author`) で Document 工程に進む。
+
+`docs/adr/draft/dev-flow-state.md` の `dev_flow_phase` を `document` に更新する。

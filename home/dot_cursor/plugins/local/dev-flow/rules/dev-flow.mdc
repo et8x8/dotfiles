@@ -69,7 +69,7 @@ alwaysApply: true
 
 ## コンテキスト分離
 
-- 各工程は `skills/dev-flow/dev-flow-overview/SKILL.md` を Read で参照しつつ、`skills/dev-flow/` の番号付き Skill (`2-dev-flow-*` 以降) から手順を読み、対応する Subagent を spawn してコンテキストを分離して実行する。同一エージェントで複数工程を一気に進めない。
+- 各工程は `skills/dev-flow/dev-flow-overview/SKILL.md` を Read で参照しつつ、`skills/dev-flow/` の番号付き Skill (`1-dev-flow-*` 〜 `7-dev-flow-*`) から手順を読み、対応する Subagent を spawn してコンテキストを分離して実行する。利用リポジトリでは `docs/adr/draft/dev-flow-state.md` で現在工程を記録する。同一エージェントで複数工程を一気に進めない。
 
 ## ブランチ前提
 

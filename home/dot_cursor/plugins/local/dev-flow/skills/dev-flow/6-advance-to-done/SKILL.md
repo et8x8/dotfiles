@@ -1,5 +1,5 @@
 ---
-name: 7-dev-flow-advance-to-done
+name: 6-dev-flow-advance-to-done
 description: >-
   dev-flow 名前空間 (順序 7/8)。全工程完了後に ADR を Draft から Active に移行し git commit する。
   Active 移行時は ADR 名先頭にバージョンプレフィックスを付与する (本文の git describe + sed 手順)。
@@ -14,7 +14,7 @@ description: >-
 
 **`done-runner` サブエージェントを spawn** する。**ユーザー承認が必須**。
 
-1. `done-runner` は最初に `8-dev-flow-audit-flow` skill のチェックリストで全工程の整合性を最終確認する。
+1. `done-runner` は最初に `7-dev-flow-audit-flow` skill のチェックリストで全工程の整合性を最終確認する。
 2. 違反があれば commit せず、対応する工程の Skill に戻るよう案内する。
 3. 整合が取れていれば、変更概要をユーザーに提示し**承認を求める**。
 4. 承認を得たら `git describe --tags | sed 's/-g[0-9a-f]*$//'` でバージョンプレフィックスを取得し、ADR を `docs/adr/draft/` から `docs/adr/active/` へ `git mv` で移動する。
@@ -39,7 +39,7 @@ description: >-
 
 ### 1. 最終整合性チェック
 
-`8-dev-flow-audit-flow` skill (`flow-auditor` を spawn) を実行するか、または以下を手動で確認:
+`7-dev-flow-audit-flow` skill (`flow-auditor` を spawn) を実行するか、または以下を手動で確認:
 
 - Draft ADR の Open Question がすべて解消されている。
 - Spec が Draft + Active ADR を反映している。
@@ -135,3 +135,5 @@ ADR: docs/adr/active/v1.2.0-auth-jwt.md
 ## 完了後
 
 ブランチがマージされたら、Active な ADR は本流の Active 履歴になる。Archive 化した ADR は本流に反映される。
+
+`docs/adr/draft/dev-flow-state.md` の `dev_flow_phase` を `idle` にし、`last_updated` を更新する (プロジェクトで state ファイルを残さない方針なら削除してよい)。

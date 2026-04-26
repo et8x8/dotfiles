@@ -12,7 +12,7 @@ AI エージェント前提の開発プロセスを Cursor 上で実行するた
 <repo>/
   docs/
     adr/
-      draft/      # Draft 段階の ADR
+      draft/      # Draft 段階の ADR + dev-flow-state.md (現在工程)
       active/     # Active 段階の ADR
       archive/    # Archive 段階の ADR
     spec/         # Spec (EARS 記法)
@@ -24,20 +24,20 @@ AI エージェント前提の開発プロセスを Cursor 上で実行するた
 
 ### Skills (名前空間 `dev-flow`)
 
-`skills/dev-flow/` 以下。ディレクトリで名前空間を分離する。**工程実行用**の Skill (`2-dev-flow-*` 〜) は **先頭に順序用の数字 + ハイフン** を付ける。`dev-flow-overview` は参照専用で番号を付けず、ワークフローを単体起用しない。
+`skills/dev-flow/` 以下。ディレクトリで名前空間を分離する。**工程実行用**の Skill は **`1-dev-flow-*` 〜 `7-dev-flow-*`** の **先頭数字 + ハイフン** で順序を表す。`dev-flow-overview` は参照専用で番号を付けず、ワークフローを単体起用しない。
 
-各工程 Skill の本文に「親エージェントがその工程を進めるとき」の手順 (どの Subagent を spawn するか) を含める。現在地の軽量表示は `dev-flow-overview` に含まれる。
+各工程 Skill の本文に「親エージェントがその工程を進めるとき」の手順 (どの Subagent を spawn するか) を含める。現在地の軽量表示は `dev-flow-overview` に含める。利用リポジトリでは `reference/docs-adr-draft-dev-flow-state.example.md` を **`docs/adr/draft/dev-flow-state.md`** にコピーし、`dev_flow_phase` を更新して現在工程を記録する。
 
 | Skill | 用途 |
 | --- | --- |
 | `dev-flow-overview` | プロセス全体像・現在地判定 (参照専用。Read で読み、単体では工程を進めない) |
-| `2-dev-flow-update-adr` | ADR 工程 |
-| `3-dev-flow-update-spec` | Spec 工程 (EARS 記法) |
-| `4-dev-flow-update-test` | Test 工程 |
-| `5-dev-flow-update-implementation` | Implementation 工程 |
-| `6-dev-flow-update-document` | Document 工程 |
-| `7-dev-flow-advance-to-done` | Done 工程 |
-| `8-dev-flow-audit-flow` | 監査チェックリスト |
+| `1-dev-flow-update-adr` | ADR 工程 |
+| `2-dev-flow-update-spec` | Spec 工程 (EARS 記法) |
+| `3-dev-flow-update-test` | Test 工程 |
+| `4-dev-flow-update-implementation` | Implementation 工程 |
+| `5-dev-flow-update-document` | Document 工程 |
+| `6-dev-flow-advance-to-done` | Done 工程 |
+| `7-dev-flow-audit-flow` | 監査チェックリスト |
 
 ### Subagents
 
@@ -62,5 +62,5 @@ AI エージェント前提の開発プロセスを Cursor 上で実行するた
 ## 設計上の前提
 
 - **言語非依存**: Test の実行コマンドや Implementation のファイル配置はリポジトリ側の規約に従う (`AGENTS.md` 等から推測)。
-- **Draft ADR はトピック別に複数可**: Active 化のタイミングや命名は `7-dev-flow-advance-to-done` とプロジェクト規約に従う。
+- **Draft ADR はトピック別に複数可**: Active 化のタイミングや命名は `6-dev-flow-advance-to-done` とプロジェクト規約に従う。
 - **「Done」までは未コミット**: 未コミットの差分があるということは、いずれかの工程の途中である。コミット済み = Done 完了。

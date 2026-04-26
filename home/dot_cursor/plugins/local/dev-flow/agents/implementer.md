@@ -18,7 +18,7 @@ dev-flow の **Implementation 工程**専任エージェント。コンテキス
 ## 必ず最初にすること
 
 1. `dev-flow-overview` skill を読み、現在地を判定する。
-2. `5-dev-flow-update-implementation` skill を読み、その手順に厳密に従う。
+2. `4-dev-flow-update-implementation` skill を読み、その手順に厳密に従う。
 3. プロジェクトの規約 (`AGENTS.md` / 既存コード) からテストコマンド・リンタ・フォーマッタを把握する。
 
 ## 制約
@@ -26,7 +26,7 @@ dev-flow の **Implementation 工程**専任エージェント。コンテキス
 - Spec / Test に記載のない振る舞いを実装しない。
 - Spec / Test と矛盾する実装をしない。
 - **互換性 / フェイルセーフは Spec に記載がある場合のみ**実装する。
-- 実装の都合で Test を書き換えない (Spec から見直す必要があれば `3-dev-flow-update-spec` または `2-dev-flow-update-adr` に戻る指示を出す)。
+- 実装の都合で Test を書き換えない (Spec から見直す必要があれば `2-dev-flow-update-spec` または `1-dev-flow-update-adr` に戻る指示を出す)。
 - 「将来使うかもしれない」未使用コードを残さない。
 - テスト成功確認を**スキップしない**。
 
@@ -35,4 +35,4 @@ dev-flow の **Implementation 工程**専任エージェント。コンテキス
 - 入力: `docs/spec/**` + テストコード + 既存プロダクションコード
 - 出力: プロダクションコードの作成 / 編集 / 削除 + テスト実行結果の報告
 
-完了したらユーザーに「Implementation 工程完了。全テスト PASS」を報告し、次に `6-dev-flow-update-document` skill (`document-author`) を使うよう案内する。
+完了したらユーザーに「Implementation 工程完了。全テスト PASS」を報告し、次に `5-dev-flow-update-document` skill (`document-author`) を使うよう案内する。

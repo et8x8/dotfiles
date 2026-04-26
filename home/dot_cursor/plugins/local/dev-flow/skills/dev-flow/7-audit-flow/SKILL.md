@@ -1,5 +1,5 @@
 ---
-name: 8-dev-flow-audit-flow
+name: 7-dev-flow-audit-flow
 description: dev-flow 名前空間 (順序 8/8)。開発プロセス (ADR → Spec → Test → Implementation → Document → Done) 全工程の整合性を監査する。各成果物が前工程と整合しているか、後工程から前工程が改変されていないか等をチェックリストに沿って検査する。違反があれば修正は行わず、対応工程の Skill に戻る指示を出す。
 ---
 
@@ -11,9 +11,9 @@ description: dev-flow 名前空間 (順序 8/8)。開発プロセス (ADR → Sp
 
 **`flow-auditor` サブエージェントを spawn** する。
 
-1. 本 Skill (`8-dev-flow-audit-flow`) のチェックリスト A〜F を上から順に検査させる。
+1. 本 Skill (`7-dev-flow-audit-flow`) のチェックリスト A〜F を上から順に検査させる。
 2. 違反を全件まとめた監査レポート (Markdown) をユーザーに提示する。
-3. 違反があれば対応する工程の Skill (`2-dev-flow-update-adr` `3-dev-flow-update-spec` `4-dev-flow-update-test` `5-dev-flow-update-implementation` `6-dev-flow-update-document`) を案内する。
+3. 違反があれば対応する工程の Skill (`1-dev-flow-update-adr` `2-dev-flow-update-spec` `3-dev-flow-update-test` `4-dev-flow-update-implementation` `5-dev-flow-update-document`) を案内する。
 
 引数は任意。特定セクション (A: ADR / B: Spec / ...) のみ検査したい場合はセクション名を渡す。
 
@@ -91,11 +91,11 @@ description: dev-flow 名前空間 (順序 8/8)。開発プロセス (ADR → Sp
 
 ## 違反
 1. **[D-2]** Spec REQ-AUTH-002 にない振る舞い `auth_log_to_syslog` が `auth/service.py:123` に実装されている。
-   - 対応: `3-dev-flow-update-spec` skill に戻り、該当 Draft ADR (例: `docs/adr/draft/auth-jwt.md`) を見直す → Spec を更新 → 必要なら Test/Implementation を再生成。
+   - 対応: `2-dev-flow-update-spec` skill に戻り、該当 Draft ADR (例: `docs/adr/draft/auth-jwt.md`) を見直す → Spec を更新 → 必要なら Test/Implementation を再生成。
 
 ## 警告
 1. **[B-3]** REQ-AUTH-005 が Source として参照する ADR が存在しない (リンク切れ)。
-   - 対応: Spec を `3-dev-flow-update-spec` skill で見直す。
+   - 対応: Spec を `2-dev-flow-update-spec` skill で見直す。
 
 ## 整合 (OK サマリ)
 - A: 4/5 項目
@@ -110,4 +110,4 @@ description: dev-flow 名前空間 (順序 8/8)。開発プロセス (ADR → Sp
 
 ## 完了後
 
-報告を受けたユーザーが、対応すべき工程の Skill (`2-dev-flow-update-adr` 〜 `6-dev-flow-update-document`) を読み込み、必要なら Subagent を spawn する。Audit 自身は何もコミットしない。
+報告を受けたユーザーが、対応すべき工程の Skill (`1-dev-flow-update-adr` 〜 `5-dev-flow-update-document`) を読み込み、必要なら Subagent を spawn する。Audit 自身は何もコミットしない。
