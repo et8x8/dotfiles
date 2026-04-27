@@ -47,7 +47,7 @@ description: dev-flow 名前空間 (順序 7/7)。開発プロセス (ADR → Sp
 ## 入力
 
 - `docs/adr/{draft,active,archive}/`
-- `docs/spec/`
+- `docs/requirements/` `docs/design/` `docs/spec/`
 - テストコード / プロダクションコード
 - `docs/developer/` `docs/user/`
 - `git log` / `git status` / `git diff`
@@ -64,14 +64,17 @@ description: dev-flow 名前空間 (順序 7/7)。開発プロセス (ADR → Sp
 - [ ] Archive 化済みの ADR が編集されていないか
 - [ ] `docs/adr/active/` の ADR ディレクトリ名 / ファイル名先頭にバージョンプレフィックスが付いているか
 
-### B. Spec
+### B. Spec (要件定義 / 基本設計 / Spec)
 
 - [ ] `docs/spec/` の各要件が EARS の 5 種類いずれかに沿っているか
 - [ ] 各要件に一意の ID が付いているか
 - [ ] 各要件が ADR (Active or Draft) を Source として参照しているか
-- [ ] ADR にない振る舞いが Spec に記載されていないか
-- [ ] 削除された ADR / 廃止された機能の要件が残っていないか
+- [ ] ADR にない内容が要件定義 / 基本設計 / Spec のいずれかに記載されていないか
+- [ ] 削除された ADR / 廃止された機能の要件・記述が残っていないか
 - [ ] 同じ振る舞いを複数要件で重複定義していないか
+- [ ] `docs/requirements/<feature>.md` と `docs/design/<feature>.md` と `docs/spec/<feature>.md` が**同じ feature 名**で揃っているか
+- [ ] 要件定義 / 基本設計が EARS 文を再記述せず Spec の REQ ID へ**リンクで参照**しているか
+- [ ] 要件定義 / 基本設計 / Spec の間に矛盾がないか
 
 ### C. Test
 

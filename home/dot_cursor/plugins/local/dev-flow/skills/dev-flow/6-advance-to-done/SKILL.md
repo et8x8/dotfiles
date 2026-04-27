@@ -76,7 +76,7 @@ description: >-
 `7-dev-flow-audit-flow` skill (`flow-auditor` を spawn) を実行するか、または以下を手動で確認:
 
 - Draft ADR の Open Question がすべて解消されている。
-- Spec が Draft + Active ADR を反映している。
+- 要件定義 (`docs/requirements/`) / 基本設計 (`docs/design/`) / Spec (`docs/spec/`) が Draft + Active ADR を反映し、3 種が同じ feature 名で揃っている。
 - Test が Spec をカバーし、すべて成功している。
 - 実装が Spec / Test を満たし、未使用コードや Spec 外コードがない。
 - ドキュメントが最新の Spec / 実装を反映している。

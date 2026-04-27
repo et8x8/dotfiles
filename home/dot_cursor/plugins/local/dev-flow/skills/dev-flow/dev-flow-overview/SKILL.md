@@ -33,7 +33,7 @@ AI エージェント前提の構造化開発プロセス。各工程を必ず�
 | 順序 | Skill 名 | 用途 |
 | --- | --- | --- |
 | 1 | `1-dev-flow-update-adr` | ADR (Draft) |
-| 2 | `2-dev-flow-update-spec` | Spec (EARS) |
+| 2 | `2-dev-flow-update-spec` | 要件定義 + 基本設計 + Spec (EARS) |
 | 3 | `3-dev-flow-update-test` | Test |
 | 4 | `4-dev-flow-update-implementation` | Implementation |
 | 5 | `5-dev-flow-update-document` | Document |
@@ -63,7 +63,9 @@ AI エージェント前提の構造化開発プロセス。各工程を必ず�
       draft/      # Draft (作業中) … dev-flow-state.md を置く
       active/     # Active (Done 済み)
       archive/    # Archive (廃止済み)
-    spec/         # 振る舞い定義 (EARS 記法)
+    requirements/ # 要件定義 (機能 / 非機能要件)
+    design/       # 基本設計 (構成 / インターフェース / データ / シーケンス)
+    spec/         # 振る舞い定義 (EARS 記法。検証単位の正本)
     developer/    # 開発者向けドキュメント
     user/         # 利用者向けドキュメント
 ```
@@ -80,7 +82,7 @@ Test / Implementation のソースは言語・フレームワークの規約に�
    | 主な変更ファイル | 推定される現在工程 |
    | --- | --- |
    | `docs/adr/draft/` のみ | ADR 工程 (次は Spec) |
-   | `docs/adr/draft/` + `docs/spec/` | Spec 工程 (次は Test) |
+   | `docs/adr/draft/` + `docs/requirements/` `docs/design/` `docs/spec/` のいずれか | Spec 工程 (次は Test) |
    | 上記 + テストコード | Test 工程 (次は Implementation) |
    | 上記 + プロダクションコード | Implementation 工程 (次は Document) |
    | 上記 + `docs/developer/` `docs/user/` | Document 工程 (次は Done) |
@@ -99,7 +101,7 @@ Test / Implementation のソースは言語・フレームワークの規約に�
    | 主な変更ファイル | 推定工程 | 次の Skill |
    | --- | --- | --- |
    | `docs/adr/draft/` のみ | ADR | `2-dev-flow-update-spec` |
-   | `docs/adr/draft/` + `docs/spec/` | Spec | `3-dev-flow-update-test` |
+   | `docs/adr/draft/` + `docs/requirements/` `docs/design/` `docs/spec/` のいずれか | Spec | `3-dev-flow-update-test` |
    | 上記 + テストコード | Test | `4-dev-flow-update-implementation` |
    | 上記 + プロダクションコード | Implementation | `5-dev-flow-update-document` |
    | 上記 + `docs/developer/` `docs/user/` | Document | `6-dev-flow-advance-to-done` |
@@ -114,8 +116,10 @@ Test / Implementation のソースは言語・フレームワークの規約に�
 
 - **現在の工程**: Test
 - **state**: docs/adr/draft/dev-flow-state.md (`dev_flow_phase: test`)
-- **未コミット変更**: 12 ファイル
+- **未コミット変更**: 14 ファイル
   - `docs/adr/draft/auth-jwt.md`
+  - `docs/requirements/auth.md`
+  - `docs/design/auth.md`
   - `docs/spec/auth.md`
   - `tests/auth/test_login.py` (+ 4 ファイル)
 - **次の Skill**: `4-dev-flow-update-implementation` (必要なら `implementer` を spawn)

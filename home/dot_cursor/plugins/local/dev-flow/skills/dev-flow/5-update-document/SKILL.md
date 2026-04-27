@@ -31,7 +31,7 @@ description: dev-flow 名前空間 (順序 5/7)。開発者向け (docs/develope
 
 ### 入出力
 
-- 入力: `docs/adr/**` `docs/spec/**` + 実装済みコード
+- 入力: `docs/adr/**` `docs/requirements/**` `docs/design/**` `docs/spec/**` + 実装済みコード
 - 出力: `docs/developer/**` `docs/user/**` の作成 / 編集 / 削除
 
 完了したらユーザーに「Document 工程完了」を報告し、確認後に **`6-dev-flow-advance-to-done` skill を使用**し、**Subagent `done-runner` を spawn** するよう案内する。
@@ -48,9 +48,15 @@ description: dev-flow 名前空間 (順序 5/7)。開発者向け (docs/develope
 ## 入力
 
 - `docs/adr/active/` `docs/adr/draft/` (背景・判断理由)
-- `docs/spec/` (振る舞い)
+- `docs/requirements/` (要件定義) `docs/design/` (基本設計) `docs/spec/` (振る舞い)
 - 実装済みコード
 - 既存の `docs/developer/` `docs/user/`
+
+## 他ドキュメントとの責務切り分け
+
+- `docs/requirements/` `docs/design/` `docs/spec/` は **Spec 工程の成果物** (上流。何を / どう / どの振る舞いを実装するか)。
+- `docs/developer/` `docs/user/` は **Document 工程の成果物** (下流。実装後に開発者・利用者へ届ける説明)。
+- 後者から前者へは**リンクで参照**し、振る舞い・要件・設計判断を再記述しない。
 
 ## 出力
 
@@ -81,18 +87,19 @@ docs/user/        # 利用者向け (使い方、チュートリアル、FAQ 等
 **振る舞いや仕様の記述ルール**:
 
 - 詳細な振る舞いは `docs/spec/` にあるため、開発者向けドキュメントでは**仕様を再記述しない**。
-- 必ず「Spec への参照」または「該当 ADR への参照」をリンクで張る。
+- 必ず「Spec への参照」「`docs/requirements/` への参照」「`docs/design/` への参照」「該当 ADR への参照」のいずれかをリンクで張る。
 - 概念や設計判断の背景は ADR を参照する形で説明する。
+- 要件 / 設計の整理は `docs/requirements/` `docs/design/` を参照し、開発者向けドキュメントでは再記述しない。
 
 ```markdown
 ## 認証フロー
 
-詳細な振る舞い定義は [Spec: auth](../spec/auth.md) を参照。
-設計判断の背景は [ADR: auth-jwt](../adr/active/v1.2.0-auth-jwt.md) を参照。
+- 要件: [Requirements: auth](../requirements/auth.md)
+- 基本設計: [Design: auth](../design/auth.md)
+- 振る舞い: [Spec: auth](../spec/auth.md)
+- 設計判断: [ADR: auth-jwt](../adr/active/v1.2.0-auth-jwt.md)
 
-ここではモジュール間の責務とデータフローのみ記述する:
-
-[シーケンス図やモジュール図...]
+ここでは実装の運用観点 (デプロイ・ログ・モニタリング等) のみを記述する。
 ```
 
 ### 3. 利用者向けドキュメントの更新
@@ -114,14 +121,14 @@ docs/user/        # 利用者向け (使い方、チュートリアル、FAQ 等
 ### 5. 検証
 
 - 開発者向けと利用者向けが分離されているか?
-- 振る舞いに関する記述が Spec / ADR を参照しているか (重複していないか)?
+- 振る舞い・要件・設計の記述が Spec / Requirements / Design / ADR を参照しているか (重複していないか)?
 - 削除された機能の記述が残っていないか?
 - AI エージェント専用情報 (Skill 呼び出し方法等) が混入していないか?
 
 ## やってはいけないこと
 
 - 開発者向けドキュメントに利用者向け情報を混ぜる (またはその逆)。
-- Spec / ADR と重複した振る舞いをドキュメントに直接書き込む (参照で済ませる)。
+- Spec / Requirements / Design / ADR と重複した内容をドキュメントに直接書き込む (参照で済ませる)。
 - AI エージェント向けの指示を含める (`AGENTS.md` / Rules / Skill で別管理)。
 - 古くなった機能の説明を残す。
 
