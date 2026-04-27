@@ -1,20 +1,50 @@
 ---
 name: 1-dev-flow-update-adr
-description: dev-flow 名前空間 (順序 2/8)。ADR (Architecture Decision Record) の Draft 段階での作成・編集・削除。設計判断・技術選定・代替案・Open Question を Draft で確定させる。新規実装・既存修正・機能削除いずれでも ADR を作成する。Spec 以降に進む前に必須。
+description: dev-flow 名前空間 (順序 1/7)。ADR (Architecture Decision Record) の Draft 段階での作成・編集・削除。設計判断・技術選定・代替案・Open Question を Draft で確定させる。新規実装・既存修正・機能削除いずれでも ADR を作成する。Spec 以降に進む前に必須。
 ---
 
 # update-adr (ADR Draft 工程)
 
 設計の意思決定を `docs/adr/draft/` 配下に Markdown で記録する。**この工程ですべての不確定情報を解消する**。Spec 以降の工程は確定情報しか取り扱わない。
 
+## Subagent を使用する (`adr-author`)
+
+本工程の実作業は **Subagent `adr-author` を spawn** して行う。親エージェントは spawn と指示の橋渡しに徹する。
+
+### `adr-author` の役割
+
+- 既存コードベースを理解する。
+- ユーザー要求 (新規 / 修正 / 削除) を ADR として整理し `docs/adr/draft/` に記録する (トピックが異なる場合は**別ファイル**に分ける)。
+- 技術選定・代替案・Open Question を Draft 段階で完結させる。
+- 必要なら検証用コード / モックを作成する (参考資料のみ。Test/Implementation には含めない)。
+- 既存 Active ADR との競合があれば supersede を Draft 側に明記する。
+
+### `adr-author` が着手する前に必ず行うこと
+
+1. `dev-flow-overview` skill を Read し、現在地を判定する。
+2. 本 Skill (`1-dev-flow-update-adr`) の手順に厳密に従う。
+3. `rules/dev-flow.mdc` のガードレールを意識する (alwaysApply されている前提)。
+
+### `adr-author` の制約
+
+- Spec / Test / Implementation / Document / Done 工程の成果物は**読んでも編集しない**。
+- 検証用 / モックコードを既存 Test や Implementation のソースツリーに混入させない。
+- ユーザー判断が必要な事項を勝手に決めない。`## Open Question` に記載してユーザーに確認する。
+- **1 ブランチで複数の Draft ADR を持ってよい**。設計内容・トピックごとに適切にファイルを分ける。
+
+### `adr-author` の出力
+
+- 作成 / 編集 / 削除した ADR のパス
+- 解消した Open Question / 残存する確認事項 (あれば人間に質問)
+
+完了したらユーザーに「ADR 工程完了」を報告し、次に **`2-dev-flow-update-spec` skill を使用**し、**Subagent `spec-author` を spawn** するよう案内する。
+
 ## 親エージェントが ADR 工程を進めるとき
 
-コンテキスト分離のため **`adr-author` サブエージェントを spawn** する。
-
 1. 現在のリポジトリ状態 (`git status`) と `docs/adr/draft/` の内容を確認する。`docs/adr/draft/dev-flow-state.md` があれば Read し、ADR 着手時は `dev_flow_phase` を `adr` に更新する (無ければテンプレから作成)。
-2. `adr-author` にユーザー要求または既存 Draft への変更指示を渡す。
-3. 本 Skill (`1-dev-flow-update-adr`) の手順に従って ADR を Draft で作成・編集・削除させる。
-4. 完了したら解消された Open Question / 残存する確認事項をユーザーに報告する。
+2. **Subagent を使用する**: `adr-author` を spawn し、上記「Subagent を使用する」節の役割・制約に従わせる。
+3. ユーザー要求または既存 Draft への変更指示を Subagent に渡す。
+4. Subagent に本 Skill の「手順」以下を実行させ、完了したら Open Question の状況などをユーザーに報告させる。
 
 ### 引数 (任意)
 
@@ -22,7 +52,7 @@ description: dev-flow 名前空間 (順序 2/8)。ADR (Architecture Decision Rec
 - 編集したい既存 Draft のヒント (ファイル名 / タイトル)
 - 削除したい Draft のファイル名
 
-引数が無い場合は、`adr-author` が現状を分析しユーザーに必要事項を質問する。
+引数が無い場合は、**Subagent `adr-author`** が現状を分析しユーザーに必要事項を質問する。
 
 ## いつ使うか
 

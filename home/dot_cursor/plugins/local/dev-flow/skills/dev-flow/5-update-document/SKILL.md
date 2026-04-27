@@ -1,19 +1,47 @@
 ---
 name: 5-dev-flow-update-document
-description: dev-flow 名前空間 (順序 6/8)。開発者向け (docs/developer/) と利用者向け (docs/user/) のドキュメントを生成・更新する。別ディレクトリで分け、AI エージェント専用情報は記載しない。振る舞い・仕様は可能な限り docs/spec/ や ADR を参照する形で記述する。
+description: dev-flow 名前空間 (順序 5/7)。開発者向け (docs/developer/) と利用者向け (docs/user/) のドキュメントを生成・更新する。別ディレクトリで分け、AI エージェント専用情報は記載しない。振る舞い・仕様は可能な限り docs/spec/ や ADR を参照する形で記述する。
 ---
 
 # update-document (Document 工程)
 
 人間向けのドキュメントを生成する。**開発者向け**と**利用者向け**を必ず分ける。AI エージェント向けのドキュメント (例: `AGENTS.md`) は対象外。
 
+## Subagent を使用する (`document-author`)
+
+本工程の実作業は **Subagent `document-author` を spawn** して行う。
+
+### `document-author` の役割
+
+- `docs/developer/` (開発者向け) と `docs/user/` (利用者向け) を**別ディレクトリで**作成 / 更新する。
+- 開発者向けで振る舞い・仕様を扱う場合、Spec / ADR を**参照する形**で書く (重複させない)。
+- 削除された機能 / 廃止された API の記述を完全に削除する。
+
+### 着手前に必ず
+
+1. `dev-flow-overview` skill を Read し、現在地を判定する。
+2. 本 Skill (`5-dev-flow-update-document`) の手順に厳密に従う。
+
+### 制約
+
+- 開発者向けと利用者向けを混ぜない。
+- Spec / ADR と重複した振る舞いの記述を入れない (リンクで参照)。
+- AI エージェント向け情報を含めない (`AGENTS.md` / Rules / Skill で別管理)。
+- 古くなった機能の説明を残さない。
+
+### 入出力
+
+- 入力: `docs/adr/**` `docs/spec/**` + 実装済みコード
+- 出力: `docs/developer/**` `docs/user/**` の作成 / 編集 / 削除
+
+完了したらユーザーに「Document 工程完了」を報告し、確認後に **`6-dev-flow-advance-to-done` skill を使用**し、**Subagent `done-runner` を spawn** するよう案内する。
+
 ## 親エージェントが Document 工程を進めるとき
 
-**`document-author` サブエージェントを spawn** する。
-
 1. `docs/spec/` 実装コード `docs/developer/` `docs/user/` を読み、ドキュメントの差分を特定する。
-2. 本 Skill (`5-dev-flow-update-document`) の手順に従い、開発者向け・利用者向けドキュメントを更新させる。
-3. 完了したら、更新したファイル一覧を報告する。
+2. **Subagent を使用する**: `document-author` を spawn し、上記節に従わせる。
+3. 本 Skill の手順に従いドキュメントを更新させる。
+4. 完了したら、更新したファイル一覧を報告する。
 
 引数は任意。何も無ければ全機能のドキュメント差分を反映する。
 

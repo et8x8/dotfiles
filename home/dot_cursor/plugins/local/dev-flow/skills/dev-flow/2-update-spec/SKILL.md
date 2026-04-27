@@ -1,19 +1,48 @@
 ---
 name: 2-dev-flow-update-spec
-description: dev-flow 名前空間 (順序 3/8)。ADR (Active + Draft) を元に振る舞いを EARS 記法で docs/spec/ に作成・更新する。Spec は ADR の生成物であり、ADR にない振る舞いを記載してはならない。仕様変更で不要になった振る舞いは修正または削除する。
+description: dev-flow 名前空間 (順序 2/7)。ADR (Active + Draft) を元に振る舞いを EARS 記法で docs/spec/ に作成・更新する。Spec は ADR の生成物であり、ADR にない振る舞いを記載してはならない。仕様変更で不要になった振る舞いは修正または削除する。
 ---
 
 # update-spec (Spec 工程)
 
 ADR で確定した設計判断を、**実行可能ではないが検証可能**な形で振る舞い定義に落とす。記法は **EARS** に統一する。
 
+## Subagent を使用する (`spec-author`)
+
+本工程の実作業は **Subagent `spec-author` を spawn** して行う。
+
+### `spec-author` の役割
+
+- `docs/adr/active/` と `docs/adr/draft/` を入力に、`docs/spec/` を EARS 記法で作成 / 更新する。
+- 各要件に一意の ID を付け、Source として根拠 ADR を引用する。
+- 仕様変更で不要になった要件は削除する。
+
+### 着手前に必ず
+
+1. `dev-flow-overview` skill を Read し、現在地を判定する。
+2. 本 Skill (`2-dev-flow-update-spec`) の手順に厳密に従う (EARS テンプレートを含む)。
+
+### 制約
+
+- ADR にない振る舞いを Spec に書かない。
+- ADR と矛盾する記載をしない。
+- Test / Implementation の都合で Spec を書き換えない (戻るなら ADR から)。
+- 不確定情報を Spec に残さない。
+- 「将来のために」古い要件を残さない。
+
+### 入出力
+
+- 入力: `docs/adr/active/**` `docs/adr/draft/**`
+- 出力: `docs/spec/**` の作成 / 編集 / 削除
+
+完了したらユーザーに「Spec 工程完了」を報告し、次に **`3-dev-flow-update-test` skill を使用**し、**Subagent `test-author` を spawn** するよう案内する。
+
 ## 親エージェントが Spec 工程を進めるとき
 
-**`spec-author` サブエージェントを spawn** する。
-
 1. `docs/adr/active/` `docs/adr/draft/` を読み、現状の Spec との差分を把握する。
-2. `spec-author` に本 Skill (`2-dev-flow-update-spec`) の手順に従い、`docs/spec/` を EARS 記法で作成 / 更新させる。
-3. 完了したら追加 / 変更 / 削除された要件 ID を一覧で報告する。
+2. **Subagent を使用する**: `spec-author` を spawn し、上記節の役割・制約に従わせる。
+3. 本 Skill の手順に従い `docs/spec/` を EARS 記法で作成 / 更新させる。
+4. 完了したら追加 / 変更 / 削除された要件 ID を一覧で報告する。
 
 引数は任意。何も無ければ ADR からの差分を全て反映する。特定機能のみ更新したい場合は機能名を渡す。
 

@@ -1,19 +1,44 @@
 ---
 name: 7-dev-flow-audit-flow
-description: dev-flow 名前空間 (順序 8/8)。開発プロセス (ADR → Spec → Test → Implementation → Document → Done) 全工程の整合性を監査する。各成果物が前工程と整合しているか、後工程から前工程が改変されていないか等をチェックリストに沿って検査する。違反があれば修正は行わず、対応工程の Skill に戻る指示を出す。
+description: dev-flow 名前空間 (順序 7/7)。開発プロセス (ADR → Spec → Test → Implementation → Document → Done) 全工程の整合性を監査する。各成果物が前工程と整合しているか、後工程から前工程が改変されていないか等をチェックリストに沿って検査する。違反があれば修正は行わず、対応工程の Skill に戻る指示を出す。
 ---
 
 # audit-flow (監査)
 
 各工程の遵守状況を網羅的にチェックする。違反があれば**修正は行わず**、対応する工程 (Skill / Subagent) に戻る指示を出す。
 
+## Subagent を使用する (`flow-auditor`)
+
+監査の実作業は **Subagent `flow-auditor` を spawn** して行う。読み取りのみ。
+
+### `flow-auditor` の役割
+
+- 本 Skill (`7-dev-flow-audit-flow`) のチェックリスト A〜F を上から順に検査する。
+- 1 件違反を見つけても止めず、全項目をスキャンしてから違反を全件報告する。
+- 違反ごとに「対応すべき工程 (戻るべき Skill)」を明示する。
+
+### 着手前に必ず
+
+1. `dev-flow-overview` skill を Read し、現在地を把握する。
+2. 本 Skill のチェックリストを読み込む。
+
+### 制約
+
+- **成果物 (ADR / Spec / Test / Implementation / Document) を一切編集しない**。
+- 監査対象のテスト実行は許可される (実行結果を報告するため)。
+- 違反を見つけても、自分では修正しない。
+
+### 入出力
+
+- 入力: リポジトリの全成果物 + git の状態
+- 出力: 監査レポート (Markdown)。本 Skill の「報告フォーマット」に従う。
+
+完了したらユーザーに監査レポートを提示する。違反があれば対応する Skill (`1-dev-flow-update-adr` 〜 `5-dev-flow-update-document`) の利用を案内する。
+
 ## 親エージェントが監査のみ行うとき
 
-**`flow-auditor` サブエージェントを spawn** する。
-
-1. 本 Skill (`7-dev-flow-audit-flow`) のチェックリスト A〜F を上から順に検査させる。
-2. 違反を全件まとめた監査レポート (Markdown) をユーザーに提示する。
-3. 違反があれば対応する工程の Skill (`1-dev-flow-update-adr` `2-dev-flow-update-spec` `3-dev-flow-update-test` `4-dev-flow-update-implementation` `5-dev-flow-update-document`) を案内する。
+1. **Subagent を使用する**: `flow-auditor` を spawn し、上記節に従わせる。
+2. チェックリスト A〜F を上から順に検査させ、レポートをまとめさせる。
 
 引数は任意。特定セクション (A: ADR / B: Spec / ...) のみ検査したい場合はセクション名を渡す。
 

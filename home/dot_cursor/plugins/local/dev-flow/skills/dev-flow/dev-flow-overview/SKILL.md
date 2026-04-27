@@ -18,12 +18,13 @@ AI エージェント前提の構造化開発プロセス。各工程を必ず�
 
 ## 現在工程ファイル (`docs/adr/draft/dev-flow-state.md`)
 
-利用リポジトリの `docs/adr/draft/` に **`dev-flow-state.md`** を置き、YAML フロントマターで現在工程を記録する。
+利用リポジトリの `docs/adr/draft/` に **`dev-flow-state.md`** を置き、YAML フロントマターで現在工程を記録する (ワークフロー進行中のみ。**ファイルが無い** = 記録なし / Done 直後など)。
 
 - テンプレート: プラグインの `reference/docs-adr-draft-dev-flow-state.example.md` をコピーして使う。
-- フィールド: `dev_flow_phase` (`idle` / `adr` / `spec` / `test` / `implementation` / `document` / `done_pending`)、`last_updated` (YYYY-MM-DD)。
-- **現在地の判定**では、存在すれば**まずこのファイルを Read** し、その後 `git status` と変更ファイル種別で整合を取る。無い場合は `git status` と下表のみで推定し、初回はテンプレからファイルを作成してよい。
-- 各工程の Skill / Subagent が完了したら、**次の工程に合わせて `dev_flow_phase` を更新**する (Done 完了後は `idle` とし、必要ならファイルを残すかプロジェクトで決める)。
+- フィールド: `dev_flow_phase` (`adr` / `spec` / `test` / `implementation` / `document` / `done_pending`)、`last_updated` (YYYY-MM-DD)。**`idle` は使わない**。
+- **現在地の判定**では、存在すれば**まずこのファイルを Read** し、その後 `git status` と変更ファイル種別で整合を取る。**無い場合**は `git status` と下表のみで推定する。
+- 各工程が完了したら**次の工程**に合わせて `dev_flow_phase` を更新する。**Done 工程 (commit) 完了後はこのファイルを必ず削除**する (状態は「ファイル無し」で表す)。
+- **`docs/adr/draft/` に Draft ADR が無い**ときは、draft は **クリーン**でなければならない (state ファイルも置かない)。
 
 ## 工程用 Skill の順序 (1〜7)
 
@@ -73,8 +74,8 @@ Test / Implementation のソースは言語・フレームワークの規約に�
 
 1. `docs/adr/draft/dev-flow-state.md` があれば Read し、`dev_flow_phase` を取得する。
 2. `git status --porcelain` で変更を確認する。
-3. 変更が**ない**かつ `idle` (または state ファイル無し) → 直前の Done 完了状態。新規作業なら ADR (`1-dev-flow-update-adr` + `adr-author`) から開始し、`dev_flow_phase: adr` に更新する。
-4. 変更が**ある**場合 → `dev_flow_phase` と変更ファイルの種類を突き合わせる。state が無い / 古い場合は次表で推定し、必要なら state を更新する。
+3. 変更が**なく** state ファイルも**無い** → 直近の Done 完了に相当。新規作業ならテンプレから `dev-flow-state.md` を作成し `dev_flow_phase: adr` とし、**Subagent `adr-author` を使用して** `1-dev-flow-update-adr` skill に従う。
+4. 変更が**ある**場合 → `dev_flow_phase` と変更ファイルの種類を突き合わせる。state が無い / 古い場合は次表で推定し、必要なら state ファイルを作成または更新する。
 
    | 主な変更ファイル | 推定される現在工程 |
    | --- | --- |
@@ -92,7 +93,7 @@ Test / Implementation のソースは言語・フレームワークの規約に�
 
 1. `docs/adr/draft/dev-flow-state.md` を Read する (無ければ次へ)。
 2. `git status --porcelain` を実行する。
-3. 変更が無い場合 → 「直前の Done 完了状態。新規作業なら `1-dev-flow-update-adr` skill と `adr-author` から開始。」と表示する。
+3. 変更が無く `dev-flow-state.md` も無い場合 → 「直前の Done 完了状態。新規作業なら `1-dev-flow-update-adr` skill で **Subagent `adr-author` を使用**して開始。」と表示する。
 4. 変更がある場合、次の対応表で「次の Skill」を案内する:
 
    | 主な変更ファイル | 推定工程 | 次の Skill |

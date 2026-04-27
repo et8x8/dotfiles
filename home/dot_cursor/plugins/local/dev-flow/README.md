@@ -26,7 +26,7 @@ AI エージェント前提の開発プロセスを Cursor 上で実行するた
 
 `skills/dev-flow/` 以下。ディレクトリで名前空間を分離する。**工程実行用**の Skill は **`1-dev-flow-*` 〜 `7-dev-flow-*`** の **先頭数字 + ハイフン** で順序を表す。`dev-flow-overview` は参照専用で番号を付けず、ワークフローを単体起用しない。
 
-各工程 Skill の本文に「親エージェントがその工程を進めるとき」の手順 (どの Subagent を spawn するか) を含める。現在地の軽量表示は `dev-flow-overview` に含める。利用リポジトリでは `reference/docs-adr-draft-dev-flow-state.example.md` を **`docs/adr/draft/dev-flow-state.md`** にコピーし、`dev_flow_phase` を更新して現在工程を記録する。
+各工程 Skill の本文に「親エージェントがその工程を進めるとき」と **「Subagent を使用する」**を含める。現在地の軽量表示は `dev-flow-overview` に含める。利用リポジトリでは `reference/docs-adr-draft-dev-flow-state.example.md` を **`docs/adr/draft/dev-flow-state.md`** にコピーし、進行中のみ `dev_flow_phase` を更新する。**Done 完了後は `dev-flow-state.md` を削除**する (`idle` 相当の状態はファイル無しで表す)。
 
 | Skill | 用途 |
 | --- | --- |
@@ -39,17 +39,9 @@ AI エージェント前提の開発プロセスを Cursor 上で実行するた
 | `6-dev-flow-advance-to-done` | Done 工程 |
 | `7-dev-flow-audit-flow` | 監査チェックリスト |
 
-### Subagents
+### Subagent
 
-各工程をコンテキスト分離して実行する専門エージェント。Skill 本文の指示に従い spawn する。
-
-- `adr-author` … ADR Draft の作成・編集・削除
-- `spec-author` … Spec の生成 / 更新
-- `test-author` … Test の生成と失敗確認
-- `implementer` … Test を満たす実装と成功確認
-- `document-author` … 開発者 / 利用者向けドキュメント生成
-- `done-runner` … Active 移行 + commit
-- `flow-auditor` … 工程間の整合性監査
+Subagent の役割・制約・spawn 手順は **各 Skill の「Subagent を使用する」節**に統一してある。Cursor の `agents/` 定義ファイルは置かない。
 
 ### Rules
 

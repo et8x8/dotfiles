@@ -1,19 +1,52 @@
 ---
 name: 4-dev-flow-update-implementation
-description: dev-flow 名前空間 (順序 5/8)。Spec と Test を満たすプロダクションコードを実装する。実装後にテストを実行し、すべて成功することを確認する。Spec / Test に記載のない実装は禁止。矛盾する実装も禁止。実装の都合で Test を書き換えることも禁止。未使用コードや「将来のための」コードは残さない。
+description: dev-flow 名前空間 (順序 4/7)。Spec と Test を満たすプロダクションコードを実装する。実装後にテストを実行し、すべて成功することを確認する。Spec / Test に記載のない実装は禁止。矛盾する実装も禁止。実装の都合で Test を書き換えることも禁止。未使用コードや「将来のための」コードは残さない。
 ---
 
 # update-implementation (Implementation 工程)
 
 Test 工程で生成された (失敗状態の) テストを通すコードを実装する。
 
+## Subagent を使用する (`implementer`)
+
+本工程の実作業は **Subagent `implementer` を spawn** して行う。
+
+### `implementer` の役割
+
+- Spec と Test を満たすプロダクションコードを実装する。
+- 実装後にテストを実行し、**全て成功**することを確認する。
+- 既存テストの回帰がないことも確認する。
+- 不要になったプロダクションコード / 未使用コードを削除する。
+- リンタ / フォーマッタを通す。
+
+### 着手前に必ず
+
+1. `dev-flow-overview` skill を Read し、現在地を判定する。
+2. 本 Skill (`4-dev-flow-update-implementation`) の手順に厳密に従う。
+3. プロジェクトの規約 (`AGENTS.md` / 既存コード) からテストコマンド・リンタ・フォーマッタを把握する。
+
+### 制約
+
+- Spec / Test に記載のない振る舞いを実装しない。
+- Spec / Test と矛盾する実装をしない。
+- **互換性 / フェイルセーフは Spec に記載がある場合のみ**実装する。
+- 実装の都合で Test を書き換えない (Spec から見直す必要があれば `2-dev-flow-update-spec` または `1-dev-flow-update-adr` に戻る指示を出す)。
+- 「将来使うかもしれない」未使用コードを残さない。
+- テスト成功確認を**スキップしない**。
+
+### 入出力
+
+- 入力: `docs/spec/**` + テストコード + 既存プロダクションコード
+- 出力: プロダクションコードの作成 / 編集 / 削除 + テスト実行結果の報告
+
+完了したらユーザーに「Implementation 工程完了。全テスト PASS」を報告し、次に **`5-dev-flow-update-document` skill を使用**し、**Subagent `document-author` を spawn** するよう案内する。
+
 ## 親エージェントが Implementation 工程を進めるとき
 
-**`implementer` サブエージェントを spawn** する。
-
 1. `docs/spec/` とテストコードを読み、未実装の要件を特定する。
-2. 本 Skill (`4-dev-flow-update-implementation`) の手順に従い、テストを通すコードを実装させ、実装後に全テストの**成功**を確認させる。
-3. 完了したら、変更したファイル一覧とテスト結果 (PASS 数 / 既存テストの回帰なし) を報告する。
+2. **Subagent を使用する**: `implementer` を spawn し、上記節に従わせる。
+3. 本 Skill の手順に従い実装と成功確認をさせる。
+4. 完了したら、変更したファイル一覧とテスト結果を報告する。
 
 引数は任意。何も無ければ失敗中のテストすべてを通す実装を行う。
 

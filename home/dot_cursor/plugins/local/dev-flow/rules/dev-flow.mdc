@@ -69,11 +69,11 @@ alwaysApply: true
 
 ## コンテキスト分離
 
-- 各工程は `skills/dev-flow/dev-flow-overview/SKILL.md` を Read で参照しつつ、`skills/dev-flow/` の番号付き Skill (`1-dev-flow-*` 〜 `7-dev-flow-*`) から手順を読み、対応する Subagent を spawn してコンテキストを分離して実行する。利用リポジトリでは `docs/adr/draft/dev-flow-state.md` で現在工程を記録する。同一エージェントで複数工程を一気に進めない。
+- 各工程は `skills/dev-flow/dev-flow-overview/SKILL.md` を Read で参照しつつ、`skills/dev-flow/` の番号付き Skill (`1-dev-flow-*` 〜 `7-dev-flow-*`) を読み、**各 Skill に書かれた「Subagent を使用する」**に従い Subagent を spawn してコンテキストを分離して実行する。進行中のみ `docs/adr/draft/dev-flow-state.md` で現在工程を記録し、**Done 完了後はそのファイルを削除**する (記録なしはファイル無し)。同一エージェントで複数工程を一気に進めない。
 
 ## ブランチ前提
 
-- 1 機能 = 1 ブランチ (git worktree 等)。`docs/adr/draft/` 以下の ADR は現ブランチの作業対象とみなす。**複数の Draft ADR を許容**し、設計内容ごとにファイルを分ける。
+- 1 機能 = 1 ブランチ (git worktree 等)。`docs/adr/draft/` 以下の ADR は現ブランチの作業対象とみなす。**複数の Draft ADR を許容**し、設計内容ごとにファイルを分ける。Draft ADR が無いときは draft を**クリーン**に保つ (`dev-flow-state.md` も置かない)。
 
 ## コミットの意味
 
