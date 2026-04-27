@@ -1,11 +1,11 @@
 ---
-description: AI エージェント前提の開発プロセス (ADR → Spec → Test → Implementation → Document → Done) の常時ガードレール。各工程からの逸脱、後工程から前工程の改変、未承認の Done 移行などを禁止する。
+description: AI エージェント前提の開発プロセス (提案 → 実装 → ドキュメント生成 → Done) の常時ガードレール。各工程からの逸脱、後工程から前工程の改変、未承認の Done 移行などを禁止する。各工程の完了時に audit-flow による整合性監査を行う。
 alwaysApply: true
 ---
 
 # dev-flow ガードレール
 
-このリポジトリは「ADR → Spec → Test → Implementation → Document → Done」の一本化された開発プロセスで運用する。以下を**例外なく**守ること。
+このリポジトリは「**提案 (1) → 実装 (2) → ドキュメント生成 (3) → Done (4)**」の一本化された開発プロセスで運用する。以下を**例外なく**守ること。各工程の内部ステップ (1.1 ADR / 1.2 要件定義 + 基本設計 + Spec / 2.1 Test / 2.2 Implementation) は順序を変えてはならない。
 
 ## 工程の方向性
 
@@ -17,14 +17,17 @@ alwaysApply: true
 
 ## 工程の入出力
 
-| 工程 | 入力 | 主な成果物 | 検証 |
-| --- | --- | --- | --- |
-| ADR (Draft) | ユーザー要求 + 現コードベース | `docs/adr/draft/` | 不確定情報を残さない |
-| Spec | Active + Draft の ADR | `docs/requirements/` (要件定義) + `docs/design/` (基本設計) + `docs/spec/` (EARS 記法) を**同時に**生成 | ADR にない内容は書かない。振る舞いの定義は Spec を正本とし、要件定義 / 基本設計はリンクで参照する |
-| Test | Spec | テストコード | 実行して**失敗**することを確認 |
-| Implementation | Spec + Test | プロダクションコード | 実行して**成功**することを確認 |
-| Document | 上記すべて | `docs/developer/` `docs/user/` | AI 専用情報は書かない |
-| Done | 上記すべて + ユーザー承認 | `docs/adr/active/` への移動 + `git commit` | バージョンプレフィックス付与 |
+| 工程 | Skill | 入力 | 主な成果物 | 検証 |
+| --- | --- | --- | --- | --- |
+| 1.1 ADR (Draft) | `1-dev-flow-propose` | ユーザー要求 + 現コードベース | `docs/adr/draft/` | 不確定情報を残さない |
+| 1.2 要件定義 + 基本設計 + Spec | `1-dev-flow-propose` | Active + Draft の ADR | `docs/requirements/` + `docs/design/` + `docs/spec/` (EARS 記法) を**同時に**生成 | ADR にない内容は書かない。振る舞いの定義は Spec を正本とし、要件定義 / 基本設計はリンクで参照する |
+| 1 完了 | `audit-flow` | 1.1 / 1.2 の成果物 | 監査レポート | A / B のチェックリストで違反 0 |
+| 2.1 Test | `2-dev-flow-implement` | Spec | テストコード | 実行して**失敗**することを確認 |
+| 2.2 Implementation | `2-dev-flow-implement` | Spec + Test | プロダクションコード | 実行して**成功**することを確認 |
+| 2 完了 | `audit-flow` | 2.1 / 2.2 の成果物 | 監査レポート | C / D のチェックリストで違反 0 |
+| 3 ドキュメント生成 | `3-dev-flow-document` | 上記すべて | `docs/developer/` `docs/user/` | AI 専用情報は書かない |
+| 3 完了 | `audit-flow` | ドキュメント | 監査レポート | E のチェックリストで違反 0 |
+| 4 Done | `4-dev-flow-advance-to-done` | 上記すべて + ユーザー承認 | `docs/adr/active/` への移動 + `git commit` | バージョンプレフィックス付与 / 冒頭で `audit-flow` 全項目確認 |
 
 ## 各工程の禁止事項
 
@@ -71,7 +74,8 @@ alwaysApply: true
 
 ## コンテキスト分離
 
-- 各工程は `skills/dev-flow/dev-flow-overview/SKILL.md` を Read で参照しつつ、`skills/dev-flow/` の番号付き Skill (`1-dev-flow-*` 〜 `7-dev-flow-*`) を読み、**各 Skill に書かれた「Subagent を使用する」**に従い Subagent を spawn してコンテキストを分離して実行する。進行中のみ `docs/adr/draft/dev-flow-state.md` で現在工程を記録し、**Done 完了後はそのファイルを削除**する (記録なしはファイル無し)。同一エージェントで複数工程を一気に進めない。
+- 各工程は `skills/dev-flow/dev-flow-overview/SKILL.md` を Read で参照しつつ、`skills/dev-flow/` の番号付き Skill (`1-dev-flow-propose` / `2-dev-flow-implement` / `3-dev-flow-document` / `4-dev-flow-advance-to-done`) を読み、**各 Skill に書かれた「Subagent を使用する」**に従い Subagent を spawn してコンテキストを分離して実行する。番号付き Skill 内のサブステップ (1.1 / 1.2 / 2.1 / 2.2) も**それぞれ別 Subagent で実行する** (1 つのコンテキストで複数 Subagent を順次 spawn する)。進行中のみ `docs/adr/draft/dev-flow-state.md` で現在工程を記録し、**Done 完了後はそのファイルを削除**する (記録なしはファイル無し)。同一エージェントで複数工程を一気に進めない。
+- **各番号付き工程の完了時** および `4-dev-flow-advance-to-done` の冒頭で `audit-flow` skill を呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程の Skill に戻る。
 
 ## ブランチ前提
 

@@ -1,31 +1,44 @@
 ---
-name: 5-dev-flow-update-document
-description: dev-flow 名前空間 (順序 5/7)。開発者向け (docs/developer/) と利用者向け (docs/user/) のドキュメントを生成・更新する。別ディレクトリで分け、AI エージェント専用情報は記載しない。振る舞い・仕様は可能な限り docs/spec/ や ADR を参照する形で記述する。
+name: 3-dev-flow-document
+description: dev-flow 名前空間 (順序 3/4)。ドキュメント生成工程。実装済みコードと提案工程の成果物を入力に、開発者向け (docs/developer/) と利用者向け (docs/user/) のドキュメントを別ディレクトリで生成・更新する。AI エージェント専用情報は記載しない。振る舞いや要件は ADR / requirements / design / spec を参照する形で記述する。完了時は監査 (`audit-flow` skill) を呼ぶ。
 ---
 
-# update-document (Document 工程)
+# document (ドキュメント生成工程)
 
 人間向けのドキュメントを生成する。**開発者向け**と**利用者向け**を必ず分ける。AI エージェント向けのドキュメント (例: `AGENTS.md`) は対象外。
 
-## Subagent を使用する (`document-author`)
+| 出力先 | 主な内容 |
+| --- | --- |
+| `docs/developer/` | アーキテクチャ概要 / 公開 API・インターフェース / 拡張ガイド / セットアップ / テスト戦略 |
+| `docs/user/` | インストール・初期設定 / 操作手順 / チュートリアル / FAQ |
 
-本工程の実作業は **Subagent `document-author` を spawn** して行う。
+## 親エージェントがドキュメント生成工程を進めるとき
 
-### `document-author` の役割
+1. `docs/adr/draft/dev-flow-state.md` の `dev_flow_phase` を `document` に更新する (前工程で更新済みのはず)。
+2. `docs/spec/` 実装コード `docs/developer/` `docs/user/` を読み、ドキュメントの差分を特定する。
+3. **Subagent を使用する**: `document-author` を spawn し、下記節の役割・制約に従わせる。
+4. 完了後に **`audit-flow` skill (`flow-auditor`) を実行** し、E (Document) のチェックリストに違反が無いことを確認する。違反があれば修正する。
+5. ユーザーに「ドキュメント生成工程完了」を報告し、次に **`4-dev-flow-advance-to-done` skill (`done-runner`)** を案内する。`dev_flow_phase` を `done_pending` に更新する (Done 着手前)。
+
+引数は任意。何も無ければ全機能のドキュメント差分を反映する。
+
+## Subagent: `document-author`
+
+### 役割
 
 - `docs/developer/` (開発者向け) と `docs/user/` (利用者向け) を**別ディレクトリで**作成 / 更新する。
-- 開発者向けで振る舞い・仕様を扱う場合、Spec / ADR を**参照する形**で書く (重複させない)。
+- 開発者向けで振る舞い・仕様を扱う場合、Spec / ADR / requirements / design を**参照する形**で書く (重複させない)。
 - 削除された機能 / 廃止された API の記述を完全に削除する。
 
 ### 着手前に必ず
 
 1. `dev-flow-overview` skill を Read し、現在地を判定する。
-2. 本 Skill (`5-dev-flow-update-document`) の手順に厳密に従う。
+2. 本 Skill (`3-dev-flow-document`) の手順に厳密に従う。
 
 ### 制約
 
 - 開発者向けと利用者向けを混ぜない。
-- Spec / ADR と重複した振る舞いの記述を入れない (リンクで参照)。
+- Spec / ADR / requirements / design と重複した内容を入れない (リンクで参照)。
 - AI エージェント向け情報を含めない (`AGENTS.md` / Rules / Skill で別管理)。
 - 古くなった機能の説明を残さない。
 
@@ -33,17 +46,6 @@ description: dev-flow 名前空間 (順序 5/7)。開発者向け (docs/develope
 
 - 入力: `docs/adr/**` `docs/requirements/**` `docs/design/**` `docs/spec/**` + 実装済みコード
 - 出力: `docs/developer/**` `docs/user/**` の作成 / 編集 / 削除
-
-完了したらユーザーに「Document 工程完了」を報告し、確認後に **`6-dev-flow-advance-to-done` skill を使用**し、**Subagent `done-runner` を spawn** するよう案内する。
-
-## 親エージェントが Document 工程を進めるとき
-
-1. `docs/spec/` 実装コード `docs/developer/` `docs/user/` を読み、ドキュメントの差分を特定する。
-2. **Subagent を使用する**: `document-author` を spawn し、上記節に従わせる。
-3. 本 Skill の手順に従いドキュメントを更新させる。
-4. 完了したら、更新したファイル一覧を報告する。
-
-引数は任意。何も無ければ全機能のドキュメント差分を反映する。
 
 ## 入力
 
@@ -54,8 +56,8 @@ description: dev-flow 名前空間 (順序 5/7)。開発者向け (docs/develope
 
 ## 他ドキュメントとの責務切り分け
 
-- `docs/requirements/` `docs/design/` `docs/spec/` は **Spec 工程の成果物** (上流。何を / どう / どの振る舞いを実装するか)。
-- `docs/developer/` `docs/user/` は **Document 工程の成果物** (下流。実装後に開発者・利用者へ届ける説明)。
+- `docs/requirements/` `docs/design/` `docs/spec/` は **提案工程の成果物** (上流。何を / どう / どの振る舞いを実装するか)。
+- `docs/developer/` `docs/user/` は **本工程の成果物** (下流。実装後に開発者・利用者へ届ける説明)。
 - 後者から前者へは**リンクで参照**し、振る舞い・要件・設計判断を再記述しない。
 
 ## 出力
@@ -134,6 +136,6 @@ docs/user/        # 利用者向け (使い方、チュートリアル、FAQ 等
 
 ## 完了後
 
-ドキュメントが完成したら、ユーザーに最終確認を取る。承認後、`6-dev-flow-advance-to-done` skill (`done-runner`) で Done 工程に進む。
+ドキュメントが完成したら、`audit-flow` skill (`flow-auditor`) で E (Document) を監査する。違反が無ければユーザーに最終確認を取り、承認後 `4-dev-flow-advance-to-done` skill (`done-runner`) で Done 工程に進む。
 
 `docs/adr/draft/dev-flow-state.md` の `dev_flow_phase` を `done_pending` に更新する (Done 着手前)。

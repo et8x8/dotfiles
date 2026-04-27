@@ -1,7 +1,7 @@
 ---
-name: 6-dev-flow-advance-to-done
+name: 4-dev-flow-advance-to-done
 description: >-
-  dev-flow 名前空間 (順序 6/7)。全工程完了後に ADR を Draft から Active に移行し git commit する。
+  dev-flow 名前空間 (順序 4/4)。提案 (1) → 実装 (2) → ドキュメント生成 (3) がすべて完了した状態で、ADR を Draft から Active に移行し git commit する。
   Active 移行時は ADR 名先頭にバージョンプレフィックスを付与する (本文の git describe + sed 手順)。
   実行前に必ずユーザー承認を得る。完了後は dev-flow-state.md を削除する。
 ---
@@ -16,7 +16,7 @@ description: >-
 
 ### `done-runner` の役割
 
-- `7-dev-flow-audit-flow` skill のチェックリストに従い、全工程の整合を最終確認する。
+- `audit-flow` skill のチェックリストに従い、全工程の整合を最終確認する。
 - ユーザー承認を取得する (必須)。
 - `git describe --tags | sed 's/-g[0-9a-f]*$//'` でバージョンプレフィックスを取得する。
 - `docs/adr/draft/<kebab-topic>.md` を `docs/adr/active/<prefix>-<kebab-topic>.md` に **`git mv`** で移動する。
@@ -28,8 +28,8 @@ description: >-
 ### 着手前に必ず
 
 1. `dev-flow-overview` skill を Read し、現在地を判定する。
-2. 本 Skill (`6-dev-flow-advance-to-done`) の手順に厳密に従う。
-3. `7-dev-flow-audit-flow` skill のチェックリストで最終整合を確認する (違反があれば commit せず、対応する工程に戻る指示を出す)。
+2. 本 Skill (`4-dev-flow-advance-to-done`) の手順に厳密に従う。
+3. `audit-flow` skill のチェックリストで最終整合を確認する (違反があれば commit せず、対応する工程に戻る指示を出す)。
 
 ### 制約
 
@@ -66,14 +66,15 @@ description: >-
 ## 前提条件
 
 - `docs/adr/draft/` に Draft ADR が存在する。
-- Spec / Test / Implementation / Document 工程がすべて完了している。
+- 提案 (`1-dev-flow-propose`) / 実装 (`2-dev-flow-implement`) / ドキュメント生成 (`3-dev-flow-document`) 工程がすべて完了している。
 - すべてのテストが通っている。
+- 各工程末尾の `audit-flow` 監査で違反が無いことを確認済み。
 
 ## 手順
 
 ### 1. 最終整合性チェック
 
-`7-dev-flow-audit-flow` skill (`flow-auditor` を spawn) を実行するか、または以下を手動で確認:
+`audit-flow` skill (`flow-auditor` を spawn) を実行するか、または以下を手動で確認:
 
 - Draft ADR の Open Question がすべて解消されている。
 - 要件定義 (`docs/requirements/`) / 基本設計 (`docs/design/`) / Spec (`docs/spec/`) が Draft + Active ADR を反映し、3 種が同じ feature 名で揃っている。
