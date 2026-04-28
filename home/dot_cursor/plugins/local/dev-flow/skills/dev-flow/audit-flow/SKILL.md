@@ -13,7 +13,7 @@ description: dev-flow 名前空間の監査スキル (番号なし。単独で�
   - 1 完了時: A (ADR) と B (Spec / 要件定義 / 基本設計) を主に確認。
   - 2 完了時: C (Test) と D (Implementation) を主に確認。
   - 3 完了時: E (Document) を主に確認。
-- **必須**: `4-dev-flow-advance-to-done` の冒頭 (最終整合性チェック)。
+- **必須**: `4-dev-flow-fix-done` の冒頭 (最終整合性チェック)。
 - **任意**: ユーザーが手動で全体監査を要求したとき。
 
 ユーザーが特定セクションのみ検査したい場合は引数 (`A` / `B` / ...) で指定する。指定が無ければ全セクションを上から順に検査する。
@@ -149,4 +149,4 @@ description: dev-flow 名前空間の監査スキル (番号なし。単独で�
 
 ## 完了後
 
-報告を受けたユーザーが、対応すべき工程の Skill (`1-dev-flow-propose` / `2-dev-flow-implement` / `3-dev-flow-document`) を読み込み、必要なら Subagent を spawn する。Audit 自身は何もコミットしない。違反が無ければ呼び出し元の skill (`1-3` / `4-dev-flow-advance-to-done`) の次ステップに戻る。
+報告を受けたユーザーが、対応すべき工程の Skill (`1-dev-flow-propose` / `2-dev-flow-implement` / `3-dev-flow-document`) を読み込み、必要なら Subagent を spawn する。Audit 自身は何もコミットしない。違反が無ければ呼び出し元の skill (`1-3` / `4-dev-flow-fix-done`) の次ステップに戻る。

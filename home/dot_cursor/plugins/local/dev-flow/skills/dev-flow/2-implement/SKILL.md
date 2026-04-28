@@ -18,7 +18,7 @@ description: dev-flow 名前空間 (順序 2/4)。実装工程。提案工程の
 
 ## 親エージェントが実装工程を進めるとき
 
-1. `docs/adr/draft/dev-flow-state.md` の `dev_flow_phase` を `test` に更新する (前工程で更新済みのはず。無ければ作成)。
+1. `docs/adr/draft/dev-flow-state.json` (または `dev-flow-state.yaml`) の `dev_flow_phase` を `test` に更新する (前工程で更新済みのはず。無ければ `dev-flow-overview` のスキーマで作成)。
 2. **ステップ 2.1 を実行**: Subagent `test-author` を spawn して下記「2.1 テスト」節の手順に従わせる。失敗確認 (FAIL or ERROR) を必ず取る。
 3. **ステップ 2.2 を実行**: `dev_flow_phase` を `implementation` に更新し、Subagent `implementer` を spawn して下記「2.2 実装」節の手順に従わせる。全テスト PASS を確認する。
 4. 両ステップ完了後に **`audit-flow` skill (`flow-auditor`) を実行** し、C (Test) と D (Implementation) のチェックリストに違反が無いことを確認する。違反があれば対応するステップに戻って修正する。
@@ -206,4 +206,4 @@ Spec の各要件 (REQ-XXX-NNN) を、実行可能なテストコードに変換
 
 実装工程 (2.1 + 2.2) が完了したら、`audit-flow` skill (`flow-auditor`) で C (Test) と D (Implementation) を監査する。違反が無ければ `3-dev-flow-document` skill (`document-author`) で Document 工程に進む。
 
-`docs/adr/draft/dev-flow-state.md` の `dev_flow_phase` を `document` に更新する。
+`docs/adr/draft/dev-flow-state.json` (または採用中の YAML) の `dev_flow_phase` を `document` に更新する。

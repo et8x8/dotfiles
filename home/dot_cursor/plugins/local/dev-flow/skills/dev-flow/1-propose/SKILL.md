@@ -18,7 +18,7 @@ description: dev-flow 名前空間 (順序 1/4)。提案工程。ADR (Draft) 作
 
 ## 親エージェントが提案工程を進めるとき
 
-1. 現在のリポジトリ状態 (`git status`) と `docs/adr/draft/` の内容を確認する。`docs/adr/draft/dev-flow-state.md` があれば Read し、無ければ `reference/docs-adr-draft-dev-flow-state.example.md` をコピーして作成する。
+1. 現在のリポジトリ状態 (`git status`) と `docs/adr/draft/` の内容を確認する。`docs/adr/draft/dev-flow-state.json` (または `dev-flow-state.yaml`、**採用形式は `dev-flow-overview` 参照**) があれば Read し、無ければ同スキーマに従い新規作成する。
 2. **ステップ 1.1 を実行**: `dev_flow_phase` を `adr` に更新し、Subagent `adr-author` を spawn して下記「1.1 ADR (Draft)」節の手順に従わせる。完了報告を受けたら、Open Question が残っていないことを確認する。
 3. **ステップ 1.2 を実行**: `dev_flow_phase` を `spec` に更新し、Subagent `spec-author` を spawn して下記「1.2 要件定義 + 基本設計 + Spec」節の手順に従わせる。
 4. 両ステップ完了後に **`audit-flow` skill (`flow-auditor`) を実行** し、A (ADR) と B (Spec / 要件定義 / 基本設計) のチェックリストに違反が無いことを確認する。違反があれば対応するステップに戻って修正する。
@@ -376,4 +376,4 @@ sequenceDiagram
 
 提案工程 (1.1 + 1.2) が確定したら、`audit-flow` skill (`flow-auditor`) で A (ADR) と B (Spec / 要件定義 / 基本設計) を監査する。違反が無ければ `2-dev-flow-implement` skill で実装工程に進む。
 
-`docs/adr/draft/dev-flow-state.md` の `dev_flow_phase` を `test` に更新する。
+`docs/adr/draft/dev-flow-state.json` (または採用中の YAML) の `dev_flow_phase` を `test` に更新する。

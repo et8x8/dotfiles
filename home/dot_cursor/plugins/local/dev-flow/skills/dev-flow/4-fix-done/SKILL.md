@@ -1,12 +1,12 @@
 ---
-name: 4-dev-flow-advance-to-done
+name: 4-dev-flow-fix-done
 description: >-
   dev-flow 名前空間 (順序 4/4)。提案 (1) → 実装 (2) → ドキュメント生成 (3) がすべて完了した状態で、ADR を Draft から Active に移行し git commit する。
   Active 移行時は ADR 名先頭にバージョンプレフィックスを付与する (本文の git describe + sed 手順)。
-  実行前に必ずユーザー承認を得る。完了後は dev-flow-state.md を削除する。
+  実行前に必ずユーザー承認を得る。完了後は dev-flow-state.json を削除する。
 ---
 
-# advance-to-done (Done 工程)
+# fix-done（Done を確定する工程）
 
 すべての成果物が揃った状態で、ADR Draft を Active に昇格させ、`git commit` で確定する。これより前のすべての工程の整合性を最終確認するのもこの工程の役割。
 
@@ -28,7 +28,7 @@ description: >-
 ### 着手前に必ず
 
 1. `dev-flow-overview` skill を Read し、現在地を判定する。
-2. 本 Skill (`4-dev-flow-advance-to-done`) の手順に厳密に従う。
+2. 本 Skill (`4-dev-flow-fix-done`) の手順に厳密に従う。
 3. `audit-flow` skill のチェックリストで最終整合を確認する (違反があれば commit せず、対応する工程に戻る指示を出す)。
 
 ### 制約
@@ -151,7 +151,7 @@ ADR: docs/adr/active/v1.2.0-auth-jwt.md
 
 `git config` を変更しない。`--no-verify` 等のフック回避は禁止。
 
-`docs/adr/draft/dev-flow-state.md` が存在する場合は **`git rm` で削除**し、**上記 commit に含める** (Done 後は state ファイルを残さない)。
+`docs/adr/draft/dev-flow-state.json` (またはプロジェクトが採用する `dev-flow-state.yaml`。**採用形式は `dev-flow-overview` の記述に従う**) が存在する場合は **`git rm` で削除**し、**上記 commit に含める** (Done 後は state ファイルを残さない)。
 
 ### 6. 完了報告
 
@@ -173,4 +173,4 @@ ADR: docs/adr/active/v1.2.0-auth-jwt.md
 
 ブランチがマージされたら、Active な ADR は本流の Active 履歴になる。Archive 化した ADR は本流に反映される。
 
-**`docs/adr/draft/dev-flow-state.md` を必ず削除する** (Done 完了後の状態は「ファイルが無いこと」で表す)。あわせて `docs/adr/draft/` に Draft ADR が残っていないことを確認し、クリーンでない場合はユーザーに確認する。
+**状態ファイル (`dev-flow-state.json` または採用している YAML) を必ず削除する** (Done 完了後の状態は「ファイルが無いこと」で表す)。あわせて `docs/adr/draft/` に Draft ADR が残っていないことを確認し、クリーンでない場合はユーザーに確認する。

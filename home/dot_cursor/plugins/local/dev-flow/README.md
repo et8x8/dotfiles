@@ -12,7 +12,7 @@ AI エージェント前提の開発プロセスを Cursor 上で実行するた
 <repo>/
   docs/
     adr/
-      draft/      # Draft 段階の ADR + dev-flow-state.md (現在工程)
+      draft/      # Draft 段階の ADR + dev-flow-state.json (現在工程。形式は dev-flow-overview 参照)
       active/     # Active 段階の ADR
       archive/    # Archive 段階の ADR
     requirements/ # 要件定義 (機能 / 非機能要件)
@@ -28,7 +28,7 @@ AI エージェント前提の開発プロセスを Cursor 上で実行するた
 
 `skills/dev-flow/` 以下。ディレクトリで名前空間を分離する。**工程実行用**の Skill は `**1-dev-flow-*` 〜 `4-dev-flow-*`** の **先頭数字 + ハイフン** で順序を表す。`dev-flow-overview` と `audit-flow` は参照 / 監査専用で番号を付けず、ワークフローを単体起用しない。
 
-各工程 Skill の本文に「親エージェントがその工程を進めるとき」と **「Subagent を使用する」**を含める。現在地の軽量表示は `dev-flow-overview` に含める。利用リポジトリでは `reference/docs-adr-draft-dev-flow-state.example.md` を `**docs/adr/draft/dev-flow-state.md`** にコピーし、進行中のみ `dev_flow_phase` を更新する。**Done 完了後は `dev-flow-state.md` を削除**する (`idle` 相当の状態はファイル無しで表す)。
+各工程 Skill の本文に「親エージェントがその工程を進めるとき」と **「Subagent を使用する」**を含める。現在地の軽量表示と**工程状態ファイルのスキーマ**は `dev-flow-overview` に集約する。利用リポジトリの `docs/adr/draft/` には、構造化形式 (推奨: **`dev-flow-state.json`**、代替: **`dev-flow-state.yaml`**) で現在工程を記録する。進行中のみ更新し、**Done 完了後は state ファイルを削除**する (`idle` 相当の状態はファイル無しで表す)。
 
 工程 1 / 2 は内部で 2 ステップに分かれる (依存関係と生成順序は変更なし)。各工程の最後に `audit-flow` を必ず呼び、違反が無いことを確認してから次工程に進む。
 
@@ -39,7 +39,7 @@ AI エージェント前提の開発プロセスを Cursor 上で実行するた
 | `1-dev-flow-propose`         | 提案 (ADR + 要件定義 + 基本設計 + Spec)             | 1.1 ADR Draft / 1.2 要件定義 + 基本設計 + Spec |
 | `2-dev-flow-implement`       | 実装 (テスト + プロダクションコード)                     | 2.1 テスト / 2.2 実装                       |
 | `3-dev-flow-document`        | ドキュメント生成 (開発者向け + 利用者向け)                  | ―                                      |
-| `4-dev-flow-advance-to-done` | Done (ADR Active 移行 + commit。ユーザー承認必須)    | ―                                      |
+| `4-dev-flow-fix-done`          | Done を確定 (ADR Active 移行 + commit。ユーザー承認必須) | ―                                      |
 | `audit-flow`                 | 全工程の整合性監査 (1〜3 完了時と 4 冒頭で必須。番号なしで単独起用しない) | ―                                      |
 
 
@@ -58,6 +58,6 @@ Subagent の役割・制約・spawn 手順は **各 Skill の「Subagent を使�
 ## 設計上の前提
 
 - **言語非依存**: Test の実行コマンドや Implementation のファイル配置はリポジトリ側の規約に従う (`AGENTS.md` 等から推測)。
-- **Draft ADR はトピック別に複数可**: Active 化のタイミングや命名は `4-dev-flow-advance-to-done` とプロジェクト規約に従う。
+- **Draft ADR はトピック別に複数可**: Active 化のタイミングや命名は `4-dev-flow-fix-done` とプロジェクト規約に従う。
 - **「Done」までは未コミット**: 未コミットの差分があるということは、いずれかの工程の途中である。コミット済み = Done 完了。
 
