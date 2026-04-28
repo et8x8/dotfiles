@@ -27,7 +27,7 @@ alwaysApply: true
 | 2 完了 | `audit-flow` | 2.1 / 2.2 の成果物 | 監査レポート | C / D のチェックリストで違反 0 |
 | 3 ドキュメント生成 | `3-dev-flow-document` | 上記すべて | `docs/developer/` `docs/user/` | AI 専用情報は書かない |
 | 3 完了 | `audit-flow` | ドキュメント | 監査レポート | E のチェックリストで違反 0 |
-| 4 Done | `4-dev-flow-fix-done` | 上記すべて + ユーザー承認 | `docs/adr/active/` への移動 + `git commit` | バージョンプレフィックス付与 / 冒頭で `audit-flow` 全項目確認 |
+| 4 Done | `4-dev-flow-fix` | 上記すべて + ユーザー承認 | `docs/adr/active/` への移動 + `git commit` | バージョンプレフィックス付与 / 冒頭で `audit-flow` 全項目確認 |
 
 ## 各工程の禁止事項
 
@@ -74,12 +74,12 @@ alwaysApply: true
 
 ## コンテキスト分離
 
-- 各工程は `skills/dev-flow/dev-flow-overview/SKILL.md` を Read で参照しつつ、`skills/dev-flow/` の番号付き Skill (`1-dev-flow-propose` / `2-dev-flow-implement` / `3-dev-flow-document` / `4-dev-flow-fix-done`) を読み、**各 Skill に書かれた「Subagent を使用する」**に従い Subagent を spawn してコンテキストを分離して実行する。番号付き Skill 内のサブステップ (1.1 / 1.2 / 2.1 / 2.2) も**それぞれ別 Subagent で実行する** (1 つのコンテキストで複数 Subagent を順次 spawn する)。進行中のみ `docs/adr/draft/dev-flow-state.json` (または `dev-flow-state.yaml`。**形式は `dev-flow-overview` に定義**) で現在工程を記録し、**Done 完了後はそのファイルを削除**する (記録なしはファイル無し)。同一エージェントで複数工程を一気に進めない。
-- **各番号付き工程の完了時** および `4-dev-flow-fix-done` の冒頭で `audit-flow` skill を呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程の Skill に戻る。
+- 各工程は `skills/dev-flow/dev-flow-overview/SKILL.md` を Read で参照しつつ、`skills/dev-flow/` の番号付き Skill (`1-dev-flow-propose` / `2-dev-flow-implement` / `3-dev-flow-document` / `4-dev-flow-fix`) を読み、**各 Skill に書かれた「Subagent を使用する」**に従い Subagent を spawn してコンテキストを分離して実行する。番号付き Skill 内のサブステップ (1.1 / 1.2 / 2.1 / 2.2) も**それぞれ別 Subagent で実行する** (1 つのコンテキストで複数 Subagent を順次 spawn する)。進行中のみ `docs/adr/draft/dev-flow-state.json` で現在工程を記録し、**Done 完了後はそのファイルを削除**する (記録なしはファイル無し)。同一エージェントで複数工程を一気に進めない。
+- **各番号付き工程の完了時** および `4-dev-flow-fix` の冒頭で `audit-flow` skill を呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程の Skill に戻る。
 
 ## ブランチ前提
 
-- 1 機能 = 1 ブランチ (git worktree 等)。`docs/adr/draft/` 以下の ADR は現ブランチの作業対象とみなす。**複数の Draft ADR を許容**し、設計内容ごとにファイルを分ける。Draft ADR が無いときは draft を**クリーン**に保つ (状態ファイル `dev-flow-state.json` / `dev-flow-state.yaml` も置かない)。
+- 1 機能 = 1 ブランチ (git worktree 等)。`docs/adr/draft/` 以下の ADR は現ブランチの作業対象とみなす。**複数の Draft ADR を許容**し、設計内容ごとにファイルを分ける。Draft ADR が無いときは draft を**クリーン**に保つ (`dev-flow-state.json` も置かない)。
 
 ## コミットの意味
 

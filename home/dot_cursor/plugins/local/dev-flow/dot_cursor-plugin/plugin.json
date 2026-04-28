@@ -1,7 +1,7 @@
 {
   "name": "dev-flow",
   "version": "0.1.0",
-  "description": "AI agent first development process. Numbered dev-flow skills (1-propose / 2-implement / 3-document / 4-fix-done) plus an audit-flow skill (with Subagent instructions in each skill) and rules enforce Propose \u2192 Implement \u2192 Document \u2192 Done flow with mandatory audit at each phase boundary.",
+  "description": "AI agent first development process. Numbered dev-flow skills (1-propose / 2-implement / 3-document / 4-fix) plus an audit-flow skill (with Subagent instructions in each skill) and rules enforce Propose \u2192 Implement \u2192 Document \u2192 Done flow with mandatory audit at each phase boundary.",
   "author": {
     "name": "hayato"
   },

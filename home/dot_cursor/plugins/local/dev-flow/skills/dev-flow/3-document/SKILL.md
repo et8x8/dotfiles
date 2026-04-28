@@ -14,11 +14,11 @@ description: dev-flow 名前空間 (順序 3/4)。ドキュメント生成工程
 
 ## 親エージェントがドキュメント生成工程を進めるとき
 
-1. `docs/adr/draft/dev-flow-state.json` (または `dev-flow-state.yaml`) の `dev_flow_phase` を `document` に更新する (前工程で更新済みのはず)。
+1. `docs/adr/draft/dev-flow-state.json` の `dev_flow_phase` を `document` に更新する (前工程で更新済みのはず)。
 2. `docs/spec/` 実装コード `docs/developer/` `docs/user/` を読み、ドキュメントの差分を特定する。
 3. **Subagent を使用する**: `document-author` を spawn し、下記節の役割・制約に従わせる。
 4. 完了後に **`audit-flow` skill (`flow-auditor`) を実行** し、E (Document) のチェックリストに違反が無いことを確認する。違反があれば修正する。
-5. ユーザーに「ドキュメント生成工程完了」を報告し、次に **`4-dev-flow-fix-done` skill (`done-runner`)** を案内する。`dev_flow_phase` を `done_pending` に更新する (Done 着手前)。
+5. ユーザーに「ドキュメント生成工程完了」を報告し、次に **`4-dev-flow-fix` skill (`done-runner`)** を案内する。`dev_flow_phase` を `done_pending` に更新する (Done 着手前)。
 
 引数は任意。何も無ければ全機能のドキュメント差分を反映する。
 
@@ -136,6 +136,6 @@ docs/user/        # 利用者向け (使い方、チュートリアル、FAQ 等
 
 ## 完了後
 
-ドキュメントが完成したら、`audit-flow` skill (`flow-auditor`) で E (Document) を監査する。違反が無ければユーザーに最終確認を取り、承認後 `4-dev-flow-fix-done` skill (`done-runner`) で Done 工程に進む。
+ドキュメントが完成したら、`audit-flow` skill (`flow-auditor`) で E (Document) を監査する。違反が無ければユーザーに最終確認を取り、承認後 `4-dev-flow-fix` skill (`done-runner`) で Done 工程に進む。
 
-`docs/adr/draft/dev-flow-state.json` (または採用中の YAML) の `dev_flow_phase` を `done_pending` に更新する (Done 着手前)。
+`docs/adr/draft/dev-flow-state.json` の `dev_flow_phase` を `done_pending` に更新する (Done 着手前)。
