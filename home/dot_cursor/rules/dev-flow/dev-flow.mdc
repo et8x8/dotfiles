@@ -1,0 +1,112 @@
+---
+description: AI エージェント前提の開発プロセス (5 工程: ADR → 要件定義+基本設計+Spec → Test→実装 → ドキュメント生成 → 完了) の常時ガードレール。各工程からの逸脱、後工程から前工程の改変、未承認の Done 移行などを禁止する。各工程の完了時に対応する auditor subagent (`dev-flow-<phase>-auditor`) による整合性監査を自動で行う。
+alwaysApply: true
+---
+
+# dev-flow ガードレール
+
+このリポジトリは「**(1) ADR → (2) 要件定義 + 基本設計 + Spec → (3) Test → 実装 → (4) ドキュメント生成 → (5) 完了 (Done)**」の **5 工程の開発プロセス**で運用する。本プロセスは **`dev-flow` skill** をエントリポイントとし、各工程は対応する subagent (`dev-flow-<name>`) に委譲する。各工程末では対応する **auditor subagent** (`dev-flow-<phase>-auditor`) を自動で spawn し整合性を監査する (ユーザーが手動で auditor を呼ぶ想定はない)。以下を**例外なく**守ること。
+
+## 工程の方向性
+
+- 各工程は「それ以前の工程の成果物」を入力として作成 / 更新する。
+- 矛盾や不整合が発生した場合、必ず**前の工程に戻ってから**更新し、それを元に後工程を再生成する。**現在の工程に合わせて前工程の成果物を書き換えてはならない**。
+  - 例: Test の都合で Spec を直接書き換えるのは禁止。Spec を直すなら ADR から見直す。
+  - 例: 実装の都合で Test を直接書き換えるのは禁止。
+- **`dev_flow_completed_through` が `document` 以外**のときに PR / コードレビューで内容を手直しする場合、`dev_flow_completed_through` を **`adr` に戻し**、**工程 1 (ADR) から順に再確認**する (下流だけで済ませない)。**全工程の成果物を毎回すべて書き換える必要はなく**、各工程で変更が不要ならその成果物は改めず次工程の確認へ進んでよい。変更が生じた工程から下流を更新する。
+- 各工程の成果物は常に「最新で生きた状態」を維持する。古い記述は修正または削除する (将来のために残してはならない)。
+
+## 工程の入出力
+
+| 工程 | 作業 subagent | 監査 subagent (auto) | 入力 | 主な成果物 | 検証 |
+| --- | --- | --- | --- | --- | --- |
+| 1. ADR (Draft) | `dev-flow-adr-author` | `dev-flow-adr-auditor` | ユーザー要求 + 現コードベース | `docs/adr/draft/` | 不確定情報を残さない |
+| 2. 要件定義 + 基本設計 + Spec | `dev-flow-spec-author` | `dev-flow-spec-auditor` | Active + Draft の ADR | `docs/requirements/` + `docs/design/` + `docs/spec/` (EARS 記法) を**同時に**生成 | ADR にない内容は書かない。振る舞いの定義は Spec を正本とし、要件定義 / 基本設計はリンクで参照する |
+| 3.a Test | `dev-flow-test-author` | `dev-flow-test-auditor` | Spec + 既存テスト | テストコード | 生成直後に**失敗**を確認 |
+| 3.b 実装 | `dev-flow-implementer` | `dev-flow-impl-auditor` | Spec + Test + 既存実装 | プロダクションコード | **全 PASS** + 未使用コードなし |
+| 4. ドキュメント生成 | `dev-flow-document-author` | `dev-flow-document-auditor` | 上記すべて | `docs/developer/` `docs/user/` | AI 専用情報は書かない |
+| 5. 完了 (Done) | `dev-flow-done-runner` | (5 つの auditor を再実行) | 上記すべて + ユーザー承認 | `docs/adr/active/` への移動 + `git commit` | バージョンプレフィックス付与 / 5 つの auditor 全件確認 |
+
+## 工程進行の原則 (厳守)
+
+- **次工程に進む明示指示が無ければ絶対に次工程に進まない**。
+- **例外**: 工程 1 (ADR) の `## Open Question` がすべて解消され、`dev-flow-adr-auditor` の監査が違反 0 なら、ユーザーの明示指示なしで工程 2 に進んでよい (これが唯一の例外)。
+- **ADR に未確定 (Open Question 含む) が残っているうちは絶対に工程 2 以降に進まない**。
+- **工程 3 (Test → 実装) は同じコンテキスト内で連続実行可**。ユーザーの追加指示なしに 3.a (Test) → 3.b (実装) まで進めてよい。ただし**実装に合わせて Test を書き換えてはならない** (Spec から見直す)。
+- **工程 5 (Done) は必ずユーザー承認**を得てから Active 移行 + 確定 commit する。承認前は Active 化や確定 commit を行わない (PR 更新のための途中 commit は可)。
+
+## 各工程の禁止事項
+
+### 工程 1: ADR (Draft) — `dev-flow-adr-author`
+
+- 不確定情報 (Open Question 含む技術選定の未決定) を工程 2 以降に持ち越すこと。Draft の段階で解決する。
+- 検証用 / デモ用 / モックコードを Test や実装から呼び出すこと。これらは参考資料に留める。
+- 既存 Active ADR と競合する場合に、Draft 側へ supersede 記載をしないこと。
+
+### 工程 2: 要件定義 / 基本設計 / Spec — `dev-flow-spec-author`
+
+- ADR にない内容を要件定義 / 基本設計 / Spec に記載すること。
+- 仕様変更で不要になった内容を残すこと (修正または削除)。
+- 不確定情報の記載 (確定情報のみ取り扱う)。
+- 振る舞い (EARS 文) を Spec 以外で重複定義すること。要件定義 / 基本設計は Spec の REQ ID へ**リンクで参照**する。
+- 3 種 (要件定義 / 基本設計 / Spec) の一部だけ更新し整合が取れていない状態で次工程に進むこと。
+
+### 工程 3.a Test — `dev-flow-test-author`
+
+- Spec にない振る舞いをテストすること。
+- Spec と矛盾するテストを書くこと。
+- テスト生成直後に「失敗すること」を確認しないこと。
+- 実装の都合で Test を書き換えること (Spec から見直す)。
+
+### 工程 3.b 実装 — `dev-flow-implementer`
+
+- Spec / Test に記載のない実装を行うこと。
+- Spec / Test と矛盾する実装を行うこと。
+- 「将来使うかもしれない」という理由で未使用コードを残すこと。
+- Spec に記載のない互換性 / フェイルセーフ実装を入れること。
+
+### 工程 4: ドキュメント生成 — `dev-flow-document-author`
+
+- AI エージェント専用情報を記載すること (`AGENTS.md` 等で別管理)。
+- 振る舞いや仕様を Spec / ADR を参照せずに重複記述すること。
+- 開発者向けと利用者向けを混ぜること。
+
+### 工程 5: 完了 (Done) — `dev-flow-done-runner`
+
+- ユーザー承認なしに Active 移行 / 本工程の確定 commit を行うこと。
+- ADR ファイル名先頭にバージョンプレフィックス (`git describe --tags | sed 's/-g[0-9a-f]*$//'`) を付与せず Active に移すこと。
+- Done 後 (Active 状態) の ADR を編集 / 削除すること (Archive への移動のみ可)。
+- Archive 状態の ADR を編集 / 削除すること。
+
+## コンテキスト分離
+
+- `dev-flow` skill (`~/.cursor/skills/dev-flow/dev-flow/SKILL.md`) はエントリポイント。状態判定と全体フロー制御のみを行う。**各工程の詳細手順・制約・テンプレートは対応する subagent ファイル `~/.cursor/agents/dev-flow-<name>.md`** に集約してある。
+- 各工程は対応する subagent (`dev-flow-adr-author` / `dev-flow-spec-author` / `dev-flow-test-author` / `dev-flow-implementer` / `dev-flow-document-author` / `dev-flow-done-runner`) を Task で spawn してコンテキストを分離して実行する。**工程 3 の内部ステップ (3.a Test / 3.b 実装) もそれぞれ別 subagent で実行する** (同じコンテキストから順次 spawn する)。
+- **各工程の完了時** に対応する **auditor subagent** (`dev-flow-<phase>-auditor`) を**自動的に**呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程に戻る。auditor は description に "Use proactively after ..." を含み、自動委譲を促す設計。**ユーザーが手動で auditor を呼ぶ想定はない**。
+- 進行中のみ `docs/adr/draft/dev-flow-state.json` に **`dev_flow_completed_through`** (完了した工程) を記録し、**工程が完了するたびに値を書き換える**。**Done 工程の `git commit` 完了後はそのファイルを削除**する (記録なしはファイル無し)。
+- **進捗はこの JSON のみを正とし、git の状態から推定してはならない**。
+
+## 進捗 state の値
+
+`docs/adr/draft/dev-flow-state.json` の `dev_flow_completed_through` は以下のいずれか:
+
+| 値 | 完了した工程 | 次の行動 |
+| --- | --- | --- |
+| `adr` | 工程 1 (ADR) | Open Question 解消済みなら工程 2 に自動進行可 |
+| `spec` | 工程 2 (要件定義 + 基本設計 + Spec) | ユーザーの明示指示で工程 3 へ |
+| `implementation` | 工程 3 (Test → 実装) | ユーザーの明示指示で工程 4 へ |
+| `document` | 工程 4 (ドキュメント生成) | ユーザー承認で工程 5 へ |
+
+工程 5 (Done) の commit 完了後は state ファイル自体を削除する。
+
+## ブランチ前提
+
+- 1 機能 = 1 ブランチ (git worktree 等)。`docs/adr/draft/` 以下の ADR は現ブランチの作業対象とみなす。**複数の Draft ADR を許容**し、設計内容ごとにファイルを分ける。Draft ADR が無いときは draft を**クリーン**に保つ (`dev-flow-state.json` も置かない)。
+
+## 工程ステージとコミット
+
+- **進捗の正本**は `docs/adr/draft/dev-flow-state.json` の **`dev_flow_completed_through` のみ**とする。**git の差分・変更パス・コミット有無から工程を推定してはならない**。
+- 未コミット・コミット済みは PR 更新やローカル作業の都合であり、**工程ステージの代替指標ではない**。コミット済みが必ずしも Done 確定を意味しない。
+- **Done 完了前**に PR / コードレビューで内容を手直しする場合、`dev_flow_completed_through` を **`adr` に戻し**、**工程 1 から順に再確認**する。**各工程で変更不要なら上流を書き換えず次へ進んでよい** (変更が生じた工程から下流を更新する)。
+
+これらに違反する作業を要求された場合、まずユーザーに違反内容を提示し、確認を取ること。確認が取れない限り、違反行為を実行してはならない。
