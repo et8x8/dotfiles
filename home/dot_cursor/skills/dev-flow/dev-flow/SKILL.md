@@ -37,6 +37,7 @@ disable-model-invocation: true
 4. **工程 3 (Test → 実装) は内部で連続実行可**。ユーザーの追加指示無しに `dev-flow-test-author` → `dev-flow-implementer` まで一気に進めてよい。ただし **実装に合わせて Test を書き換えてはならない** (Spec から見直す)。
 5. **工程 5 (完了) は必ずユーザー承認**を得てから Active 移行と `git commit` を行う。承認前は Active 化や確定 commit をしない (PR 更新のための途中 commit は可)。
 6. **後工程から前工程の成果物を書き換えない**。矛盾が出たら前工程に戻る。
+7. **ADR・用件定義・基本設計・Spec の本文**は常時ルール `~/.cursor/rules/dev-flow/dev-flow.mdc` の「成果物記述における前後工程参照の禁止」に従う。後工程 (Test・実装・ソース) へ委ねること、および前工程が後工程を唯一の定義源として指すことは、ユーザーの明示指示がない限り禁止。
 
 ## 進捗の正本: `docs/adr/draft/dev-flow-state.json`
 

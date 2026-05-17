@@ -33,11 +33,12 @@ dev-flow 工程 1 (ADR Draft) 専用の監査 subagent。`docs/adr/draft/` の�
 以下を上から順に検査し、違反項目を**箇条書きで全部報告**する。
 
 - [ ] `docs/adr/draft/` の各 ADR に `## Open Question` の未解消項目がないか
-- [ ] 各 Draft ADR に **`## Acceptance criteria` (受け入れ条件)** があり、後続の Spec / REQ で充足を追跡できるか
+- [ ] 各 Draft ADR に **`## Acceptance criteria` (受け入れ条件)** があり、本文だけで検証可能か (`dev-flow.mdc` の「成果物記述における前後工程参照の禁止」に違反する委ねがないか)
 - [ ] Draft が既存 Active と競合する場合、`## Supersedes` で明記されているか
 - [ ] Active 化済みの ADR がコミット後に編集されていないか (`git log -p` で確認)
 - [ ] Archive 化済みの ADR が編集されていないか
 - [ ] `docs/adr/active/` の ADR ファイル名先頭にバージョンプレフィックスが付いているか
+- [ ] ADR 本文・受け入れ条件に、後工程 (Test・実装・ソース) への委ねや、後工程を唯一の定義源とする指示がないか (ユーザー明示の例外のみ許容)
 
 ## 報告フォーマット
 

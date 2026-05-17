@@ -42,6 +42,8 @@ dev-flow 工程 2 (要件定義 + 基本設計 + Spec) 専用の監査 subagent�
 - [ ] `docs/requirements/<feature>.md` と `docs/design/<feature>.md` と `docs/spec/<feature>.md` が**同じ feature 名**で揃っているか
 - [ ] 要件定義 / 基本設計が EARS 文を再記述せず Spec の REQ ID へ**リンクで参照**しているか
 - [ ] 要件定義 / 基本設計 / Spec の間に矛盾がないか
+- [ ] ADR・用件定義・基本設計・Spec のいずれにも、`dev-flow.mdc` の「成果物記述における前後工程参照の禁止」に反する記述 (後工程への委ね、後工程を唯一の定義源とする指示など) がないか (ユーザー明示の例外のみ許容)
+- [ ] Spec がテスト・実装・ソースを読む前提で要件が欠落していないか
 
 ## 報告フォーマット
 
