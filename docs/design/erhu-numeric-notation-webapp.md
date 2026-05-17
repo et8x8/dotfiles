@@ -1,6 +1,6 @@
 # Design: 二胡用数字譜 Web アプリ
 
-最終更新: 2026-05-19
+最終更新: 2026-05-17
 関連 ADR: [docs/adr/draft/erhu-numeric-notation-webapp.md](../adr/draft/erhu-numeric-notation-webapp.md)
 関連 Requirements: [docs/requirements/erhu-numeric-notation-webapp.md](../requirements/erhu-numeric-notation-webapp.md)
 関連 Spec: [docs/spec/erhu-numeric-notation-webapp.md](../spec/erhu-numeric-notation-webapp.md)
