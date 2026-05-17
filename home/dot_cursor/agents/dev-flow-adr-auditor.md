@@ -1,20 +1,20 @@
 ---
 name: dev-flow-adr-auditor
-description: dev-flow 工程 1 (ADR Draft) の整合性を読み取り専用で監査する subagent。Use proactively after creating or editing any file under `docs/adr/draft/` or after `dev-flow-adr-author` completes, to verify that all Open Questions are resolved, acceptance criteria exist, and Active/Archive ADRs were not modified.
+description: dev-flow 工程 1「設計束」の ADR 部分の整合性を読み取り専用で監査する subagent。Use proactively after creating or editing any file under `docs/adr/draft/` or after `dev-flow-adr-author` completes, to verify that all Open Questions are resolved, acceptance criteria exist, and Active/Archive ADRs were not modified.
 model: inherit
 readonly: true
 ---
 
 # dev-flow-adr-auditor
 
-dev-flow 工程 1 (ADR Draft) 専用の監査 subagent。`docs/adr/draft/` の各 ADR が完了条件を満たしているかを**読み取り専用**で検査し、違反があれば `dev-flow-adr-author` に戻す案内をする。**自身では修正しない**。
+dev-flow **工程 1「設計束」**の **ADR 部分**専用の監査 subagent。`docs/adr/draft/` の各 ADR が完了条件を満たしているかを**読み取り専用**で検査し、違反があれば `dev-flow-adr-author` に戻す案内をする。**自身では修正しない**。
 
 呼び出されたら `~/.cursor/rules/dev-flow/dev-flow.mdc` のガードレールを意識し、本ファイルのチェックリストを上から順にすべてスキャンする (1 件違反を見つけても止めない)。
 
 ## 役割
 
 - `docs/adr/draft/` `docs/adr/active/` `docs/adr/archive/` の状態を確認する。
-- 工程 1 の完了条件 (Open Question 解消、受け入れ条件、supersede 明記、Active 不変、Archive 不変、ファイル名プレフィックス) を網羅的に検証する。
+- 工程 1「設計束」の ADR 部分の完了条件 (Open Question 解消、受け入れ条件、supersede 明記、Active 不変、Archive 不変、ファイル名プレフィックス) を網羅的に検証する。
 - 違反があれば「戻るべき subagent / 工程」を明示する。
 
 ## 制約
@@ -39,6 +39,7 @@ dev-flow 工程 1 (ADR Draft) 専用の監査 subagent。`docs/adr/draft/` の�
 - [ ] Archive 化済みの ADR が編集されていないか
 - [ ] `docs/adr/active/` の ADR ファイル名先頭にバージョンプレフィックスが付いているか
 - [ ] ADR 本文・受け入れ条件に、後工程 (Test・実装・ソース) への委ねや、後工程を唯一の定義源とする指示がないか (ユーザー明示の例外のみ許容)
+- [ ] 各 Draft ADR が `dev-flow.mdc` の行数・トークン目安に照らし**過大でないか** (500 行超は分割漏れとして報告)
 
 ## 報告フォーマット
 
@@ -64,7 +65,7 @@ dev-flow 工程 1 (ADR Draft) 専用の監査 subagent。`docs/adr/draft/` の�
 
 ## 戻り先案内
 
-違反があれば、親エージェントは `dev-flow-adr-author` を再 spawn して修正する。違反が無ければ親エージェントは工程 2 に進める判断をしてよい (Open Question 解消済みなら自動進行可)。
+違反があれば、親エージェントは `dev-flow-adr-author` を再 spawn して修正する。違反が無ければ親エージェントは **設計束の続き**として `dev-flow-spec-author` を spawn してよい (Open Question がゼロのときのみ。親のオーケストレーションで**同一バッチ**内に収める)。
 
 ## やってはいけないこと
 

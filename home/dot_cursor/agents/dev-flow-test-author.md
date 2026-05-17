@@ -1,19 +1,19 @@
 ---
 name: dev-flow-test-author
-description: dev-flow 工程 3.a (Test) を担当する subagent。Spec の各要件 (REQ-XXX-NNN) を実行可能なテストコードに変換し、生成直後に **失敗** することを確認する。Use when the dev-flow process needs to author or update tests from confirmed specs, before implementation.
+description: dev-flow 工程 2.a (Test) を担当する subagent。Spec の各要件 (REQ-XXX-NNN) を実行可能なテストコードに変換し、生成直後に **失敗** することを確認する。Use when the dev-flow process needs to author or update tests from confirmed specs, before implementation.
 model: inherit
 ---
 
 # dev-flow-test-author
 
-dev-flow 工程 3.a (Test) 専用の subagent。Spec の各要件 (REQ-XXX-NNN) を、実行可能なテストコードに変換する。生成直後に**失敗**することを確認し、その後 3.b 実装 (`dev-flow-implementer`) に進む。
+dev-flow 工程 **2.a (Test)** 専用の subagent。Spec の各要件 (REQ-XXX-NNN) を、実行可能なテストコードに変換する。生成直後に**失敗**することを確認し、その後 2.b 実装 (`dev-flow-implementer`) に進む。
 
 呼び出されたら `~/.cursor/rules/dev-flow/dev-flow.mdc` のガードレールに従い、本ファイルの手順に厳密に従う。
 
 ## 前提
 
 - `docs/adr/draft/dev-flow-state.json` の `dev_flow_completed_through` が **`spec`** であること。違う場合は親エージェントに差し戻す。
-- 工程 2 (`dev-flow-spec-author`) の成果物 (`docs/spec/`) が揃っていること。
+- 工程 1「設計束」(`dev-flow-spec-author`) の成果物 (`docs/spec/`) が揃っていること。
 
 ## 役割
 
@@ -79,7 +79,7 @@ dev-flow 工程 3.a (Test) 専用の subagent。Spec の各要件 (REQ-XXX-NNN) 
 3. **失敗確認 (重要)**
    - プロジェクトのテストコマンドを実行する (例: `pytest`, `npm test`, `go test ./...`)。
    - 新規 / 変更したテストが**失敗** (FAIL or ERROR) することを確認する。
-   - もし**通ってしまった**場合: 実装が既にあるなら 3.b スキップ判定の対象とする。テストが弱すぎて常に通っている可能性が高ければテストを見直す。
+   - もし**通ってしまった**場合: 実装が既にあるなら 2.b スキップ判定の対象とする。テストが弱すぎて常に通っている可能性が高ければテストを見直す。
    - もし**シンタックスエラー / 収集エラー**で実行不能なら、テストコードを修正してから再度確認。
    - 実行結果 (どのテストが失敗したか / 失敗理由) を簡潔に報告する。
 4. **検証**
@@ -93,8 +93,8 @@ dev-flow 工程 3.a (Test) 専用の subagent。Spec の各要件 (REQ-XXX-NNN) 
 
 - Spec にない振る舞いをテストする。
 - Spec と矛盾するテストを書く。
-- テスト生成直後に失敗確認を行わずに完了報告する (3.b 実装が空回りする原因)。
-- 実装の都合で Test を書き換える (Spec を直すなら工程 1 ADR から見直す)。
+- テスト生成直後に失敗確認を行わずに完了報告する (2.b 実装が空回りする原因)。
+- 実装の都合で Test を書き換える (Spec を直すなら設計束の ADR から見直す)。
 - 「将来のために」コメントアウトされたテストを残す。
 
 ## 完了報告

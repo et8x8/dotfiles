@@ -1,23 +1,23 @@
 ---
 name: dev-flow-done-runner
-description: dev-flow 工程 5 (完了 / Done) を担当する subagent。全工程の整合性を最終確認し、ユーザー承認を取得した上で ADR Draft を Active に昇格させ、`git commit` で確定する。Use when the dev-flow process is ready to finalize a feature: promote draft ADRs to active and commit the result.
+description: dev-flow 工程 4 (完了 / Done) を担当する subagent。全工程の整合性を最終確認し、ユーザー承認を取得した上で ADR Draft を Active に昇格させ、`git commit` で確定する。Use when the dev-flow process is ready to finalize a feature: promote draft ADRs to active and commit the result.
 model: inherit
 ---
 
 # dev-flow-done-runner
 
-dev-flow 工程 5 (完了 / Done) 専用の subagent。すべての成果物が揃った状態で、ADR Draft を Active に昇格させ、`git commit` で確定する。これより前のすべての工程の整合性を最終確認するのもこの工程の役割。
+dev-flow 工程 **4 (完了 / Done)** 専用の subagent。すべての成果物が揃った状態で、ADR Draft を Active に昇格させ、`git commit` で確定する。これより前のすべての工程の整合性を最終確認するのもこの工程の役割。
 
 呼び出されたら `~/.cursor/rules/dev-flow/dev-flow.mdc` のガードレールに従い、本ファイルの手順に厳密に従う。
 
 ## 前提
 
-- `docs/adr/draft/dev-flow-state.json` の `dev_flow_completed_through` が **`document`** であること (工程 4 まで完了)。
+- `docs/adr/draft/dev-flow-state.json` の `dev_flow_completed_through` が **`document`** であること (工程 3 まで完了)。
 - PR / コードレビューで**未解決の指摘が残っていない**。
 - `docs/adr/draft/` に Draft ADR が存在する。
-- 工程 1 / 2 / 3 / 4 がすべて完了している。
+- 工程 1 (設計束) / 2 (Test → 実装) / 3 (ドキュメント生成) がすべて完了している。
 - すべてのテストが通っている。
-- 工程 1〜4 末尾の各 auditor (`dev-flow-adr-auditor` / `dev-flow-spec-auditor` / `dev-flow-test-auditor` / `dev-flow-impl-auditor` / `dev-flow-document-auditor`) で違反が無いことを確認済み。
+- 工程 1〜3 末尾の各 auditor (`dev-flow-adr-auditor` / `dev-flow-spec-auditor` / `dev-flow-test-auditor` / `dev-flow-impl-auditor` / `dev-flow-document-auditor`) で違反が無いことを確認済み。
 
 ## 役割
 

@@ -2,11 +2,11 @@
 
 AI エージェント前提の開発プロセスを支援する Cursor 用のリソース集。
 
-「**(1) ADR → (2) 要件定義 + 基本設計 + Spec → (3) Test → 実装 → (4) ドキュメント生成 → (5) 完了 (Done)**」の **5 工程**を、単一の `dev-flow` skill から **subagent への委譲**で順に進める。各工程の作業は工程専用の **作業 subagent** が担い、完了直後に対応する **監査 subagent** が自動で整合性をチェックする。
+「**(1) 設計束 (ADR・用件定義・基本設計・Spec) → (2) Test → 実装 → (3) ドキュメント生成 → (4) 完了 (Done)**」の **4 工程**を、単一の `dev-flow` skill から **subagent への委譲**で順に進める。工程 1 の設計束では、Open Question が解消したら **ADR 監査の直後に**用件・設計・Spec を**同一バッチ**で作成 / 編集する (未解消なら **ADR のみ**)。各工程の作業は工程専用の **作業 subagent** が担い、完了直後に対応する **監査 subagent** が自動で整合性をチェックする。
 
-> 前提: 1 機能 = 1 ブランチ (git worktree など) で開発する。`docs/adr/draft/` にある Draft ADR は**設計トピックごとに複数ファイル**に分けてよい。工程 2 以降は Draft 配下の**すべて**を入力とする (特定 1 件だけを引数で指定する前提にしない)。
+> 前提: 1 機能 = 1 ブランチ (git worktree など) で開発する。`docs/adr/draft/` にある Draft ADR は**設計トピックごとに複数ファイル**に分けてよい。用件・設計・Spec を書くときは Draft 配下の**すべて**を入力とする (特定 1 件だけを引数で指定する前提にしない)。設計ドキュメントの**行数・分割**は `dev-flow.mdc` の「設計ドキュメントの分割 (行数・トークン)」に従う。
 >
-> **進捗の正本**は `docs/adr/draft/dev-flow-state.json` の **`dev_flow_completed_through`（どの工程まで完了したか）** のみとする。git の差分・変更パス・コミット有無から工程を推定してはならない。**Done 完了前**の PR / コードレビュー対応では `dev-flow` skill の運用ルールに従い、**必ず `adr` に戻して工程 1 から再確認**しつつ、**各工程で不要なら上流を書き換えず次工程の確認へ進んでよい**。
+> **進捗の正本**は `docs/adr/draft/dev-flow-state.json` の **`dev_flow_completed_through`（どの工程まで完了したか）** のみとする。git の差分・変更パス・コミット有無から工程を推定してはならない。**Done 完了前**の PR / コードレビュー対応では `dev-flow` skill の運用ルールに従い、**必ず `adr` に戻して工程 1 (設計束) から再確認**しつつ、**各工程で不要なら上流を書き換えず次工程の確認へ進んでよい**。
 
 ## ディレクトリ構成
 
@@ -38,14 +38,14 @@ AI エージェント前提の開発プロセスを支援する Cursor 用のリ
 
 | Skill | 用途 | エントリ | `disable-model-invocation` |
 | --- | --- | --- | --- |
-| `dev-flow` | 5 工程 (ADR → 要件定義+基本設計+Spec → Test→実装 → ドキュメント生成 → 完了) をすべて扱う統合 skill。状態判定とフロー制御のみで、各工程の作業 / 監査は subagent に委譲する | `dev-flow/SKILL.md` | **`true`** (プロンプトから明示的に呼ぶエントリポイント) |
+| `dev-flow` | 4 工程 (設計束 → Test→実装 → ドキュメント生成 → 完了) をすべて扱う統合 skill。状態判定とフロー制御のみで、各工程の作業 / 監査は subagent に委譲する | `dev-flow/SKILL.md` | **`true`** (プロンプトから明示的に呼ぶエントリポイント) |
 
 進行ルールの要点 (詳細は `dev-flow/SKILL.md`):
 
 - 次工程に進む明示指示が無ければ進まない。
-- **唯一の例外**: 工程 1 (ADR) で Open Question がすべて解消され、`dev-flow-adr-auditor` の監査が違反 0 なら、ユーザー指示なしで工程 2 に自動進行可。
-- 工程 3 (Test → 実装) は内部で連続実行可。ただし**実装に合わせて Test を書き換えない**。
-- 工程 5 (Done / Active 移行 + commit) は**ユーザー承認必須**。
+- **例外 (工程 1 内部)**: Open Question がすべて解消され `dev-flow-adr-auditor` が違反 0 なら、**ユーザー指示なしで** `dev-flow-spec-author` まで続行し設計束を完結させる。Open Question 残なら **ADR のみ**。
+- 工程 2 (Test → 実装) は内部で連続実行可。ただし**実装に合わせて Test を書き換えない**。
+- 工程 4 (Done / Active 移行 + commit) は**ユーザー承認必須**。
 
 利用リポジトリの `docs/adr/draft/` には **`dev-flow-state.json`** (JSON) のみで **`dev_flow_completed_through`** (完了した工程) を記録する。**工程が完了するたび**に値を書き換え、**Done の `git commit` 完了後は state ファイルを削除**する。**進捗の判断に git の状態を併用しない**。
 
@@ -53,12 +53,12 @@ AI エージェント前提の開発プロセスを支援する Cursor 用のリ
 
 | 値 | 完了した工程 |
 | --- | --- |
-| `adr` | 工程 1 (ADR) |
-| `spec` | 工程 2 (要件定義 + 基本設計 + Spec) |
-| `implementation` | 工程 3 (Test → 実装) |
-| `document` | 工程 4 (ドキュメント生成) |
+| `adr` | 工程 1 設計束の途中 (ADR 監査通過地点。Open Question 残なら三種は未整備) |
+| `spec` | 工程 1 設計束完了 (ADR + 用件 + 設計 + Spec 監査通過) |
+| `implementation` | 工程 2 (Test → 実装) |
+| `document` | 工程 3 (ドキュメント生成) |
 
-工程 5 (Done) の commit 完了で state ファイル自体を削除する。
+工程 4 (Done) の commit 完了で state ファイル自体を削除する。
 
 ### Subagents (作業 6 + 監査 5)
 
@@ -66,12 +66,12 @@ AI エージェント前提の開発プロセスを支援する Cursor 用のリ
 
 | 工程 | 作業 subagent | 監査 subagent (auto-invoke) |
 | --- | --- | --- |
-| 1. ADR (Draft) | `dev-flow-adr-author` | `dev-flow-adr-auditor` |
-| 2. 要件定義 + 基本設計 + Spec | `dev-flow-spec-author` | `dev-flow-spec-auditor` |
-| 3.a Test | `dev-flow-test-author` | `dev-flow-test-auditor` |
-| 3.b 実装 | `dev-flow-implementer` | `dev-flow-impl-auditor` |
-| 4. ドキュメント生成 | `dev-flow-document-author` | `dev-flow-document-auditor` |
-| 5. 完了 (Done) | `dev-flow-done-runner` | (1〜4 の auditor を再実行) |
+| 1a. 設計束 (ADR) | `dev-flow-adr-author` | `dev-flow-adr-auditor` |
+| 1b. 設計束 (用件・設計・Spec) | `dev-flow-spec-author` | `dev-flow-spec-auditor` |
+| 2.a Test | `dev-flow-test-author` | `dev-flow-test-auditor` |
+| 2.b 実装 | `dev-flow-implementer` | `dev-flow-impl-auditor` |
+| 3. ドキュメント生成 | `dev-flow-document-author` | `dev-flow-document-auditor` |
+| 4. 完了 (Done) | `dev-flow-done-runner` | (設計束〜工程 3 の auditor を再実行) |
 
 各 subagent ファイルには YAML frontmatter (`name` / `description` / `model: inherit` / 監査は `readonly: true` (Test/Impl auditor を除く)) と本文 (役割 / 制約 / 入出力 / 手順 / テンプレート / やってはいけないこと / 完了報告 / 戻り先案内) を含む。`dev-flow` skill から Task ツールで spawn される。
 
@@ -105,7 +105,7 @@ AI エージェント前提の開発プロセスを支援する Cursor 用のリ
 
 ## 設計上の留意点
 
-- **`SKILL.md` のサイズ**: Cursor の skill 推奨は 500 行以下。エントリポイント `dev-flow/SKILL.md` は ~140 行に保ち、詳細は subagent ファイル (各 ~100-250 行) に分散している。
+- **`SKILL.md` のサイズ**: Cursor の skill 推奨は 500 行以下。エントリポイント `dev-flow/SKILL.md` は ~170 行に保ち、詳細は subagent ファイル (各 ~100-250 行) に分散している。
 - **Subagent ファイルのサイズ**: skill と同様に各 ~250 行以下に保つ。詳細手順・制約・テンプレート・戻り先案内まで自己完結させ、別ファイルへの参照は最小限。
 - **`disable-model-invocation` の使い分け**:
   - `dev-flow` skill → `true` (ユーザーが「dev-flow を使って」とプロンプトで明示的に呼ぶエントリポイント)

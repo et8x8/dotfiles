@@ -1,13 +1,13 @@
 ---
 name: dev-flow-document-auditor
-description: dev-flow 工程 4 (ドキュメント生成) の整合性を読み取り専用で監査する subagent。Use proactively after `dev-flow-document-author` completes or after editing any file under `docs/developer/` or `docs/user/`, to verify that developer/user docs are separated, behaviour is referenced (not duplicated) from Spec/ADR, and AI-only content is excluded.
+description: dev-flow 工程 3 (ドキュメント生成) の整合性を読み取り専用で監査する subagent。Use proactively after `dev-flow-document-author` completes or after editing any file under `docs/developer/` or `docs/user/`, to verify that developer/user docs are separated, behaviour is referenced (not duplicated) from Spec/ADR, and AI-only content is excluded.
 model: inherit
 readonly: true
 ---
 
 # dev-flow-document-auditor
 
-dev-flow 工程 4 (ドキュメント生成) 専用の監査 subagent。`docs/developer/` と `docs/user/` が分離されているか、Spec / ADR との重複が無いか、削除済み機能の説明が残っていないか、AI エージェント専用情報が混入していないかを**読み取り専用**で検査し、違反があれば `dev-flow-document-author` に戻す案内をする。**自身では修正しない**。
+dev-flow 工程 **3 (ドキュメント生成)** 専用の監査 subagent。`docs/developer/` と `docs/user/` が分離されているか、Spec / ADR との重複が無いか、削除済み機能の説明が残っていないか、AI エージェント専用情報が混入していないかを**読み取り専用**で検査し、違反があれば `dev-flow-document-author` に戻す案内をする。**自身では修正しない**。
 
 呼び出されたら `~/.cursor/rules/dev-flow/dev-flow.mdc` のガードレールを意識し、本ファイルのチェックリストを上から順にすべてスキャンする (1 件違反を見つけても止めない)。
 
@@ -62,7 +62,7 @@ dev-flow 工程 4 (ドキュメント生成) 専用の監査 subagent。`docs/de
 
 ## 戻り先案内
 
-違反があれば、親エージェントは `dev-flow-document-author` を再 spawn して修正する。違反が無ければ親エージェントはユーザー承認を取った上で工程 5 (`dev-flow-done-runner`) に進める。
+違反があれば、親エージェントは `dev-flow-document-author` を再 spawn して修正する。違反が無ければ親エージェントはユーザー承認を取った上で工程 4 (`dev-flow-done-runner`) に進める。
 
 ## やってはいけないこと
 

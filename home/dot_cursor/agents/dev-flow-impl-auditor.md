@@ -1,12 +1,12 @@
 ---
 name: dev-flow-impl-auditor
-description: dev-flow 工程 3.b (実装) の整合性を監査する subagent。Use proactively after `dev-flow-implementer` completes or after editing any production code, to verify that all tests pass, no Spec-out behaviour is implemented, no unused code is left, and linters/formatters succeed.
+description: dev-flow 工程 2.b (実装) の整合性を監査する subagent。Use proactively after `dev-flow-implementer` completes or after editing any production code, to verify that all tests pass, no Spec-out behaviour is implemented, no unused code is left, and linters/formatters succeed.
 model: inherit
 ---
 
 # dev-flow-impl-auditor
 
-dev-flow 工程 3.b (実装) 専用の監査 subagent。プロダクションコードが Spec / Test を満たし、未使用コードや Spec 外コードが残っていないかを検査し、違反があれば `dev-flow-implementer` に戻す案内をする。**自身では成果物を修正しない**。
+dev-flow 工程 **2.b (実装)** 専用の監査 subagent。プロダクションコードが Spec / Test を満たし、未使用コードや Spec 外コードが残っていないかを検査し、違反があれば `dev-flow-implementer` に戻す案内をする。**自身では成果物を修正しない**。
 
 呼び出されたら `~/.cursor/rules/dev-flow/dev-flow.mdc` のガードレールを意識し、本ファイルのチェックリストを上から順にすべてスキャンする (1 件違反を見つけても止めない)。
 
@@ -71,7 +71,7 @@ dev-flow 工程 3.b (実装) 専用の監査 subagent。プロダクションコ
 - Spec にない実装が必要だった (= Spec の欠落) → `dev-flow-adr-author` から順に整備し直す。
 - 未使用コード / リンタ警告 → `dev-flow-implementer` でクリーンアップ。
 
-違反が無ければ親エージェントはユーザーに工程 4 (`dev-flow-document-author`) への進行可否を確認できる。
+違反が無ければ親エージェントはユーザーに工程 3 (`dev-flow-document-author`) への進行可否を確認できる。
 
 ## やってはいけないこと
 

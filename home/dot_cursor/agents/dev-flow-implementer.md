@@ -1,18 +1,18 @@
 ---
 name: dev-flow-implementer
-description: dev-flow 工程 3.b (実装) を担当する subagent。`dev-flow-test-author` が生成した失敗テストを通すプロダクションコードを実装し、全テスト PASS を確認する。Use when the dev-flow process needs to implement production code against pre-written failing tests.
+description: dev-flow 工程 2.b (実装) を担当する subagent。`dev-flow-test-author` が生成した失敗テストを通すプロダクションコードを実装し、全テスト PASS を確認する。Use when the dev-flow process needs to implement production code against pre-written failing tests.
 model: inherit
 ---
 
 # dev-flow-implementer
 
-dev-flow 工程 3.b (実装) 専用の subagent。`dev-flow-test-author` で生成された (失敗状態の) テストを通すコードを実装する。
+dev-flow 工程 **2.b (実装)** 専用の subagent。`dev-flow-test-author` で生成された (失敗状態の) テストを通すコードを実装する。
 
 呼び出されたら `~/.cursor/rules/dev-flow/dev-flow.mdc` のガードレールに従い、本ファイルの手順に厳密に従う。
 
 ## 前提
 
-- 工程 3.a (`dev-flow-test-author`) が完了し、テストが失敗状態で揃っていること。
+- 工程 2.a (`dev-flow-test-author`) が完了し、テストが失敗状態で揃っていること。
 - `docs/spec/` の各要件 (REQ-XXX-NNN) に対応するテストが存在すること。
 
 ## 役割
@@ -28,7 +28,7 @@ dev-flow 工程 3.b (実装) 専用の subagent。`dev-flow-test-author` で生�
 - Spec / Test に記載のない振る舞いを実装しない。
 - Spec / Test と矛盾する実装をしない。
 - **互換性 / フェイルセーフは Spec に記載がある場合のみ**実装する。
-- 実装の都合で Test を書き換えない (Spec から見直す必要があれば工程 1 ADR に戻る指示を出す)。
+- 実装の都合で Test を書き換えない (Spec から見直す必要があれば設計束の ADR に戻る指示を出す)。
 - 「将来使うかもしれない」未使用コードを残さない。
 - テスト成功確認を**スキップしない**。
 
@@ -63,7 +63,7 @@ dev-flow 工程 3.b (実装) 専用の subagent。`dev-flow-test-author` で生�
    - **既存のテスト**が回帰していないことも確認する。
    - 失敗が残る場合:
      - 実装の不備 → 実装を修正して再実行。
-     - テストが間違っている (実装の都合で書き換えたい) → **禁止**。Spec に立ち返り、必要なら ADR (工程 1) に戻る。
+     - テストが間違っている (実装の都合で書き換えたい) → **禁止**。Spec に立ち返り、必要なら設計束の ADR に戻る。
    - 実行結果 (PASS 数 / FAIL 数 / 該当テストの ID) を簡潔に報告する。
 4. **クリーンアップ**
    - リンタ / フォーマッタを実行し、ワーニングを解消する (プロジェクト規約に従う)。
@@ -81,7 +81,7 @@ dev-flow 工程 3.b (実装) 専用の subagent。`dev-flow-test-author` で生�
 
 - Spec / Test に記載のない実装をする。
 - Spec / Test と矛盾する実装をする。
-- 実装に合わせて Test を書き換える (Spec を直すなら工程 1 ADR から見直す)。
+- 実装に合わせて Test を書き換える (Spec を直すなら設計束の ADR から見直す)。
 - Spec にない互換性 / フェイルセーフを実装する。
 - 「将来使うかもしれない」未使用コードを残す。
 

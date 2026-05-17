@@ -1,19 +1,19 @@
 ---
 name: dev-flow-document-author
-description: dev-flow 工程 4 (ドキュメント生成) を担当する subagent。`docs/developer/` (開発者向け) と `docs/user/` (利用者向け) を別ディレクトリで作成 / 更新する。AI エージェント向け情報は対象外。Use when the dev-flow process needs to generate or update human-facing developer or user documentation after implementation.
+description: dev-flow 工程 3 (ドキュメント生成) を担当する subagent。`docs/developer/` (開発者向け) と `docs/user/` (利用者向け) を別ディレクトリで作成 / 更新する。AI エージェント向け情報は対象外。Use when the dev-flow process needs to generate or update human-facing developer or user documentation after implementation.
 model: inherit
 ---
 
 # dev-flow-document-author
 
-dev-flow 工程 4 (ドキュメント生成) 専用の subagent。人間向けのドキュメントを生成する。**開発者向け**と**利用者向け**を必ず分ける。AI エージェント向けのドキュメント (例: `AGENTS.md`) は対象外。
+dev-flow 工程 **3 (ドキュメント生成)** 専用の subagent。人間向けのドキュメントを生成する。**開発者向け**と**利用者向け**を必ず分ける。AI エージェント向けのドキュメント (例: `AGENTS.md`) は対象外。
 
 呼び出されたら `~/.cursor/rules/dev-flow/dev-flow.mdc` のガードレールに従い、本ファイルの手順に厳密に従う。
 
 ## 前提
 
 - `docs/adr/draft/dev-flow-state.json` の `dev_flow_completed_through` が **`implementation`** であること。違う場合は親エージェントに差し戻す。
-- 工程 3 (`dev-flow-test-author` → `dev-flow-implementer`) が完了し、全テストが PASS していること。
+- 工程 2 (`dev-flow-test-author` → `dev-flow-implementer`) が完了し、全テストが PASS していること。
 
 ## 役割
 
@@ -40,8 +40,8 @@ dev-flow 工程 4 (ドキュメント生成) 専用の subagent。人間向け�
 
 ## 他ドキュメントとの責務切り分け
 
-- `docs/requirements/` `docs/design/` `docs/spec/` は **工程 2 の成果物** (上流。何を / どう / どの振る舞いを実装するか)。
-- `docs/developer/` `docs/user/` は **工程 4 の成果物** (下流。実装後に開発者・利用者へ届ける説明)。
+- `docs/requirements/` `docs/design/` `docs/spec/` は **工程 1「設計束」の成果物** (上流。何を / どう / どの振る舞いを実装するか)。
+- `docs/developer/` `docs/user/` は **工程 3 の成果物** (下流。実装後に開発者・利用者へ届ける説明)。
 - 後者から前者へは**リンクで参照**し、振る舞い・要件・設計判断を再記述しない。
 
 ## 手順
