@@ -1,6 +1,6 @@
 # Design: 二胡用数字譜 Web アプリ
 
-最終更新: 2026-05-18
+最終更新: 2026-05-19
 関連 ADR: [docs/adr/draft/erhu-numeric-notation-webapp.md](../adr/draft/erhu-numeric-notation-webapp.md)
 関連 Requirements: [docs/requirements/erhu-numeric-notation-webapp.md](../requirements/erhu-numeric-notation-webapp.md)
 関連 Spec: [docs/spec/erhu-numeric-notation-webapp.md](../spec/erhu-numeric-notation-webapp.md)
@@ -31,7 +31,7 @@ flowchart LR
 | コンポーネント | 責務 | 依存 |
 | --- | --- | --- |
 | SPA シェル | 認証 UI、ルーティング、API クライアント | Worker `/api/*` |
-| 楽譜エディタ | 数字譜モデル編集、**小節線**・**小節繰り返し**・八分／十六分／三連符／装飾音、拍子表示／警告、フリーレイヤー | ローカル状態、保存時 Worker |
+| 楽譜エディタ | 数字譜モデル編集、**小節線**・**小節繰り返し**・八分／十六分／三連符、**Spec「装飾音の一覧（MVP）」「音楽記号の一覧（MVP）」各項目**、拍子表示／警告、フリーレイヤー | ローカル状態、保存時 Worker |
 | 再生エンジン | Web Audio スケジューリング | 楽譜モデル |
 | 印刷ビュー | `@media print` 最適化レイアウト | 楽譜モデル |
 | Worker: Auth | 資格情報検証、セッション発行／失効、Argon2id | D1 |
@@ -76,14 +76,14 @@ object key pattern: u/{userId}/media/{uuid}-{filename}
 ### 楽譜ドキュメント JSON（概念）
 
 - `schemaVersion`: 整数。
-- `parts[]`: パートごとのイベント列（数字・**八分／十六分を含む音価**・**三連符グループ**・休符・奏法タグ・**小節境界と小節線**・**小節繰り返し記号**・装飾音等）。MVP 記号集合は実装リポジトリで列挙し、未知コードは保存可・表示はグレーアウト可（ADR）。
+- `parts[]`: パートごとのイベント列（数字・**八分／十六分を含む音価**・**三連符グループ**・休符・奏法タグ・**小節境界と小節線**・**小節繰り返し記号**・**装飾音（Spec「装飾音の一覧（MVP）」の各種別コード）**・**音楽記号（Spec「音楽記号の一覧（MVP）」の各種別コード）**等）。未知コードは保存可・表示はグレーアウト可（ADR）。
 - `globalTranspose` / `parts[].transpose`: ADR の転調フィールド。
 - `meterChanges[]`（任意）: 小節インデックスと明示拍子の対。未指定時は第1小節の拍子のみが有効起点（ADR）。
 - `freeLayer[]`: テキストボックス、画像参照（R2 object 参照＋アフィン変換）、z-index。
 
 **有効拍子の伝播**: 第1小節の明示拍子を初期値とし、`meterChanges` にある小節から新拍子を適用する。
 
-**拍数**: 小節内の音符・休符の長さを、実装で定める単一アルゴリズム（付点・連桁・タイ、**八分・十六分**、**三連符**、**装飾音の拍への寄与**等の扱いをここで固定）により拍単位に合算する。SPA と Worker は同一実装（共有モジュール）を参照する。
+**拍数**: 小節内の音符・休符の長さを、実装で定める単一アルゴリズム（付点・連桁・タイ、**八分・十六分**、**三連符**、**装飾音（Spec の一覧の種別ごとの拍寄与）**等の扱いをここで固定）により拍単位に合算する。SPA と Worker は同一実装（共有モジュール）を参照する。
 
 ## 反復展開規則（再生）
 

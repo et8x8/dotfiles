@@ -1,6 +1,6 @@
 # Requirements: 二胡用数字譜 Web アプリ
 
-最終更新: 2026-05-18
+最終更新: 2026-05-19
 関連 ADR: [docs/adr/draft/erhu-numeric-notation-webapp.md](../adr/draft/erhu-numeric-notation-webapp.md)
 関連 Design: [docs/design/erhu-numeric-notation-webapp.md](../design/erhu-numeric-notation-webapp.md)
 関連 Spec: [docs/spec/erhu-numeric-notation-webapp.md](../spec/erhu-numeric-notation-webapp.md)
@@ -12,7 +12,7 @@
 ## スコープ
 
 - 認証済みユーザーの楽譜 CRUD と JSON 楽譜モデルの永続化
-- 数字譜エディタ（MVP: **八分・十六分・三連符・装飾音・小節線・小節繰り返し**を含む。詳細は ADR）
+- 数字譜エディタ（MVP: **八分・十六分・三連符・小節線・小節繰り返し**に加え、**装飾音・強弱・コーダ等は ADR / Spec の個別一覧に列挙した種別**をすべて含む。詳細は ADR）
 - 簡易再生、印刷用ビューとブラウザ PDF 保存
 - 拍子の明示・省略・警告（自動解決なし）
 - Cloudflare Workers 統合デプロイ（静的 SPA + Worker API）
@@ -28,7 +28,7 @@
 ## 機能要件
 
 - F-1. 自分の楽譜のみ一覧・新規・削除（論理削除可）→ [REQ-ERHU-005](../spec/erhu-numeric-notation-webapp.md#req-erhu-005), [REQ-ERHU-006](../spec/erhu-numeric-notation-webapp.md#req-erhu-006), [REQ-ERHU-007](../spec/erhu-numeric-notation-webapp.md#req-erhu-007)
-- F-2. 二胡数字譜の入力（小節・小節線・拍子・四分基準の音価・八分・十六分・三連符・休符・八度・装飾音・小節繰り返しの MVP）→ [REQ-ERHU-008](../spec/erhu-numeric-notation-webapp.md#req-erhu-008), [REQ-ERHU-012](../spec/erhu-numeric-notation-webapp.md#req-erhu-012), [REQ-ERHU-013](../spec/erhu-numeric-notation-webapp.md#req-erhu-013), [REQ-ERHU-018](../spec/erhu-numeric-notation-webapp.md#req-erhu-018)
+- F-2. 二胡数字譜の入力（小節・小節線・拍子・四分基準の音価・八分・十六分・三連符・休符・八度・小節繰り返し、**装飾音・音楽記号は Spec の個別一覧どおり**）→ [REQ-ERHU-008](../spec/erhu-numeric-notation-webapp.md#req-erhu-008), [REQ-ERHU-020](../spec/erhu-numeric-notation-webapp.md#req-erhu-020), [REQ-ERHU-021](../spec/erhu-numeric-notation-webapp.md#req-erhu-021), [REQ-ERHU-012](../spec/erhu-numeric-notation-webapp.md#req-erhu-012), [REQ-ERHU-013](../spec/erhu-numeric-notation-webapp.md#req-erhu-013), [REQ-ERHU-018](../spec/erhu-numeric-notation-webapp.md#req-erhu-018)
 - F-3. 転調指定が編集・再生・印刷で一貫 → [REQ-ERHU-009](../spec/erhu-numeric-notation-webapp.md#req-erhu-009)
 - F-4. 複数パートの保持と表示オン／オフ・基本レイアウト → [REQ-ERHU-010](../spec/erhu-numeric-notation-webapp.md#req-erhu-010)
 - F-5. 任意位置テキスト・画像の配置と永続化 → [REQ-ERHU-011](../spec/erhu-numeric-notation-webapp.md#req-erhu-011)
