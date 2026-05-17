@@ -7,126 +7,126 @@
 
 ## 概要
 
-本仕様は、二胡向け数字譜 Web アプリが満たすべき検証可能な振る舞いを EARS で宣言する。根拠は単一 Draft ADR に限定する。
+本仕様は、二胡向け数字譜 Web アプリが満たすべき検証可能な振る舞いを EARS 相当の構造（普遍・イベント駆動・状態駆動・異常系）で日本語により宣言する。根拠は単一 Draft ADR に限定する。
 
 ## 要件
 
 ### REQ-ERHU-001
 
-The erhu numeric notation web application shall be delivered as a React TypeScript Vite single-page application and a Hono application on Cloudflare Workers within one wrangler project that serves static assets and API routes.
+二胡用数字譜 Web アプリケーションは、React・TypeScript・Vite による単一ページアプリケーションとして、かつ同一 `wrangler` プロジェクト内で静的資産および API ルートを提供する Cloudflare Workers 上の Hono アプリケーションとして提供されなければならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Decision: アーキテクチャ概要)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Decision: アーキテクチャ概要)
 
 ### REQ-ERHU-002
 
-The erhu numeric notation web application shall store password hashes using Argon2id and shall bind authenticated requests to a server-side session referenced by an httpOnly cookie.
+二胡用数字譜 Web アプリケーションは、パスワードハッシュを Argon2id で保存しなければならない。また認証済みリクエストは、httpOnly Cookie が参照するサーバ側セッションに紐づけられなければならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Decision: 認証)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Decision: 認証)
 
 ### REQ-ERHU-003
 
-If a client calls any protected API route without a valid session, then the Worker shall respond with HTTP status 401 and shall not return private user data.
+有効なセッションを伴わずに保護された API ルートが呼び出された場合、Worker は HTTP ステータス 401 を返さなければならず、かつユーザー秘密データをレスポンスに含めてはならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 10, Decision: 非機能・スコープ境界)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 10, Decision: 非機能・スコープ境界)
 
 ### REQ-ERHU-004
 
-If an authenticated user requests a score or media object by identifier that is not owned by that user, then the Worker shall respond with HTTP status 403.
+認証済みユーザーが、自身が所有しない楽譜またはメディアオブジェクトを識別子により要求した場合、Worker は HTTP ステータス 403 を返さなければならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 10)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 10)
 
 ### REQ-ERHU-005
 
-When an authenticated user requests the list of scores, the system shall return only scores owned by that user.
+認証済みユーザーが楽譜一覧を要求したとき、システムは当該ユーザーが所有する楽譜のみを返さなければならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 1)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 1)
 
 ### REQ-ERHU-006
 
-When an authenticated user creates a new score, the system shall persist a score record and versioned JSON document owned by that user.
+認証済みユーザーが新規楽譜を作成したとき、システムは当該ユーザー所有の楽譜レコードおよびバージョン付き JSON ドキュメントを永続化しなければならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 1)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 1)
 
 ### REQ-ERHU-007
 
-When an authenticated user deletes a score, the system shall thereafter exclude that score from normal list and load operations for that user (logical deletion satisfies this requirement).
+認証済みユーザーが楽譜を削除したとき、システムは以降、当該ユーザーに対する通常の一覧取得および読み込み操作から当該楽譜を除外しなければならない（論理削除でよい）。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 1)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 1)
 
 ### REQ-ERHU-008
 
-The editor shall allow authoring and editing erhu numeric notation including measures, meter on the first measure, note durations, rests, octave marks, and grace notes at least within the MVP symbol set.
+エディタは、少なくとも MVP 記号集合の範囲において、小節、第1小節における拍子、音符長、休符、八度記号、装飾音を含む二胡用数字譜の作成および編集を可能にしなければならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 2, Decision: 記号・表現)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 2, Decision: 記号・表現)
 
 ### REQ-ERHU-009
 
-When the user applies transposition globally or per part, the editor view, playback, and print view shall interpret pitch using the same transposition fields.
+ユーザーが楽曲全体またはパート単位で転調を適用したとき、編集画面、再生ビュー、印刷ビューは、同一の転調フィールドに基づき音高を解釈しなければならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 3)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 3)
 
 ### REQ-ERHU-010
 
-The score document shall support multiple parts, and the UI shall allow toggling visibility per part and shall follow the default horizontal and vertical layout rules documented in the design document.
+楽譜ドキュメントは複数パートを保持しなければならない。また UI はパートごとの表示のオン／オフを可能とし、設計書に記載された既定の横方向および縦方向レイアウト規則に従わなければならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 4)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 4)
 
 ### REQ-ERHU-011
 
-When the user places, moves, or removes text boxes or image references on the free layer, the system shall persist those elements in the score document and restore them after reload.
+ユーザーがフリーレイヤー上でテキストボックスまたは画像参照を配置・移動・削除したとき、システムは当該要素を楽譜ドキュメントに永続化し、再読込後に復元しなければならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 5)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 5)
 
 ### REQ-ERHU-012
 
-When the user starts playback, the Web Audio-based synthesizer shall schedule notes following tempo and effective meter such that pitch order is clearly audible.
+ユーザーが再生を開始したとき、Web Audio API に基づくシンセサイザは、テンポおよび有効拍子に従って発音イベントをスケジューリングし、音程の順序が明瞭に聴取可能でなければならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 6, Decision: 再生)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 6, Decision: 再生)
 
 ### REQ-ERHU-013
 
-When the user prints from the dedicated print view or saves as PDF through the browser, the rendered output shall include bar lines, measure warning backgrounds, and free-layer elements without the layout breakages enumerated as in scope in the ADR.
+ユーザーが専用印刷ビューから印刷するか、ブラウザ機能により PDF として保存したとき、描画結果は小節線、小節の警告用背景、フリーレイヤー要素を含み、かつ ADR においてスコープ内とされるレイアウト破綻を起こしてはならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 7)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 7)
 
 ### REQ-ERHU-014
 
-The editor shall always display an explicit time signature on the first measure of the score.
+エディタは、楽譜の第1小節に常に明示的な拍子記号を表示しなければならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 8, Context, Decision: 拍子)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 8, Context, Decision: 拍子)
 
 ### REQ-ERHU-015
 
-When a measure after the first has a beat sum, computed from its notes and rests using the single shared algorithm, equal to the effective time signature carried forward from previous measures, the editor shall omit displaying a time signature on that measure.
+第1小節以降の小節について、単一共通アルゴリズムにより当該小節の音符および休符から算出した拍数が、直前までの小節から引き継がれた有効拍子と等しいとき、エディタは当該小節における拍子記号の表示を省略してよい。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 8, Context)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 8, Context)
 
 ### REQ-ERHU-016
 
-When a measure's beat sum does not equal the effective time signature, the editor shall render that measure with a yellow warning background and shall not automatically change notes, rests, or time signatures to fix the mismatch.
+小節の拍数が有効拍子と等しくないとき、エディタは当該小節を黄色系の警告背景で表示しなければならない。また不一致を解消するため、音符・休符・拍子を自動変更してはならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 9, Decision: 拍子矛盾の自動解決禁止)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Acceptance criteria 9, Decision: 拍子矛盾の自動解決禁止)
 
 ### REQ-ERHU-017
 
-When the user inserts an explicit time signature change at a measure boundary, the effective time signature for subsequent measures shall follow the new signature until another explicit change is inserted.
+ユーザーが小節境界に明示的な拍子変更を挿入したとき、当該小節より後続の小節に対する有効拍子は、別の明示的な拍子変更が挿入されるまで、新しい拍子に従わなければならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Decision: 拍子)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Decision: 拍子)
 
 ### REQ-ERHU-018
 
-The beat sum algorithm for a measure shall produce identical results in the SPA and in the Worker validation path.
+小節の拍数を算出するアルゴリズムは、SPA および Worker の検証パスにおいて同一の結果を生成しなければならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Decision: 拍子)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Decision: 拍子)
 
 ### REQ-ERHU-019
 
-The HTTP API shall not provide anonymous public read endpoints for scores or for user media objects stored in R2.
+HTTP API は、楽譜または R2 に保存されるユーザーメディアオブジェクトに対し、匿名による public read を可能にするエンドポイントを提供してはならない。
 
-> Source: docs/adr/draft/erhu-numeric-notation-webapp.md (Decision: 非機能・スコープ境界, 永続化)
+> 根拠: docs/adr/draft/erhu-numeric-notation-webapp.md (Decision: 非機能・スコープ境界, 永続化)
 
 ## 用語
 
-- **有効拍子 (effective time signature)**: 第1小節の明示拍子を起点とし、ユーザーが挿入した明示的拍子変更により更新される、各小節評価時点の拍子。
-- **拍数 (beat sum)**: 小節内の音符・休符を、設計で固定したルールにより拍単位に換算して合計した値。
-- **フリーレイヤー (free layer)**: 楽譜主グリッドと独立したテキスト・画像オーバーレイの集合。
+- **有効拍子**: 第1小節の明示拍子を起点とし、ユーザーが挿入した明示的拍子変更により更新される、各小節を評価する時点での拍子。
+- **拍数**: 小節内の音符および休符を、設計書で固定したルールにより拍単位に換算して合計した値。
+- **フリーレイヤー**: 楽譜の主グリッドと座標的に独立し、テキストおよび画像を重ね合わせるためのオーバーレイの集合。
