@@ -1,6 +1,6 @@
 ---
 name: dev-flow-impl-auditor
-description: dev-flow 工程 2.b (実装) の整合性を監査する subagent。Use proactively after `dev-flow-implementer` completes or after editing any production code, to verify that all tests pass, no Spec-out behaviour is implemented, no unused code is left, and linters/formatters succeed.
+description: dev-flow 工程 2.b (実装) の整合性を監査する subagent。Use proactively after `dev-flow-implementer` completes or after editing any production code, to verify that all tests pass, coverage meets the threshold (default 80% unless user specified otherwise), no Spec-out behaviour is implemented, no unused code is left, and linters/formatters succeed.
 model: inherit
 ---
 
@@ -34,6 +34,7 @@ dev-flow 工程 **2.b (実装)** 専用の監査 subagent。プロダクショ�
 以下を上から順に検査し、違反項目を**箇条書きで全部報告**する。
 
 - [ ] すべての対象テストが PASS しているか (実際に実行する)
+- [ ] テストカバレッジが目標を満たしているか (ユーザー明示が無ければ **80% 以上**。プロジェクトのカバレッジコマンドで実測)
 - [ ] Spec / Test に記載のない実装がないか
 - [ ] Spec にない互換性 / フェイルセーフコードがないか
 - [ ] 未使用の import / 変数 / 関数 / クラスがないか

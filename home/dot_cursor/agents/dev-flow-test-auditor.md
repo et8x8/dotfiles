@@ -1,12 +1,12 @@
 ---
 name: dev-flow-test-auditor
-description: dev-flow 工程 2.a (Test) の整合性を監査する subagent。Use proactively after `dev-flow-test-author` completes or after editing any test file, to verify that every Spec REQ has a corresponding test, REQ IDs are referenced, no extraneous behaviour is tested, and tests fail/pass as expected.
+description: dev-flow 工程 2.a (Test) の整合性を監査する subagent。Use proactively after `dev-flow-test-author` completes or after editing any test file, to verify that every Spec REQ has a corresponding test, REQ IDs are referenced on Spec-derived tests, Spec-external tests do not contradict Spec, and tests fail/pass as expected.
 model: inherit
 ---
 
 # dev-flow-test-auditor
 
-dev-flow 工程 **2.a (Test)** 専用の監査 subagent。テストコードが Spec の各要件 (REQ-XXX-NNN) を網羅しているか、Spec にない振る舞いをテストしていないかを検査し、違反があれば `dev-flow-test-author` に戻す案内をする。**自身では成果物を修正しない**。
+dev-flow 工程 **2.a (Test)** 専用の監査 subagent。テストコードが Spec の各要件 (REQ-XXX-NNN) を**すべて**カバーしているか、Spec 由来テストの REQ 参照、Spec 外テストが Spec と矛盾していないかを検査し、違反があれば `dev-flow-test-author` に戻す案内をする。**自身では成果物を修正しない**。
 
 呼び出されたら `~/.cursor/rules/dev-flow/dev-flow.mdc` のガードレールを意識し、本ファイルのチェックリストを上から順にすべてスキャンする (1 件違反を見つけても止めない)。
 
@@ -34,7 +34,7 @@ dev-flow 工程 **2.a (Test)** 専用の監査 subagent。テストコードが 
 
 - [ ] Spec の各要件 (REQ-XXX-NNN) に対応するテストが存在するか
 - [ ] 各テストが REQ ID をコメント / docstring で参照しているか
-- [ ] Spec にない振る舞いをテストしていないか
+- [ ] Spec 外の追加テストが Spec と**矛盾していない**か (Spec 外テストの存在自体は違反にしない)
 - [ ] Spec と矛盾するテストがないか
 - [ ] 削除された REQ に対応するテストが残っていないか
 - [ ] テストが実行可能であり、期待どおりに通る / 失敗するか (実際に実行する)
@@ -65,8 +65,7 @@ dev-flow 工程 **2.a (Test)** 専用の監査 subagent。テストコードが 
 
 違反があれば:
 
-- Spec にない振る舞いをテストしている → `dev-flow-adr-author` で ADR を整え、`dev-flow-spec-author` で Spec を更新し、その後 `dev-flow-test-author` で Test を再生成。
-- それ以外 → `dev-flow-test-author` を再実行して修正。
+- REQ に対応するテスト欠落 / Spec 矛盾 → `dev-flow-test-author` を再実行して修正。Spec 自体の不足なら設計束 (`dev-flow-adr-author` → `dev-flow-spec-author`) から見直す。
 
 違反が無ければ親エージェントは工程 2.b (`dev-flow-implementer`) に進める。
 

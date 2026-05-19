@@ -91,8 +91,8 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 | 工程 | 作業 subagent | 監査 subagent (auto) | 入力 | 主な成果物 | 検証 |
 | --- | --- | --- | --- | --- | --- |
 | 1. 設計束 (ADR・用件・基本設計・Spec) | `dev-flow-adr-author` → (`dev-flow-spec-author` は Open Question ゼロかつ adr 監査通過後に**続けて**) | `dev-flow-adr-auditor` → (`dev-flow-spec-auditor` は同様に続けて) | ユーザー要求 + 現コードベース + ADR | `docs/adr/draft/` + `docs/requirements/` + `docs/design/` + `docs/spec/` (+ 各 `index.md`) | Open Question 残時は ADR のみ。確定後は三種を**同時バッチ**で。分割・`index.md` 同期を遵守 |
-| 2.a Test | `dev-flow-test-author` | `dev-flow-test-auditor` | Spec + 既存テスト | テストコード | 生成直後に**失敗**を確認 |
-| 2.b 実装 | `dev-flow-implementer` | `dev-flow-impl-auditor` | Spec + Test + 既存実装 | プロダクションコード | **全 PASS** + 未使用コードなし |
+| 2.a Test | `dev-flow-test-author` | `dev-flow-test-auditor` | Spec + 既存テスト | テストコード | 各 REQ にテスト**必須**。Spec 外テスト可。生成直後に**失敗**を確認 |
+| 2.b 実装 | `dev-flow-implementer` | `dev-flow-impl-auditor` | Spec + Test + 既存実装 | プロダクションコード | **全 PASS** + 未使用コードなし + **カバレッジ 80% 以上** (明示指示で例外可) |
 | 3. ドキュメント生成 | `dev-flow-document-author` | `dev-flow-document-auditor` | 上記すべて | `docs/developer/` `docs/user/` | AI 専用情報は書かない |
 | 4. 完了 (Done) | `dev-flow-done-runner` | (5 つの auditor を再実行) | 上記すべて + ユーザー承認 | `docs/adr/active/` への移動 + `git commit` | バージョンプレフィックス付与 / 5 つの auditor 全件確認 |
 
@@ -131,9 +131,18 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 - **`## 設計ドキュメントの分割 (行数・トークン)`** に反する単一巨大ファイル。
 - 三種の Markdown を追加・削除・リネームしたのに、対応する `docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md` を**同一バッチで更新しない**こと。
 
+## 工程 2.a のテスト方針
+
+1. **Spec 記載の振る舞いはテスト必須**  
+   `docs/spec/` の各要件 (REQ-XXX-NNN) ごとに、対応するテストを**少なくとも 1 つ**用意する。テスト名 / docstring に REQ ID を含める。
+2. **Spec にないテストは許可**  
+   Spec に列挙されていない振る舞い・境界・回帰・リファクタ耐性などを**追加でテストしてよい**。ただし **Spec と矛盾してはならない**。REQ ID が無いテストは docstring 等で目的を明示する (Spec 外であることを分かるようにする)。
+3. **テストカバレッジ 80% 以上 (デフォルト)**  
+   ユーザーがチャット等で**別の閾値や免除を明示しない限り**、工程 2.b 完了時点でプロジェクトのカバレッジ計測対象 (通常は当該変更のプロダクションコード。`AGENTS.md` 等の規約を優先) が **80% 以上**であること。計測コマンド・対象パスはプロジェクト規約に従う。
+
 ### 工程 2.a Test — `dev-flow-test-author`
 
-- Spec にない振る舞いをテストすること。
+- Spec の**各 REQ に対応するテストが無い**こと。
 - Spec と矛盾するテストを書くこと。
 - テスト生成直後に「失敗すること」を確認しないこと。
 - 実装の都合で Test を書き換えること (Spec から見直す)。
@@ -144,6 +153,7 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 - Spec / Test と矛盾する実装を行うこと。
 - 「将来使うかもしれない」という理由で未使用コードを残すこと。
 - Spec に記載のない互換性 / フェイルセーフ実装を入れること。
+- ユーザーが明示的に別閾値や免除を指示していないのに、**テストカバレッジが 80% 未満**のまま工程 2.b を完了とすること。
 
 ### 工程 3: ドキュメント生成 — `dev-flow-document-author`
 

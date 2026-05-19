@@ -1,6 +1,6 @@
 ---
 name: dev-flow-implementer
-description: dev-flow 工程 2.b (実装) を担当する subagent。`dev-flow-test-author` が生成した失敗テストを通すプロダクションコードを実装し、全テスト PASS を確認する。Use when the dev-flow process needs to implement production code against pre-written failing tests.
+description: dev-flow 工程 2.b (実装) を担当する subagent。`dev-flow-test-author` が生成した失敗テストを通すプロダクションコードを実装し、全テスト PASS とカバレッジ 80% 以上 (ユーザー明示で例外可) を確認する。Use when the dev-flow process needs to implement production code against pre-written failing tests.
 model: inherit
 ---
 
@@ -20,6 +20,7 @@ dev-flow 工程 **2.b (実装)** 専用の subagent。`dev-flow-test-author` で
 - Spec と Test を満たすプロダクションコードを実装する。
 - 実装後にテストを実行し、**全て成功**することを確認する。
 - 既存テストの回帰がないことも確認する。
+- プロジェクトのカバレッジ計測を実行し、**80% 以上**であることを確認する (ユーザーが別閾値・免除を明示した場合はそれに従う)。
 - 不要になったプロダクションコード / 未使用コードを削除する。
 - リンタ / フォーマッタを通す。
 
@@ -65,13 +66,18 @@ dev-flow 工程 **2.b (実装)** 専用の subagent。`dev-flow-test-author` で
      - 実装の不備 → 実装を修正して再実行。
      - テストが間違っている (実装の都合で書き換えたい) → **禁止**。Spec に立ち返り、必要なら設計束の ADR に戻る。
    - 実行結果 (PASS 数 / FAIL 数 / 該当テストの ID) を簡潔に報告する。
-4. **クリーンアップ**
+4. **カバレッジ確認 (重要)**
+   - プロジェクトのカバレッジコマンドを実行する (例: `pytest --cov`, `npm test -- --coverage`, `go test -coverprofile=...`)。対象パス・閾値は `AGENTS.md` 等の規約を優先。
+   - ユーザーが明示していない限り、計測対象の**行カバレッジ (またはプロジェクト既定の指標) が 80% 以上**であること。未満なら Spec 外テストの追加または実装の不足箇所を補い、再計測する (Test の書き換えは Spec 矛盾が無い範囲で `dev-flow-test-author` に戻す)。
+   - ユーザーが「カバレッジ 60% でよい」等と**明示**した場合のみ、その値を満たせばよい。
+5. **クリーンアップ**
    - リンタ / フォーマッタを実行し、ワーニングを解消する (プロジェクト規約に従う)。
    - 未使用コード (import / 変数 / 関数 / クラス) を削除する。
    - デバッグ用 print / console.log を削除する。
    - TODO / FIXME コメントは Spec に立ち返るべき内容なら削除し、Spec / ADR に反映する。
-5. **検証**
+6. **検証**
    - すべての対象テストが PASS しているか?
+   - カバレッジが目標 (デフォルト 80% 以上) を満たしているか?
    - Spec / Test と矛盾する実装はないか?
    - Spec にない互換性 / フェイルセーフコードを入れていないか?
    - 未使用コードは残っていないか?
@@ -91,5 +97,6 @@ dev-flow 工程 **2.b (実装)** 専用の subagent。`dev-flow-test-author` で
 
 - 追加 / 変更 / 削除した実装ファイル一覧
 - テスト実行結果 (PASS 数 / FAIL 数。FAIL があれば原因)
+- カバレッジ計測結果 (指標・対象・達成率。適用した閾値)
 - リンタ / フォーマッタの実行結果
 - 未解消の問題があれば、それが「Spec に戻るべき問題」か「実装内の問題」かの判断
