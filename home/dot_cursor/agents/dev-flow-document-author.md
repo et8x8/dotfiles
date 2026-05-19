@@ -25,6 +25,7 @@ dev-flow 工程 **3 (ドキュメント生成)** 専用の subagent。人間向�
 
 - 開発者向けと利用者向けを混ぜない。
 - Spec / ADR / requirements / design と重複した内容を入れない (リンクで参照)。
+- ADR の **`## Recommendations`** を参照・転載しない (Active 化後は存在しない想定。Draft 参照時も Decision 節等のみリンクする)。
 - AI エージェント向け情報を含めない (`AGENTS.md` / Rules / Skill で別管理)。
 - 古くなった機能の説明を残さない。
 

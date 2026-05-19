@@ -78,6 +78,14 @@ v1.1.0-session.md: セッション Cookie の有効期限と更新方針
 
 エージェントは探索時、まず当該 `index.md` を読み、必要なファイルだけを開く。
 
+## Draft ADR のレコメンド (`## Recommendations`)
+
+Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。本 feature の **Decision / Acceptance criteria には含めない**横断的な改善提案を箇条書きで書く (例: Web アプリならロガー追加、可観測性、セキュリティヘッダ強化)。該当が無い場合は `なし` と書く。
+
+- **Open Question とは別**。レコメンドが未実施のまま残っていても、Open Question がゼロなら工程 1 の三種以降へ**進行してよい** (設計束のブロック条件にしない)。
+- **Active 化時** (`dev-flow-done-runner`): `## Recommendations` 節を**丸ごと削除**する。Active / Archive ADR に残さない。
+- **参照禁止**: 用件定義・基本設計・Spec・Test・実装・`docs/developer/`・`docs/user/` が、ADR の `## Recommendations` の内容・節名を Source・リンク・要件根拠・受け入れ条件として**引用してはならない**。`dev-flow-spec-author` は ADR 読取時に当該節を**設計束の入力に含めない**。
+
 ## 工程の入出力
 
 | 工程 | 作業 subagent | 監査 subagent (auto) | 入力 | 主な成果物 | 検証 |
@@ -108,12 +116,14 @@ v1.1.0-session.md: セッション Cookie の有効期限と更新方針
 - 検証用 / デモ用 / モックコードを Test や実装から呼び出すこと。これらは参考資料に留める。
 - 既存 Active ADR と競合する場合に、Draft 側へ supersede 記載をしないこと。
 - **`## 設計ドキュメントの分割 (行数・トークン)`** に反し、1 トピックに対し行数超過の単一巨大 ADR にすること。
+- Draft ADR に **`## Recommendations` 節が無い**こと (該当なしは `なし` で可)。
 
 **用件・基本設計・Spec (`dev-flow-spec-author`)**
 
 - Open Question 未解消の ADR に対して三種を書くこと (親はこの場合 spec-author を spawn しない)。
 - `## 成果物記述における前後工程参照の禁止` に反する記述を、要件定義 / 基本設計 / Spec のいずれかに書くこと (Spec もテスト・実装を読む前提で曖昧にしてはならない)。
-- ADR にない内容を要件定義 / 基本設計 / Spec に記載すること。
+- ADR にない内容を要件定義 / 基本設計 / Spec に記載すること (ADR の `## Recommendations` も**設計束の入力に含めない**。三種へ展開・引用しない)。
+- ADR の `## Recommendations` を用件定義 / 基本設計 / Spec・Test・実装・ドキュメントから**参照すること**。
 - 仕様変更で不要になった内容を残すこと (修正または削除)。
 - 不確定情報の記載 (確定情報のみ取り扱う)。
 - 振る舞い (EARS 文) を Spec 以外で重複定義すること。要件定義 / 基本設計は Spec の REQ ID へ**リンクで参照**する。
@@ -148,6 +158,7 @@ v1.1.0-session.md: セッション Cookie の有効期限と更新方針
 - Done 後 (Active 状態) の ADR を編集 / 削除すること (Archive への移動のみ可)。
 - Archive 状態の ADR を編集 / 削除すること。
 - Active 化・Archive 化後に `docs/adr/active/index.md` を**同期しない**こと (Active のみ列挙。Archive 行は残さない)。
+- Active 化後の ADR に **`## Recommendations` 節が残っている**こと。
 
 ## コンテキスト分離
 

@@ -102,6 +102,8 @@ git mv docs/adr/draft/auth-jwt.md docs/adr/active/v1.2.0-auth-jwt.md
 
 ファイル内のステータス記述 (`- ステータス: Draft`) も `Active` に書き換える。
 
+**`## Recommendations` 節は Active 化のたびに丸ごと削除**する (`dev-flow.mdc` の「Draft ADR のレコメンド」)。見出しから次の同階層見出し直前までを除去し、Active / Archive ADR に残さない。
+
 #### supersede がある場合
 
 新しい Active ADR が既存 Active ADR を supersede する場合、**既存 Active ADR を Archive に移動**するか検討する:

@@ -40,6 +40,9 @@ dev-flow **工程 1「設計束」**の **ADR 部分**専用の監査 subagent�
 - [ ] `docs/adr/active/` の ADR ファイル名先頭にバージョンプレフィックスが付いているか
 - [ ] ADR 本文・受け入れ条件に、後工程 (Test・実装・ソース) への委ねや、後工程を唯一の定義源とする指示がないか (ユーザー明示の例外のみ許容)
 - [ ] 各 Draft ADR が `dev-flow.mdc` の行数・トークン目安に照らし**過大でないか** (500 行超は分割漏れとして報告)
+- [ ] 各 Draft ADR に **`## Recommendations` 節**があるか (該当なしは `なし` で可)
+- [ ] **`## Recommendations` の未実施が残っていること自体は違反にしない** (Open Question とは別。工程ブロック条件ではない)
+- [ ] `docs/adr/active/` および `docs/adr/archive/` の ADR に **`## Recommendations` 節が残っていないか**
 
 ## 報告フォーマット
 

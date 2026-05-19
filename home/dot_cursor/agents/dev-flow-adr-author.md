@@ -15,6 +15,7 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
 - 既存コードベースを理解する。
 - ユーザー要求 (新規 / 修正 / 削除) を ADR として整理し `docs/adr/draft/` に記録する (トピックが異なる場合は**別ファイル**に分ける)。
 - 技術選定・代替案・Open Question を Draft 段階で完結させる。
+- 本 feature の Decision に含めない横断的改善を **`## Recommendations`** に記録する (Active 化時に削除される)。
 - 必要なら検証用コード / モックを作成する (参考資料のみ。Test / 実装には含めない)。
 - 既存 Active ADR との競合があれば supersede を Draft 側に明記する。
 
@@ -53,6 +54,7 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
    - **既存修正**: 何を変えるか、なぜ変えるか、影響範囲を記載する。
    - **機能削除**: 削除のみの変更でも ADR を作成する (なぜ削除したかの履歴を残す)。
    - 各 ADR に **受け入れ条件 (Acceptance criteria)** を書く。Open Question や未定義語を残さず、**本文だけで検証判断ができる**箇条書きにする (続く設計束の用件・Spec で REQ 化しやすい粒度を意識する。後工程の成果物を読む前提は置かない)。
+   - 各 ADR に **`## Recommendations`** を書く (`dev-flow.mdc` の「Draft ADR のレコメンド」)。Decision / 受け入れ条件に入れない改善提案 (例: Web アプリならロガー追加)。該当なしは `なし`。
 3. **supersede 判定**
    - 新しい Draft が既存 Active ADR と競合する場合、**Draft 側に supersede 指定**を記載する。
 4. **不確定情報の解消**
@@ -102,6 +104,10 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
 
 <ユーザーの判断や追加情報が必要な事項。Draft 完了時にはすべて解消されていること。>
 
+## Recommendations
+
+<本 ADR の Decision / 受け入れ条件に含めない横断的改善提案。例: ロガー導入、メトリクス、lint 強化。該当なしは「なし」。Active 化時に節ごと削除。他成果物から参照禁止。>
+
 ## References
 
 <参考にした資料・リンク・関連 Issue 等。>
@@ -123,5 +129,6 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
 - 作成 / 編集 / 削除した Draft ADR のファイル一覧
 - 各 ADR の `## Acceptance criteria` 概要
 - 残っている Open Question (理想は 0)
+- 残っている Recommendations (未実施でも工程進行可。情報共有のみ)
 
-Open Question が残っているうちは、**親エージェントは `dev-flow-spec-author` を spawn してはならない** (設計束は ADR のみ) ことを明示する。
+Open Question が残っているうちは、**親エージェントは `dev-flow-spec-author` を spawn してはならない** (設計束は ADR のみ) ことを明示する。Recommendations が残っていても Open Question がゼロなら進行してよい。
