@@ -38,6 +38,7 @@ disable-model-invocation: true
 6. **後工程から前工程の成果物を書き換えない**。矛盾が出たら前工程に戻る。
 7. **ADR・用件定義・基本設計・Spec の本文**は常時ルール `~/.cursor/rules/dev-flow/dev-flow.mdc` の「成果物記述における前後工程参照の禁止」に従う。後工程 (Test・実装・ソース) へ委ねること、および前工程が後工程を唯一の定義源として指すことは、ユーザーの明示指示がない限り禁止。
 8. **設計ドキュメントの分割**は `dev-flow.mdc` の「設計ドキュメントの分割 (行数・トークン)」に従う (`AGENTS.md` / `CLAUDE.md` があればそちらを優先)。
+9. **`index.md` の同期**は `dev-flow.mdc` の「設計ドキュメントのインデックス (`index.md`)」に従う。用件・設計・Spec は `dev-flow-spec-author` が三種と同一バッチで更新。Active ADR のみ `docs/adr/active/index.md` を `dev-flow-done-runner` が Active / Archive 化時に更新 (Draft・Archive には index を置かない)。
 
 ## 進捗の正本: `docs/adr/draft/dev-flow-state.json`
 

@@ -33,7 +33,7 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
 
 ### 出力先のルール
 
-- **Draft ADR は `docs/adr/draft/` 直下の Markdown 1 ファイル 1 本**とする (`draft/<topic>/` 以下のサブディレクトリや `index.md` 分割は置かない)。
+- **Draft ADR は `docs/adr/draft/` 直下の Markdown 1 ファイル 1 本**とする (`draft/<topic>/` 以下のサブディレクトリや、本文を `index.md` に分割する運用は置かない)。**`docs/adr/draft/` には `index.md` を置かない** (Active 用目次は `docs/adr/active/index.md`。更新は工程 4 の `dev-flow-done-runner`)。
 - Draft 段階では **Active 向けの命名規則 (連番・バージョンプレフィックス等) を意識しなくてよい**。トピックが分かるファイル名でよい。Active 化時の正式な名前は工程 4 (`dev-flow-done-runner`) とプロジェクト運用に従う。
 
 ## ファイル分割 (行数)

@@ -35,7 +35,7 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
 ## 入出力
 
 - 入力: `docs/adr/active/**` `docs/adr/draft/**` + 既存 `docs/requirements/` `docs/design/` `docs/spec/`
-- 出力: `docs/requirements/**` `docs/design/**` `docs/spec/**` の作成 / 編集 / 削除
+- 出力: `docs/requirements/**` `docs/design/**` `docs/spec/**` の作成 / 編集 / 削除。あわせて各ディレクトリの `index.md` (`docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md`)
 
 | 成果物 | 出力先 | 主な読み手 | 粒度 |
 | --- | --- | --- | --- |
@@ -75,7 +75,11 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
    - 後述「EARS 記法」に従う。
    - 各要件に**一意な ID** を付ける (例: `REQ-AUTH-001`)。
    - 各要件に **Source として根拠 ADR** を引用する。
-6. **検証**
+6. **`index.md` の同期** (`dev-flow.mdc` の「設計ドキュメントのインデックス (`index.md`)」)
+   - 手順 3〜5 で 3 種の Markdown を追加・削除・リネームしたら、**同一バッチ**で各 `index.md` を更新する。
+   - 形式: 1 行 = `<ファイル名>: <概要>` (テーブル不要。ファイル名辞書順。`index.md` 自身は列挙しない)。
+   - 存在しないファイルへの行を残さない。
+7. **検証**
    - ADR にない内容を 3 種のいずれかに書いていないか?
    - 要件定義 / 基本設計 / Spec の間で**矛盾**していないか?
    - 振る舞いの定義が Spec 以外の場所に二重記述されていないか? (要件定義 / 基本設計は**リンクのみ**)

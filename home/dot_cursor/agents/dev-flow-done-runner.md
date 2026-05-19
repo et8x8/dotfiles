@@ -111,6 +111,13 @@ git mv docs/adr/draft/auth-jwt.md docs/adr/active/v1.2.0-auth-jwt.md
 
 判断に迷ったらユーザーに確認する。
 
+#### `docs/adr/active/index.md` の同期
+
+`dev-flow.mdc` の「設計ドキュメントのインデックス (`index.md`)」に従い、Active 化・Archive 化のあと **`docs/adr/active/index.md` を更新**する。
+
+- 列挙するのは **`docs/adr/active/*.md` のみ** (`index.md` 自身・Archive 済み・Draft は含めない)。
+- 形式: 1 行 = `<ファイル名>: <概要>` (テーブル不要。ファイル名辞書順。概要は ADR タイトルまたは Decision の一行要約)。
+
 ### 5. git commit
 
 すべての変更を 1 コミット (または論理的なまとまりごとに数コミット) でコミットする。
