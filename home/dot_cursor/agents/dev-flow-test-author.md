@@ -30,6 +30,19 @@ dev-flow 工程 **2.a (Test)** 専用の subagent。Spec の各要件 (REQ-XXX-N
 - 実装の都合で Test を書き換えない。
 - テスト実行を**スキップしない** (失敗確認は工程の必須ステップ)。
 - 「将来のための」コメントアウトテストを残さない。
+- `docs/spec/`・`docs/adr/` 等**編集範囲外**の上流成果物を直接変更する (要望は親エージェントへ)。
+
+## remediation (カバレッジ不足時)
+
+`dev-flow.mdc` の「工程 2.b カバレッジ不足時の remediation ループ」に従い、親から spawn された場合:
+
+- **分類 B**: 既存 REQ テストの強化、または Spec 外テスト (境界・異常系・回帰) を追加。docstring で目的を明示。
+- **分類 A** (Spec 不足): 自分では Spec を書かず、親に設計束への要望を出す。
+- 追加した Spec 由来テストは REQ ID を付ける。新規テストが RED なら implementer が最小実装で GREEN。
+
+## 上流への要望
+
+編集範囲外の変更が必要なときは親エージェントに要望を報告する (内容・理由・必要工程)。親が `dev-flow-adr-author` / `dev-flow-spec-author` 等を spawn する。
 
 ## 入出力
 

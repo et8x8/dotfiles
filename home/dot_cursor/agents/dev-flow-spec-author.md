@@ -32,6 +32,11 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
 - 不確定情報を残さない。
 - 「将来のために」古い内容を残さない。
 - 振る舞いの定義 (検証単位) は **Spec が単独の正本**。要件定義 / 基本設計には EARS 文を再記述せず、`docs/spec/<feature>.md#REQ-...` への**リンク**で示す。
+- `docs/adr/draft/`・`docs/adr/active/` は**読むのみ** (編集は `dev-flow-adr-author`)。下流からの要望で Spec 変更が必要なときは、親が本 subagent を spawn する。ADR と矛盾する変更は行わない。
+
+## 上流への要望
+
+`docs/adr/` の変更が必要なときは親エージェントに要望する (内容・理由)。親が `dev-flow-adr-author` を spawn する。ADR の Decision / 受け入れ条件と両立しない要望は行わない。
 
 ## 入出力
 

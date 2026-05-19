@@ -35,10 +35,11 @@ disable-model-invocation: true
 3. **PR / コードレビューで指摘を受けたとき**: `dev_flow_completed_through` を **`adr` に戻し**、工程 1 (設計束) から順に「指摘に照らして変更が必要か」を判定する。**各工程で変更不要なら成果物はそのまま次工程の確認へ進む**。下流だけで完結させない。
 4. **工程 2 (Test → 実装) は内部で連続実行可**。ユーザーの追加指示無しに `dev-flow-test-author` → `dev-flow-implementer` まで一気に進めてよい。ただし **実装に合わせて Test を書き換えてはならない** (Spec から見直す)。
 5. **工程 4 (完了) は必ずユーザー承認**を得てから Active 移行と `git commit` を行う。承認前は Active 化や確定 commit をしない (PR 更新のための途中 commit は可)。
-6. **後工程から前工程の成果物を書き換えない**。矛盾が出たら前工程に戻る。
-7. **ADR・用件定義・基本設計・Spec の本文**は常時ルール `~/.cursor/rules/dev-flow/dev-flow.mdc` の「成果物記述における前後工程参照の禁止」に従う。後工程 (Test・実装・ソース) へ委ねること、および前工程が後工程を唯一の定義源として指すことは、ユーザーの明示指示がない限り禁止。
-8. **設計ドキュメントの分割**は `dev-flow.mdc` の「設計ドキュメントの分割 (行数・トークン)」に従う (`AGENTS.md` / `CLAUDE.md` があればそちらを優先)。
-9. **`index.md` の同期**は `dev-flow.mdc` の「設計ドキュメントのインデックス (`index.md`)」に従う。用件・設計・Spec は `dev-flow-spec-author` が三種と同一バッチで更新。Active ADR のみ `docs/adr/active/index.md` を `dev-flow-done-runner` が Active / Archive 化時に更新 (Draft・Archive には index を置かない)。
+6. **後工程から前工程の成果物を書き換えない**。矛盾が出たら前工程に戻る。下流 subagent は上流を**直接編集せず**、立ち行かないときは**親 (本 skill) に要望**し、親が上流 subagent を spawn して橋渡しする (`dev-flow.mdc` の「下流から上流への要望」)。上流変更後は**必ずユーザーに報告**する。
+7. **工程 2.b のカバレッジ**が目標未満なら `implementation` に進めず、remediation ループを回す (`dev-flow.mdc` の「工程 2.b カバレッジ不足時の remediation ループ」)。水増し実装は禁止。
+8. **ADR・用件定義・基本設計・Spec の本文**は常時ルール `~/.cursor/rules/dev-flow/dev-flow.mdc` の「成果物記述における前後工程参照の禁止」に従う。後工程 (Test・実装・ソース) へ委ねること、および前工程が後工程を唯一の定義源として指すことは、ユーザーの明示指示がない限り禁止。
+9. **設計ドキュメントの分割**は `dev-flow.mdc` の「設計ドキュメントの分割 (行数・トークン)」に従う (`AGENTS.md` / `CLAUDE.md` があればそちらを優先)。
+10. **`index.md` の同期**は `dev-flow.mdc` の「設計ドキュメントのインデックス (`index.md`)」に従う。用件・設計・Spec は `dev-flow-spec-author` が三種と同一バッチで更新。Active ADR のみ `docs/adr/active/index.md` を `dev-flow-done-runner` が Active / Archive 化時に更新 (Draft・Archive には index を置かない)。
 
 ## 進捗の正本: `docs/adr/draft/dev-flow-state.json`
 
@@ -125,7 +126,7 @@ Test / 実装のソース配置は言語・フレームワークの規約に従�
 2. ユーザーの依頼が PR / コードレビュー指摘の反映であれば、`dev_flow_completed_through` を **`adr` に戻し**、工程 1 (設計束) から順に確認する。
 3. **該当工程の作業 subagent を Task ツールで spawn** する (subagent ファイルが詳細手順を内包している)。
    - **工程 1 (設計束)** → `dev-flow-adr-author` → `dev-flow-adr-auditor`。Open Question が**ゼロ**かつ違反ゼロなら**続けて** `dev-flow-spec-author` → `dev-flow-spec-auditor` (ユーザーの「次へ」は不要)。Open Question が**残る**場合は **ADR のみ**で終了し `dev-flow-spec-author` は spawn しない。
-   - **工程 2** → `dev-flow-test-author` → `dev-flow-implementer` (2.a 完了後に連続実行)
+   - **工程 2** → `dev-flow-test-author` → `dev-flow-implementer` (2.a 完了後に連続実行)。カバレッジ未達なら remediation ループ (test-author / implementer / 必要時は設計束) を回し、達成まで `dev_flow_completed_through` を `implementation` に上げない。
    - **工程 3** → `dev-flow-document-author`
    - **工程 4** → `dev-flow-done-runner`
 4. **作業 subagent 完了直後**に対応する **auditor subagent を自動で spawn** する (工程 1 は adr 監査後、条件を満たせば spec 監査まで続ける):
@@ -136,8 +137,12 @@ Test / 実装のソース配置は言語・フレームワークの規約に従�
    - 工程 3 完了 → `dev-flow-document-auditor`
    - 工程 4 (Done) 冒頭 → 5 つの auditor をすべて再実行 (最終整合性チェック)
 
-   違反があれば auditor の報告に従い該当 subagent を再 spawn して修正する。違反が無ければ `dev_flow_completed_through` を次の値に書き換える (Done を除く)。
-5. **次工程に進む条件** (上記「進行原則」) を確認:
+   違反があれば auditor の報告に従い該当 subagent を再 spawn して修正する。違反が無ければ `dev_flow_completed_through` を次の値に書き換える (Done を除く)。**工程 2.b はカバレッジ目標達成後のみ** `implementation` に更新する。
+5. **下流 subagent からの上流要望**を受けたとき:
+   - 要望が ADR の Decision / 受け入れ条件と**両立しない**なら下流に**拒否**を返す。必要なら更上流 (ADR) から見直す案を示す。
+   - 妥当なら該当上流 subagent を spawn し、修正後は**変更が生じた工程から下流を再実行**する。
+   - **上流を変更したら必ずユーザーに報告**する (変更概要・理由・次に spawn する工程)。
+6. **次工程に進む条件** (上記「進行原則」) を確認:
    - 工程 1 の adr 監査通過直後: Open Question ゼロなら**同一バッチ**で spec 周回まで進めてよい。Open Question 残なら**停止**。
    - 工程 1 全体 (`spec` キー) 完了直後 / 工程 2 / 工程 3 完了直後: ユーザーから明示指示が無ければ**停止**。指示を待つ。
    - 工程 4 (Done): ユーザー承認が必須。承認前は Active 化・確定 commit を行わない。
@@ -153,7 +158,7 @@ Test / 実装のソース配置は言語・フレームワークの規約に従�
 ## 全工程に共通する厳守事項
 
 - 各工程は前工程の成果物を入力とする。
-- 矛盾が出たら**前工程に戻って**修正する。後工程の都合で前工程を書き換えない。
+- 矛盾が出たら**前工程に戻って**修正する。後工程 subagent が上流成果物を**直接**書き換えない (要望は親が橋渡し。上流変更後はユーザー報告必須)。
 - **Done 完了前**に PR / コードレビューで手直しする場合は、`dev_flow_completed_through` を `adr` に戻し**設計束 (工程 1)** から順に再確認する。**各工程で変更不要なら上流を書き換えず次へ進んでよい**。
 - 古い記述は修正または削除する。将来のために残さない。
 - 各工程はコンテキスト分離して実行する (対応する作業 subagent を spawn する)。
