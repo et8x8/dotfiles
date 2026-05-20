@@ -34,10 +34,8 @@ dev-flow 工程 **3 (ドキュメント生成)** 専用の subagent。人間向�
 - 入力: `docs/adr/**` `docs/requirements/**` `docs/design/**` `docs/spec/**` + 実装済みコード
 - 出力: `docs/developer/**` `docs/user/**` の作成 / 編集 / 削除
 
-| 出力先 | 主な内容 |
-| --- | --- |
-| `docs/developer/` | アーキテクチャ概要 / 公開 API・インターフェース / 拡張ガイド / セットアップ / テスト戦略 |
-| `docs/user/` | インストール・初期設定 / 操作手順 / チュートリアル / FAQ |
+- `docs/developer/`: アーキテクチャ概要 / 公開 API・インターフェース / 拡張ガイド / セットアップ / テスト戦略
+- `docs/user/`: インストール・初期設定 / 操作手順 / チュートリアル / FAQ
 
 ## 他ドキュメントとの責務切り分け
 

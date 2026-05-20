@@ -1,13 +1,9 @@
 ---
 name: dev-flow
 description: >-
-  AI エージェント前提の開発プロセス全体を 1 つの skill で扱うエントリポイント。
-  「(1) 設計束 (ADR・用件・基本設計・Spec) → (2) Test → 実装 → (3) ドキュメント生成 → (4) 完了 (Done)」の 4 工程を扱う。
-  各工程は対応する subagent (`dev-flow-<name>`) に Task で委譲する。詳細手順は subagent ファイル側に集約 (phases/ は廃止)。
-  各工程完了直後に対応する auditor subagent (`dev-flow-<phase>-auditor`) を自動で spawn する。
-  ユーザーの「次工程に進む」明示指示が無ければ次工程に進まない (工程 1 設計束の内部では、Open Question ゼロかつ ADR 監査通過後に用件・設計・Spec を同一バッチで続行可)。
-  PR / コードレビュー対応では `dev_flow_completed_through` を `adr` に戻し、工程 1 (設計束) から順に確認する。
-  プロンプトから明示的に呼び出すエントリポイントのため `disable-model-invocation: true` を付与している。
+  SDD の 4 工程 (設計束 → Test→実装 → ドキュメント → Done) を統合 orchestrate する skill。
+  各工程は `dev-flow-<name>` subagent に委譲。工程 1 は Open Question ゼロかつ ADR 監査通過後に三種まで自動続行可。
+  次工程はユーザー明示指示が必要 (工程 2 内 Test→実装の連続は可)。PR/レビュー時は `dev_flow_completed_through` を `adr` に戻して設計束から再確認。
 disable-model-invocation: true
 ---
 
@@ -19,12 +15,10 @@ disable-model-invocation: true
 
 ## 4 工程と対応 subagent
 
-| # | 工程 | 作業 subagent | 監査 subagent (自動 spawn) | 次工程への進み方 |
-| --- | --- | --- | --- | --- |
-| 1 | 設計束 (ADR・用件・基本設計・Spec) | `dev-flow-adr-author` → (`dev-flow-spec-author` は Open Question ゼロかつ adr 監査通過後に**続けて**) | `dev-flow-adr-auditor` → (`dev-flow-spec-auditor` も続けて) | Open Question 残なら **ADR のみ**。ゼロなら**同一バッチ**で三種まで自動。設計束完了後は **ユーザー明示**で工程 2 へ |
-| 2 | Test → 実装 | `dev-flow-test-author` → `dev-flow-implementer` | `dev-flow-test-auditor` (2.a) → `dev-flow-impl-auditor` (2.b) | **ユーザー明示指示が必須** (工程内の Test → 実装は連続実行可) |
-| 3 | ドキュメント生成 | `dev-flow-document-author` | `dev-flow-document-auditor` | **ユーザー明示指示が必須** |
-| 4 | 完了 (Done) | `dev-flow-done-runner` | (5 つの auditor を再実行) | (最終工程。ユーザー承認必須) |
+1. **設計束 (ADR・用件・基本設計・Spec)** — 作業: `dev-flow-adr-author` → (Open Question ゼロかつ adr 監査通過後) `dev-flow-spec-author`。監査: `dev-flow-adr-auditor` → `dev-flow-spec-auditor`。Open Question 残なら ADR のみ。ゼロなら同一バッチで三種まで自動。設計束完了後はユーザー明示で工程 2 へ。
+2. **Test → 実装** — 作業: `dev-flow-test-author` → `dev-flow-implementer`。監査: `dev-flow-test-auditor` (2.a) → `dev-flow-impl-auditor` (2.b)。ユーザー明示必須 (工程内 Test→実装の連続は可)。
+3. **ドキュメント生成** — 作業: `dev-flow-document-author`。監査: `dev-flow-document-auditor`。ユーザー明示必須。
+4. **完了 (Done)** — 作業: `dev-flow-done-runner`。監査: 5 つの auditor を再実行。ユーザー承認必須。
 
 各 subagent の詳細 (役割 / 制約 / 手順 / テンプレート) は `~/.cursor/agents/dev-flow-<name>.md` を参照する。本 skill 側からは subagent を**名前で spawn**するだけでよい。
 
@@ -45,9 +39,7 @@ disable-model-invocation: true
 
 ワークフロー進行中のみ、`docs/adr/draft/dev-flow-state.json` に JSON で進捗を記録する。**キー `dev_flow_completed_through` は「どの工程まで完了したか」を表す**。
 
-| キー | 型 | 説明 |
-| --- | --- | --- |
-| `dev_flow_completed_through` | string | 下表の値のいずれか。**最後に完了した工程**。 |
+- キー `dev_flow_completed_through` (string): 下記のいずれか。**最後に完了した工程**。
 
 例:
 
@@ -59,12 +51,10 @@ disable-model-invocation: true
 
 ### `dev_flow_completed_through` の値
 
-| 値 | 意味 / 完了した地点 | 次に取るべき行動 |
-| --- | --- | --- |
-| `adr` | 設計束の **ADR 部分**まで完了 (監査通過)。Open Question 残なら**ここで停止** (三種は未整備) | 解消後に adr 周回。解消済みなら**同一オーケストレーションで** `dev-flow-spec-author` へ |
-| `spec` | **設計束全体**完了 (ADR + 用件 + 設計 + Spec 監査通過) | ユーザーの明示指示があれば工程 2 (Test → 実装) へ |
-| `implementation` | 工程 2 (Test → 実装) 完了 | ユーザーの明示指示があれば工程 3 へ |
-| `document` | 工程 3 (ドキュメント生成) 完了 | ユーザー承認があれば工程 4 (Done) へ |
+- `adr`: 設計束の ADR 部分まで完了 (監査通過)。Open Question 残ならここで停止 (三種未整備)。次: 解消後 adr 周回。解消済みなら同一オーケストレーションで `dev-flow-spec-author` へ。
+- `spec`: 設計束全体完了 (ADR + 用件 + 設計 + Spec 監査通過)。次: ユーザー明示があれば工程 2 (Test→実装) へ。
+- `implementation`: 工程 2 (Test→実装) 完了。次: ユーザー明示があれば工程 3 へ。
+- `document`: 工程 3 (ドキュメント生成) 完了。次: ユーザー承認があれば工程 4 (Done) へ。
 
 工程 4 (Done) の `git commit` 完了後は **state ファイルを必ず削除**する (状態は「ファイル無し」で表す)。`docs/adr/draft/` に Draft ADR が無い場合は draft をクリーンに保ち、state ファイルも置かない。
 

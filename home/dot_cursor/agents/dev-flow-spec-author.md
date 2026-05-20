@@ -43,11 +43,9 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
 - 入力: `docs/adr/active/**` `docs/adr/draft/**` + 既存 `docs/requirements/` `docs/design/` `docs/spec/`
 - 出力: `docs/requirements/**` `docs/design/**` `docs/spec/**` の作成 / 編集 / 削除。あわせて各ディレクトリの `index.md` (`docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md`)
 
-| 成果物 | 出力先 | 主な読み手 | 粒度 |
-| --- | --- | --- | --- |
-| 要件定義 | `docs/requirements/<feature>.md` | 人間 (要求側) | 何を実現するか (機能要件 / 非機能要件 / スコープ) |
-| 基本設計 | `docs/design/<feature>.md` | 人間 (実装側) | どう実現するか (構成 / インターフェース / データ / シーケンス) |
-| Spec (EARS) | `docs/spec/<feature>.md` | 2.a Test / 2.b 実装の入力 | 検証可能な振る舞いの宣言 (テストやソースを読む前提で欠落を埋めない) |
+- **要件定義** → `docs/requirements/<feature>.md` (読み手: 要求側。何を実現するか)
+- **基本設計** → `docs/design/<feature>.md` (読み手: 実装側。どう実現するか)
+- **Spec (EARS)** → `docs/spec/<feature>.md` (読み手: Test / 実装。検証可能な振る舞い。テストやソースを読む前提で欠落を埋めない)
 
 3 つは **同じ feature 単位**で対応するファイル名にし、相互にリンクする。`dev-flow.mdc` の行数・トークン目安を超えそうなときは `<feature>` を分割し (例: `auth` と `auth-api`)、各トピックごとに 3 ファイルセットを揃える。
 
@@ -99,13 +97,11 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
 
 EARS = Easy Approach to Requirements Syntax。要件を 5 種類のテンプレートに統一して書く。
 
-| 種類 | テンプレート | 使い時 |
-| --- | --- | --- |
-| Ubiquitous (普遍) | `The <system> shall <response>.` | 常に成立する性質 |
-| Event-driven (イベント駆動) | `When <trigger>, the <system> shall <response>.` | 何かが起きたとき |
-| State-driven (状態駆動) | `While <state>, the <system> shall <response>.` | ある状態の間 |
-| Optional feature (任意機能) | `Where <feature is included>, the <system> shall <response>.` | 機能フラグ等 |
-| Unwanted behaviour (異常系) | `If <unwanted condition>, then the <system> shall <response>.` | エラー / 例外 |
+- **Ubiquitous (普遍)**: `The <system> shall <response>.` — 常に成立する性質
+- **Event-driven (イベント駆動)**: `When <trigger>, the <system> shall <response>.` — 何かが起きたとき
+- **State-driven (状態駆動)**: `While <state>, the <system> shall <response>.` — ある状態の間
+- **Optional feature (任意機能)**: `Where <feature is included>, the <system> shall <response>.` — 機能フラグ等
+- **Unwanted behaviour (異常系)**: `If <unwanted condition>, then the <system> shall <response>.` — エラー / 例外
 
 複合: `When <trigger>, while <state>, if <unwanted>, then the <system> shall <response>.`
 
@@ -179,9 +175,7 @@ the authentication service shall return a JWT token signed with HS256.
 
 ## コンポーネントと責務
 
-| コンポーネント | 責務 | 依存 |
-| --- | --- | --- |
-| ... | ... | ... |
+- `<コンポーネント>`: 責務 …。依存 …。
 
 ## 公開インターフェース
 

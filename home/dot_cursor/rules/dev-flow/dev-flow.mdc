@@ -65,12 +65,10 @@ ADR・用件定義・基本設計・Spec のいずれも、**1 ファイルが�
 
 ### 対象パスと更新責務
 
-| パス | 列挙対象 | 更新する subagent |
-| --- | --- | --- |
-| `docs/adr/active/index.md` | `docs/adr/active/*.md` (**Active のみ**。`index.md` 自身は除く) | `dev-flow-done-runner` (Active 化・Archive 化時) |
-| `docs/requirements/index.md` | `docs/requirements/*.md` (`index.md` 除く) | `dev-flow-spec-author` |
-| `docs/design/index.md` | `docs/design/*.md` (`index.md` 除く) | `dev-flow-spec-author` |
-| `docs/spec/index.md` | `docs/spec/*.md` (`index.md` 除く) | `dev-flow-spec-author` |
+- `docs/adr/active/index.md`: 列挙 `docs/adr/active/*.md` (Active のみ。`index.md` 除く)。更新 `dev-flow-done-runner` (Active / Archive 化時)。
+- `docs/requirements/index.md`: 列挙 `docs/requirements/*.md` (`index.md` 除く)。更新 `dev-flow-spec-author`。
+- `docs/design/index.md`: 列挙 `docs/design/*.md` (`index.md` 除く)。更新 `dev-flow-spec-author`。
+- `docs/spec/index.md`: 列挙 `docs/spec/*.md` (`index.md` 除く)。更新 `dev-flow-spec-author`。
 
 - **`docs/adr/draft/`** と **`docs/adr/archive/`** には `index.md` を置かない (Draft はブランチ作業中の一時成果物。Archive は参照頻度が低い)。
 - `index.md` で**本文を分割しない** (目次専用。`draft/<topic>/` 配下への分割も禁止)。
@@ -102,13 +100,11 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 
 ## 工程の入出力
 
-| 工程 | 作業 subagent | 監査 subagent (auto) | 入力 | 主な成果物 | 検証 |
-| --- | --- | --- | --- | --- | --- |
-| 1. 設計束 (ADR・用件・基本設計・Spec) | `dev-flow-adr-author` → (`dev-flow-spec-author` は Open Question ゼロかつ adr 監査通過後に**続けて**) | `dev-flow-adr-auditor` → (`dev-flow-spec-auditor` は同様に続けて) | ユーザー要求 + 現コードベース + ADR | `docs/adr/draft/` + `docs/requirements/` + `docs/design/` + `docs/spec/` (+ 各 `index.md`) | Open Question 残時は ADR のみ。確定後は三種を**同時バッチ**で。分割・`index.md` 同期を遵守 |
-| 2.a Test | `dev-flow-test-author` | `dev-flow-test-auditor` | Spec + 既存テスト | テストコード | 各 REQ にテスト**必須**。Spec 外テスト可。生成直後に**失敗**を確認 |
-| 2.b 実装 | `dev-flow-implementer` | `dev-flow-impl-auditor` | Spec + Test + 既存実装 | プロダクションコード | **全 PASS** + 未使用コードなし + **カバレッジ 80% 以上** (明示指示で例外可) |
-| 3. ドキュメント生成 | `dev-flow-document-author` | `dev-flow-document-auditor` | 上記すべて | `docs/developer/` `docs/user/` | AI 専用情報は書かない |
-| 4. 完了 (Done) | `dev-flow-done-runner` | (5 つの auditor を再実行) | 上記すべて + ユーザー承認 | `docs/adr/active/` への移動 + `git commit` | バージョンプレフィックス付与 / 5 つの auditor 全件確認 |
+1. **設計束 (ADR・用件・基本設計・Spec)** — 作業: `dev-flow-adr-author` → (Open Question ゼロかつ adr 監査通過後) `dev-flow-spec-author`。監査: `dev-flow-adr-auditor` → `dev-flow-spec-auditor`。入力: ユーザー要求 + 現コードベース + ADR。成果物: `docs/adr/draft/` + 三種 (+ 各 `index.md`)。検証: Open Question 残時は ADR のみ。確定後は三種を同時バッチ。分割・`index.md` 同期を遵守。
+2. **2.a Test** — 作業: `dev-flow-test-author`。監査: `dev-flow-test-auditor`。入力: Spec + 既存テスト。成果物: テストコード。検証: 各 REQ にテスト必須。Spec 外テスト可。生成直後に失敗を確認。
+3. **2.b 実装** — 作業: `dev-flow-implementer`。監査: `dev-flow-impl-auditor`。入力: Spec + Test + 既存実装。成果物: プロダクションコード。検証: 全 PASS + 未使用コードなし + カバレッジ 80% 以上 (明示指示で例外可)。
+4. **ドキュメント生成** — 作業: `dev-flow-document-author`。監査: `dev-flow-document-auditor`。入力: 上記すべて。成果物: `docs/developer/` `docs/user/`。検証: AI 専用情報は書かない。
+5. **完了 (Done)** — 作業: `dev-flow-done-runner`。監査: 5 つの auditor を再実行。入力: 上記すべて + ユーザー承認。成果物: `docs/adr/active/` への移動 + `git commit`。検証: バージョンプレフィックス付与 / auditor 全件確認。
 
 ## 工程進行の原則 (厳守)
 
@@ -168,12 +164,10 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 
 ### 未カバー行の分類と対応
 
-| 分類 | 内容 | 対応 (親が spawn) |
-| --- | --- | --- |
-| **A** | Spec / REQ に無いが、仕様として必要な振る舞い | 設計束へ: `dev-flow-adr-author` → … → `dev-flow-spec-author` → `dev-flow-test-author` → `dev-flow-implementer` (要望は「下流から上流への要望」に従う) |
-| **B** | REQ はあるがテストが薄い・分岐未検証 | `dev-flow-test-author` → (新規テストが RED なら) `dev-flow-implementer` |
-| **C** | 不要・到達不能な実装 | `dev-flow-implementer` (削除のみ) |
-| **D** | 計測範囲・コマンドが広すぎる / 誤っている | プロジェクト規約に従い対象を当該変更に限定して再計測 (閾値変更はユーザー明示時のみ) |
+- **A** (Spec / REQ に無いが仕様として必要): 設計束へ `dev-flow-adr-author` → … → `dev-flow-spec-author` → `dev-flow-test-author` → `dev-flow-implementer` (「下流から上流への要望」に従う)。
+- **B** (REQ はあるがテストが薄い・分岐未検証): `dev-flow-test-author` → (新規テストが RED なら) `dev-flow-implementer`。
+- **C** (不要・到達不能な実装): `dev-flow-implementer` (削除のみ)。
+- **D** (計測範囲・コマンドが広すぎる / 誤っている): プロジェクト規約に従い対象を当該変更に限定して再計測 (閾値変更はユーザー明示時のみ)。
 
 分類 **A** では、下流 subagent が Spec を直接編集せず、親経由で設計束に戻す。
 
@@ -235,12 +229,10 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 
 `docs/adr/draft/dev-flow-state.json` の `dev_flow_completed_through` は以下のいずれか:
 
-| 値 | 意味 | 次の行動 |
-| --- | --- | --- |
-| `adr` | 設計束のうち **ADR 部分**まで完了 (監査通過)。Open Question 残なら**ここで停止**し三種は未整備のまま | Open Question 解消後に再度 adr 周回。解消済みなら**同一バッチで** `dev-flow-spec-author` へ続行 |
-| `spec` | **設計束全体**完了 (ADR + 用件 + 設計 + Spec が監査通過) | ユーザーの明示指示で工程 2 (Test → 実装) へ |
-| `implementation` | 工程 2 (Test → 実装) 完了 | ユーザーの明示指示で工程 3 へ |
-| `document` | 工程 3 (ドキュメント生成) 完了 | ユーザー承認で工程 4 (Done) へ |
+- `adr`: 設計束の ADR 部分まで完了 (監査通過)。Open Question 残なら停止 (三種未整備)。次: 解消後 adr 周回。解消済みなら同一バッチで `dev-flow-spec-author` へ。
+- `spec`: 設計束全体完了 (ADR + 三種が監査通過)。次: ユーザー明示で工程 2 (Test→実装) へ。
+- `implementation`: 工程 2 (Test→実装) 完了。次: ユーザー明示で工程 3 へ。
+- `document`: 工程 3 (ドキュメント生成) 完了。次: ユーザー承認で工程 4 (Done) へ。
 
 工程 4 (Done) の commit 完了後は state ファイル自体を削除する。
 

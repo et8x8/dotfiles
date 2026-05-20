@@ -1,7 +1,7 @@
 {
   "name": "dev-flow",
   "version": "0.6.0",
-  "description": "AI agent first development process. A single `dev-flow` skill drives the four-phase flow (1. Planning bundle: ADR + Requirements + Design + Spec in one batch when ADR is settled; ADR-only if Open Questions remain -> 2. Test -> Implementation -> 3. Documentation -> 4. Done) by delegating each phase to dedicated subagents (`dev-flow-<name>` under `~/.cursor/agents/`). Auditor subagents auto-invoke at phase boundaries. The `dev-flow` skill uses `disable-model-invocation: true` as the explicit prompt entry point.",
+  "description": "SDD four-phase dev process (planning bundle ADR+requirements+design+spec, then test/implementation, docs, done) via `dev-flow` skill and `dev-flow-*` subagents with phase auditors.",
   "author": {
     "name": "hayato"
   },

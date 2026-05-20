@@ -73,13 +73,11 @@ dev-flow 工程 **2.a (Test)** 専用の subagent。Spec の各要件 (REQ-XXX-N
 
    ### EARS から Test へのマッピング指針
 
-   | EARS 種類 | テストの基本形 |
-   | --- | --- |
-   | Ubiquitous | プロパティテスト / 不変条件のテスト |
-   | Event-driven | 入力 / 操作を与えて期待される出力 / 状態を assert |
-   | State-driven | 状態遷移を作って性質を assert |
-   | Optional feature | 機能フラグ ON / OFF の両方をテスト |
-   | Unwanted behaviour | 異常入力でエラー応答 / 例外を assert |
+   - **Ubiquitous**: プロパティテスト / 不変条件のテスト
+   - **Event-driven**: 入力 / 操作を与えて期待される出力 / 状態を assert
+   - **State-driven**: 状態遷移を作って性質を assert
+   - **Optional feature**: 機能フラグ ON / OFF の両方をテスト
+   - **Unwanted behaviour**: 異常入力でエラー応答 / 例外を assert
 
    各テストには Spec の要件 ID を**コメント / docstring で必ず引用**する。
 
