@@ -15,9 +15,9 @@ dev-flow 工程 **4 (完了 / Done)** 専用の subagent。すべての成果物
 - `docs/adr/draft/dev-flow-state.json` の `dev_flow_completed_through` が **`document`** であること (工程 3 まで完了)。
 - PR / コードレビューで**未解決の指摘が残っていない**。
 - `docs/adr/draft/` に Draft ADR が存在する。
-- 工程 1 (設計束) / 2 (Test → 実装) / 3 (ドキュメント生成) がすべて完了している。
+- 工程 1 (設計束) / 2 (実装) / 3 (ドキュメント生成) がすべて完了している。
 - すべてのテストが通っている。
-- 工程 1〜3 末尾の各 auditor (`dev-flow-adr-auditor` / `dev-flow-spec-auditor` / `dev-flow-test-auditor` / `dev-flow-impl-auditor` / `dev-flow-document-auditor`) で違反が無いことを確認済み。
+- 工程 1〜3 末尾の各 auditor (`dev-flow-adr-auditor` / `dev-flow-spec-auditor` / `dev-flow-impl-auditor` / `dev-flow-document-auditor`) で違反が無いことを確認済み。
 
 ## 役割
 
@@ -49,11 +49,10 @@ dev-flow 工程 **4 (完了 / Done)** 専用の subagent。すべての成果物
 
 ### 1. 最終整合性チェック
 
-5 つの auditor subagent を順次 (または並列で) 起動し、すべてのチェックリストで違反 0 を確認する:
+4 つの auditor subagent を順次 (または並列で) 起動し、すべてのチェックリストで違反 0 を確認する:
 
 - `dev-flow-adr-auditor`
 - `dev-flow-spec-auditor`
-- `dev-flow-test-auditor`
 - `dev-flow-impl-auditor`
 - `dev-flow-document-auditor`
 

@@ -13,7 +13,7 @@ dev-flow 工程 **3 (ドキュメント生成)** 専用の subagent。人間向�
 ## 前提
 
 - `docs/adr/draft/dev-flow-state.json` の `dev_flow_completed_through` が **`implementation`** であること。違う場合は親エージェントに差し戻す。
-- 工程 2 (`dev-flow-test-author` → `dev-flow-implementer`) が完了し、全テストが PASS していること。
+- 工程 2 (`dev-flow-implementer`) が完了し、全テストが PASS していること。
 
 ## 役割
 

@@ -1,11 +1,11 @@
 ---
-description: AI エージェント前提の開発プロセス (4 工程: 設計束 ADR+用件+設計+Spec → Test→実装 → ドキュメント生成 → 完了) の常時ガードレール。各工程からの逸脱、後工程から前工程の改変、未承認の Done 移行などを禁止する。各工程の完了時に対応する auditor subagent (`dev-flow-<phase>-auditor`) による整合性監査を自動で行う。
+description: AI エージェント前提の開発プロセス (4 工程: 設計束 → 実装(TDD) → ドキュメント → 完了) の常時ガードレール。各工程からの逸脱、後工程から前工程の改変、未承認の Done 移行などを禁止する。各工程の完了時に対応する auditor subagent (`dev-flow-<phase>-auditor`) による整合性監査を自動で行う。
 alwaysApply: true
 ---
 
 # dev-flow ガードレール
 
-このリポジトリは「**(1) 設計束 (ADR・用件定義・基本設計・Spec) → (2) Test → 実装 → (3) ドキュメント生成 → (4) 完了 (Done)**」の **4 工程の開発プロセス**で運用する。工程 1 の設計束は **1 つの工程**として扱い、ADR と用件・設計・Spec を**別タイミングの工程に分けて運用しない** (後述の Open Question 例外を除く)。本プロセスは **`dev-flow` skill** をエントリポイントとし、各工程は対応する subagent (`dev-flow-<name>`) に委譲する。各工程末では対応する **auditor subagent** (`dev-flow-<phase>-auditor`) を自動で spawn し整合性を監査する (ユーザーが手動で auditor を呼ぶ想定はない)。以下を**例外なく**守ること。
+このリポジトリは「**(1) 設計束 (ADR・用件定義・基本設計・Spec) → (2) 実装 (TDD: テスト + プロダクトコード) → (3) ドキュメント生成 → (4) 完了 (Done)**」の **4 工程の開発プロセス**で運用する。工程 1 の設計束は **1 つの工程**として扱い、ADR と用件・設計・Spec を**別タイミングの工程に分けて運用しない** (後述の Open Question 例外を除く)。本プロセスは **`dev-flow` skill** をエントリポイントとし、各工程は対応する subagent (`dev-flow-<name>`) に委譲する。各工程末では対応する **auditor subagent** (`dev-flow-<phase>-auditor`) を自動で spawn し整合性を監査する (ユーザーが手動で auditor を呼ぶ想定はない)。以下を**例外なく**守ること。
 
 ## 工程 1「設計束」の一体運用
 
@@ -19,7 +19,7 @@ alwaysApply: true
 - 矛盾や不整合が発生した場合、必ず**前の工程に戻ってから**更新し、それを元に後工程を再生成する。**現在の工程に合わせて前工程の成果物を書き換えてはならない**。
   - 例: Test の都合で Spec を直接書き換えるのは禁止。Spec を直すなら ADR から見直す。
   - 例: 実装の都合で Test を直接書き換えるのは禁止。
-- **`dev_flow_completed_through` が `document` 以外**のときに PR / コードレビューで内容を手直しする場合、`dev_flow_completed_through` を **`adr` に戻し**、**工程 1 (設計束) から順に再確認**する (下流だけで済ませない)。**全工程の成果物を毎回すべて書き換える必要はなく**、各工程で変更が不要ならその成果物は改めず次工程の確認へ進んでよい。変更が生じた工程から下流を更新する。
+- PR / コードレビューで内容を手直しする場合 ( **`document` 完了後を含む** )、`dev_flow_completed_through` を **`adr` に戻し**、**工程 1 (設計束) から順に再確認**する (下流だけで済ませない)。**全工程の成果物を毎回すべて書き換える必要はなく**、各工程で変更が不要ならその成果物は改めず次工程の確認へ進んでよい。変更が生じた工程から下流を更新する。
 - 各工程の成果物は常に「最新で生きた状態」を維持する。古い記述は修正または削除する (将来のために残してはならない)。
 
 ## 下流から上流への要望 (橋渡し)
@@ -101,17 +101,16 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 ## 工程の入出力
 
 1. **設計束 (ADR・用件・基本設計・Spec)** — 作業: `dev-flow-adr-author` → (Open Question ゼロかつ adr 監査通過後) `dev-flow-spec-author`。監査: `dev-flow-adr-auditor` → `dev-flow-spec-auditor`。入力: ユーザー要求 + 現コードベース + ADR。成果物: `docs/adr/draft/` + 三種 (+ 各 `index.md`)。検証: Open Question 残時は ADR のみ。確定後は三種を同時バッチ。分割・`index.md` 同期を遵守。
-2. **2.a Test** — 作業: `dev-flow-test-author`。監査: `dev-flow-test-auditor`。入力: Spec + 既存テスト。成果物: テストコード。検証: 各 REQ にテスト必須。Spec 外テスト可。生成直後に失敗を確認。
-3. **2.b 実装** — 作業: `dev-flow-implementer`。監査: `dev-flow-impl-auditor`。入力: Spec + Test + 既存実装。成果物: プロダクションコード。検証: 全 PASS + 未使用コードなし + カバレッジ 80% 以上 (明示指示で例外可)。
-4. **ドキュメント生成** — 作業: `dev-flow-document-author`。監査: `dev-flow-document-auditor`。入力: 上記すべて。成果物: `docs/developer/` `docs/user/`。検証: AI 専用情報は書かない。
-5. **完了 (Done)** — 作業: `dev-flow-done-runner`。監査: 5 つの auditor を再実行。入力: 上記すべて + ユーザー承認。成果物: `docs/adr/active/` への移動 + `git commit`。検証: バージョンプレフィックス付与 / auditor 全件確認。
+2. **実装 (TDD)** — 作業: `dev-flow-implementer` (テスト + プロダクトコードを同一 subagent で増分作成)。監査: `dev-flow-impl-auditor`。入力: Spec + 既存テスト + 既存実装。成果物: テストコード + プロダクションコード。検証: 各 REQ にテスト必須、Spec 外テスト可、TDD (Red→Green→Refactor)、全 PASS、カバレッジ 80% 以上 (明示指示で例外可)。一括で全テスト先行→全実装後追いは禁止。
+3. **ドキュメント生成** — 作業: `dev-flow-document-author`。監査: `dev-flow-document-auditor`。入力: 上記すべて。成果物: `docs/developer/` `docs/user/`。検証: AI 専用情報は書かない。
+4. **完了 (Done)** — 作業: `dev-flow-done-runner`。監査: 4 つの auditor を再実行 (`dev-flow-adr-auditor` / `dev-flow-spec-auditor` / `dev-flow-impl-auditor` / `dev-flow-document-auditor`)。入力: 上記すべて + ユーザー承認。成果物: `docs/adr/active/` への移動 + `git commit`。検証: バージョンプレフィックス付与 / auditor 全件確認。
 
 ## 工程進行の原則 (厳守)
 
 - **次工程に進む明示指示が無ければ絶対に次工程に進まない**。
 - **例外 (設計束内部)**: 工程 1 の ADR 部分で `## Open Question` がすべて解消され、`dev-flow-adr-auditor` の監査が違反 0 なら、**ユーザー指示なしで**続けて `dev-flow-spec-author` → `dev-flow-spec-auditor` まで進めてよい (設計束を**1 工程**として完結させるための唯一の「工程内自動進行」)。
 - **Open Question や未確定が ADR に残っている間は**、用件・基本設計・Spec を触らず **ADR のみ**を作成 / 編集する。
-- **工程 2 (Test → 実装) は同じコンテキスト内で連続実行可**。ユーザーの追加指示なしに 2.a (Test) → 2.b (実装) まで進めてよい。ただし**実装に合わせて Test を書き換えてはならない** (Spec から見直す)。
+- **工程 2 (実装)** は `dev-flow-implementer` 1 体で TDD を完遂する (テスト subagent と実装 subagent に分割しない)。ただし**Spec に合わせてテストを後追いで書き換えてはならない** (Spec から見直す)。
 - **工程 4 (Done) は必ずユーザー承認**を得てから Active 移行 + 確定 commit する。承認前は Active 化や確定 commit を行わない (PR 更新のための途中 commit は可)。
 
 ## 各工程の禁止事項
@@ -141,22 +140,24 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 - **`## 設計ドキュメントの分割 (行数・トークン)`** に反する単一巨大ファイル。
 - 三種の Markdown を追加・削除・リネームしたのに、対応する `docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md` を**同一バッチで更新しない**こと。
 
-## 工程 2.a のテスト方針
+## 工程 2 のテスト・TDD 方針
 
 1. **Spec 記載の振る舞いはテスト必須**  
    `docs/spec/` の各要件 (REQ-XXX-NNN) ごとに、対応するテストを**少なくとも 1 つ**用意する。テスト名 / docstring に REQ ID を含める。
 2. **Spec にないテストは許可**  
    Spec に列挙されていない振る舞い・境界・回帰・リファクタ耐性などを**追加でテストしてよい**。ただし **Spec と矛盾してはならない**。REQ ID が無いテストは docstring 等で目的を明示する (Spec 外であることを分かるようにする)。
 3. **テストカバレッジ 80% 以上 (デフォルト)**  
-   ユーザーがチャット等で**別の閾値や免除を明示しない限り**、工程 2.b 完了時点でプロジェクトのカバレッジ計測対象 (通常は当該変更のプロダクションコード。`AGENTS.md` 等の規約を優先) が **80% 以上**であること。計測コマンド・対象パスはプロジェクト規約に従う。
+   ユーザーがチャット等で**別の閾値や免除を明示しない限り**、工程 2 完了時点でプロジェクトのカバレッジ計測対象 (通常は当該変更のプロダクションコード。`AGENTS.md` 等の規約を優先) が **80% 以上**であること。計測コマンド・対象パスはプロジェクト規約に従う。
 
-## 工程 2.b カバレッジ不足時の remediation ループ
+4. **増分進行 (工程 2)** — 関数 (または同等の小単位) ごとにテスト→実装を繰り返す。全テストだけ先に書き後から全実装する進め方は禁止。
 
-工程 2.b で**全テスト PASS** 後、カバレッジが目標未満なら **工程 2 を完了扱いにしない** (`dev_flow_completed_through` を `implementation` に上げない)。親エージェントは本ループを回し、**全 PASS かつカバレッジ達成**まで工程 2 に留める。
+## 工程 2 カバレッジ不足時の remediation ループ
+
+工程 2 で**全テスト PASS** 後、カバレッジが目標未満なら **工程 2 を完了扱いにしない** (`dev_flow_completed_through` を `implementation` に上げない)。親エージェントは本ループを回し、**全 PASS かつカバレッジ達成**まで工程 2 に留める。
 
 ### 対処の優先順位 (SDD 維持)
 
-1. **Test の追加・強化** (`dev-flow-test-author`) — Spec 由来 REQ テストの補強、または Spec 外テスト (Spec と矛盾しないこと)。
+1. **Test の追加・強化** (`dev-flow-implementer`) — Spec 由来 REQ テストの補強、または Spec 外テスト (Spec と矛盾しないこと)。
 2. **実装の削除・整理** (`dev-flow-implementer`) — 不要・到達不能コードの除去。
 3. **実装の追加** — **Spec / Test で求められる不足を埋める最小限のみ**。カバレッジ数値のためだけの追加は**禁止** (下記)。
 
@@ -164,8 +165,8 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 
 ### 未カバー行の分類と対応
 
-- **A** (Spec / REQ に無いが仕様として必要): 設計束へ `dev-flow-adr-author` → … → `dev-flow-spec-author` → `dev-flow-test-author` → `dev-flow-implementer` (「下流から上流への要望」に従う)。
-- **B** (REQ はあるがテストが薄い・分岐未検証): `dev-flow-test-author` → (新規テストが RED なら) `dev-flow-implementer`。
+- **A** (Spec / REQ に無いが仕様として必要): 設計束へ `dev-flow-adr-author` → … → `dev-flow-spec-author` → `dev-flow-implementer` (「下流から上流への要望」に従う)。
+- **B** (REQ はあるがテストが薄い・分岐未検証): `dev-flow-implementer` (テスト追加 → Red → 実装 → Green)。
 - **C** (不要・到達不能な実装): `dev-flow-implementer` (削除のみ)。
 - **D** (計測範囲・コマンドが広すぎる / 誤っている): プロジェクト規約に従い対象を当該変更に限定して再計測 (閾値変更はユーザー明示時のみ)。
 
@@ -174,31 +175,27 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 ### ループの 1 周
 
 1. `dev-flow-implementer` (または親) がカバレッジを計測し、未カバー行を分類する。
-2. 分類に応じて `dev-flow-test-author` / `dev-flow-implementer` / 設計束 subagent を spawn。
-3. 周回の末尾で `dev-flow-test-auditor` および `dev-flow-impl-auditor` を実行 (違反 0 を確認)。
+2. 分類に応じて `dev-flow-implementer` または設計束 subagent を spawn。
+3. 周回の末尾で `dev-flow-impl-auditor` を実行 (違反 0 を確認)。
 4. まだ目標未満なら 1 に戻る。
 
-### 工程 2.b 完了条件 (remediation 含む)
+### 工程 2 完了条件 (remediation 含む)
 
 - 全テスト PASS。
 - カバレッジが目標以上 (デフォルト 80%。ユーザー明示があればその値)。
 - カバレッジ水増し実装が無いこと (`dev-flow-impl-auditor` で確認)。
 
-### 工程 2.a Test — `dev-flow-test-author`
+### 工程 2 実装 — `dev-flow-implementer`
 
 - Spec の**各 REQ に対応するテストが無い**こと。
-- Spec と矛盾するテストを書くこと。
-- テスト生成直後に「失敗すること」を確認しないこと。
-- 実装の都合で Test を書き換えること (Spec から見直す)。
-- 自分の編集範囲外 (上流成果物) を直接変更すること。上流への変更が必要なら親エージェントに要望すること。
-
-### 工程 2.b 実装 — `dev-flow-implementer`
-
+- Spec と矛盾するテスト・実装を書くこと。
+- **全テスト先行 → 全実装後追い**の一括進行。
+- TDD の Red 確認を省略すること (新規 Spec 由来テスト)。
+- Spec に合わせてテストを後追いで書き換えること (Spec から見直す)。
 - Spec / Test に記載のない実装を行うこと。
-- Spec / Test と矛盾する実装を行うこと。
 - 「将来使うかもしれない」という理由で未使用コードを残すこと。
 - Spec に記載のない互換性 / フェイルセーフ実装を入れること。
-- ユーザーが明示的に別閾値や免除を指示していないのに、**テストカバレッジが 80% 未満**のまま工程 2.b を完了とすること。
+- ユーザーが明示的に別閾値や免除を指示していないのに、**テストカバレッジが 80% 未満**のまま工程 2 を完了とすること。
 - **カバレッジ数値のためだけ**に、Spec / Test と無関係なコードを実装に追加すること (水増し実装)。
 - 上流の成果物 (`docs/spec/` 等) を**直接**編集すること (要望は親エージェント経由。`## 下流から上流への要望` 参照)。
 
@@ -220,7 +217,7 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 ## コンテキスト分離
 
 - `dev-flow` skill (`~/.cursor/skills/dev-flow/dev-flow/SKILL.md`) はエントリポイント。状態判定と全体フロー制御のみを行う。**各工程の詳細手順・制約・テンプレートは対応する subagent ファイル `~/.cursor/agents/dev-flow-<name>.md`** に集約してある。
-- 各工程は対応する subagent (`dev-flow-adr-author` / `dev-flow-spec-author` / `dev-flow-test-author` / `dev-flow-implementer` / `dev-flow-document-author` / `dev-flow-done-runner`) を Task で spawn してコンテキストを分離して実行する。**工程 2 の内部ステップ (2.a Test / 2.b 実装) もそれぞれ別 subagent で実行する** (同じコンテキストから順次 spawn する)。
+- 各工程は対応する subagent (`dev-flow-adr-author` / `dev-flow-spec-author` / `dev-flow-implementer` / `dev-flow-document-author` / `dev-flow-done-runner`) を Task で spawn してコンテキストを分離して実行する。工程 2 は **`dev-flow-implementer` のみ** (テストと実装を同一 subagent が担当)。
 - **各工程の完了時** に対応する **auditor subagent** (`dev-flow-<phase>-auditor`) を**自動的に**呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程に戻る。auditor は description に "Use proactively after ..." を含み、自動委譲を促す設計。**ユーザーが手動で auditor を呼ぶ想定はない**。
 - 進行中のみ `docs/adr/draft/dev-flow-state.json` に **`dev_flow_completed_through`** (完了した工程) を記録し、**工程が完了するたびに値を書き換える**。**Done 工程の `git commit` 完了後はそのファイルを削除**する (記録なしはファイル無し)。
 - **進捗はこの JSON のみを正とし、git の状態から推定してはならない**。
@@ -230,8 +227,8 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 `docs/adr/draft/dev-flow-state.json` の `dev_flow_completed_through` は以下のいずれか:
 
 - `adr`: 設計束の ADR 部分まで完了 (監査通過)。Open Question 残なら停止 (三種未整備)。次: 解消後 adr 周回。解消済みなら同一バッチで `dev-flow-spec-author` へ。
-- `spec`: 設計束全体完了 (ADR + 三種が監査通過)。次: ユーザー明示で工程 2 (Test→実装) へ。
-- `implementation`: 工程 2 (Test→実装) 完了。次: ユーザー明示で工程 3 へ。
+- `spec`: 設計束全体完了 (ADR + 三種が監査通過)。次: ユーザー明示で工程 2 (実装) へ。
+- `implementation`: 工程 2 (実装) 完了。次: ユーザー明示で工程 3 へ。
 - `document`: 工程 3 (ドキュメント生成) 完了。次: ユーザー承認で工程 4 (Done) へ。
 
 工程 4 (Done) の commit 完了後は state ファイル自体を削除する。
