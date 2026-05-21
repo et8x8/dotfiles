@@ -34,7 +34,7 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
 
 ## 入出力
 
-- 入力: ユーザー要求 + 現コードベース + 既存 ADR (`docs/adr/active/**`, `docs/adr/draft/**`)
+- 入力: ユーザー要求 + 現コードベース + 既存 ADR (`docs/adr/draft/**` はすべて、`docs/adr/active/index.md` 経由で関係する Active ADR のみ)
 - 出力: `docs/adr/draft/<topic>.md` の作成 / 編集 / 削除
 
 ### 出力先のルール
@@ -51,7 +51,8 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
 
 1. **状況の把握**
    - `git status` で Draft 段階の差分を確認する (参考)。
-   - `docs/adr/draft/` と `docs/adr/active/` を一覧し、関連する Draft / Active ADR を読む。
+   - `docs/adr/draft/` 配下の**すべての** Draft ADR を読む。
+   - **Active ADR**: まず `docs/adr/active/index.md` を読み、そこから本 feature に関係する Active ADR のみ読む (全件読まない)。
    - **`docs/adr/archive/` は原則として読まない**。障害対応・デグレ調査など、過去の背景が明示的に必要なときのみ参照する。
    - 関連する既存コードベースを読み、現状を理解する。
 2. **ADR の作成 / 編集 / 削除**
@@ -76,10 +77,6 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
 
 ```markdown
 # ADR: <タイトル>
-
-- ステータス: Draft
-- 日付: <YYYY-MM-DD>
-- 起案者: <名前 / Agent>
 
 ## Context
 
@@ -123,7 +120,7 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
 - `dev-flow.mdc` の「成果物記述における前後工程参照の禁止」に反し、受け入れ条件や本文で Test・実装・ソースコードに詳細や妥当性を委ねること (ユーザーが明示した場合のみ例外)。
 - 不確定情報を残したまま「設計束完了」とみなさせること (親が `dev-flow-spec-author` を誤 spawn する原因になる)。
 - 検証用コード・モックを Test や実装のソースツリーに含める。
-- 既存 Active ADR を編集・削除する (Active は不変。Archive への移動のみ可)。
+- **Active ADR・Archive ADR への一切の書き込み操作** (作成・編集・削除・`git mv` による移動を含む)。本 subagent が触ってよいのは **`docs/adr/draft/` のみ**。Active 化・Archive 化は工程 4 の `dev-flow-done-runner` のみ。
 - Draft ファイル名から**トピックがまったく識別できない**こと。
 - `## Open Question` に未解消項目があるのに `docs/requirements/`・`docs/design/`・`docs/spec/` を作成・編集すること (本 subagent の範囲外であり、親も `dev-flow-spec-author` を呼んではならない)。
 

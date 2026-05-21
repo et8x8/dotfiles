@@ -1,6 +1,6 @@
 ---
 name: dev-flow-done-runner
-description: dev-flow 工程 4 (完了 / Done) を担当する subagent。全工程の整合性を最終確認し、ユーザー承認を取得した上で ADR Draft を Active に昇格させ、`git commit` で確定する。Use when the dev-flow process is ready to finalize a feature: promote draft ADRs to active and commit the result.
+description: "dev-flow 工程 4 (完了 / Done)。全工程の最終確認、ユーザー承認後に Draft ADR を Active 化し git commit で確定する。"
 model: inherit
 ---
 
@@ -61,6 +61,7 @@ dev-flow 工程 **4 (完了 / Done)** 専用の subagent。すべての成果物
 手動でも以下を確認:
 
 - Draft ADR の Open Question がすべて解消されている。
+- 各 Draft ADR の **`## Acceptance criteria` が実装・テスト・成果物で満たされている**。未充足の ADR が 1 件でもあれば Done 完了としない。
 - 要件定義 / 基本設計 / Spec が Draft + Active ADR を反映し、3 種が同じ feature 名で揃っている。
 - 各 Spec REQ に対応するテストがあり、すべて成功している (Spec 外テストの存在は可)。
 - 実装が Spec / Test を満たし、未使用コードや Spec 外コードがない。
@@ -88,10 +89,7 @@ git describe --tags | sed 's/-g[0-9a-f]*$//'
 
 例: `v1.2.0-3` のような出力。これを ADR のファイル名先頭に付与するプレフィックスとする。
 
-タグが 1 つも存在しない場合は、ユーザーに以下のいずれかを確認する:
-
-- 初回タグ (例: `v0.1.0`) を打ってからこの工程をやり直す。
-- プレフィックスを使用しないルールに変更する (この場合、`~/.cursor/rules/dev-flow/dev-flow.mdc` への影響を相談)。
+タグが 1 つも存在しない (初回タグ未作成) 場合は、**ユーザーに警告して作業を中断**する。プレフィックスの付与は**必須**であり、プレフィックス無しでの Active 化は行わない。ユーザーには初回タグ (例: `v0.1.0`) を打ってから本工程をやり直すよう伝える。
 
 ### 4. ADR の Draft → Active 移行
 
@@ -123,7 +121,7 @@ git mv docs/adr/draft/auth-jwt.md docs/adr/active/v1.2.0-auth-jwt.md
 
 ### 5. git commit
 
-すべての変更を 1 コミット (または論理的なまとまりごとに数コミット) でコミットする。
+**すべての変更を 1 コミット**にまとめてコミットする (複数コミットに分割しない)。
 
 コミットメッセージのフォーマットはプロジェクトの規約に従う (`git log` を見て参考にする)。最低限以下を含める:
 

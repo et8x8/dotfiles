@@ -102,7 +102,7 @@ AI エージェント前提の開発プロセスを支援する Cursor 用のリ
 
 - **言語非依存**: Test の実行コマンドや実装のファイル配置はリポジトリ側の規約に従う (`AGENTS.md` 等から推測)。
 - **Draft ADR はトピック別に複数可**: Active 化のタイミングや命名は `dev-flow-done-runner` subagent とプロジェクト規約に従う。
-- **未コミットの差分・コミット履歴**: 作業ツリーの把握や PR 更新には使うが、**どの工程まで完了したかの判断には使わない** (正本は `dev-flow-state.json` の `dev_flow_completed_through`)。**コミット済みが必ずしも Done 完了を意味しない**。Done の確定は `dev-flow-done-runner` subagent とユーザー承認に従う。
+- **未コミットの差分・コミット履歴**: 作業ツリーの把握や PR 更新には使うが、**どの工程まで完了したかの判断には使わない** (正本は `dev-flow-state.json` の `dev_flow_completed_through`)。**PR 用ブランチでは `dev-flow-state.json` の git 履歴 (差分) を、現 dev-flow の影響範囲の把握に使ってよい** (工程完了の判定には使わない)。**コミット済みが必ずしも Done 完了を意味しない**。Done の確定は `dev-flow-done-runner` subagent とユーザー承認に従う。
 
 ## 設計上の留意点
 

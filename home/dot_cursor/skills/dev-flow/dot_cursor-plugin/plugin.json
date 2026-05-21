@@ -3,14 +3,12 @@
   "version": "0.6.0",
   "description": "SDD four-phase dev process (planning bundle, TDD implementation in one subagent, docs, done) via `dev-flow` skill and `dev-flow-*` subagents with phase auditors.",
   "author": {
-    "name": "hayato"
+    "name": "et8x8"
   },
   "keywords": [
     "adr",
     "spec",
     "tdd",
-    "workflow",
-    "process",
-    "subagent"
+    "workflow"
   ]
 }

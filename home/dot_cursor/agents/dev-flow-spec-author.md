@@ -40,7 +40,7 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
 
 ## 入出力
 
-- 入力: `docs/adr/active/**` `docs/adr/draft/**` + 既存 `docs/requirements/` `docs/design/` `docs/spec/`
+- 入力: `docs/adr/draft/**` (すべて) + `docs/adr/active/index.md` 経由で関係する Active ADR + 各 `docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md` 経由で関係する既存三種
 - 出力: `docs/requirements/**` `docs/design/**` `docs/spec/**` の作成 / 編集 / 削除。あわせて各ディレクトリの `index.md` (`docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md`)
 
 - **要件定義** → `docs/requirements/<feature>.md` (読み手: 要求側。何を実現するか)
@@ -52,9 +52,9 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
 ## 手順
 
 1. **入力の収集**
-   1. `docs/adr/active/` 配下のすべての ADR を読む。
-   2. `docs/adr/draft/` 配下の**すべての** ADR を読む (Draft は複数ファイルありうる)。
-   3. 既存の `docs/requirements/` `docs/design/` `docs/spec/` を読み、現状を把握する。
+   1. `docs/adr/draft/` 配下の**すべての** Draft ADR を読む (Draft は複数ファイルありうる)。
+   2. **Active ADR**: まず `docs/adr/active/index.md` を読み、そこから本 feature に関係する Active ADR のみ読む。
+   3. **用件・設計・Spec**: 各 `docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md` を読み、関係するファイルのみ読む (全件読まない)。
 2. **差分の検出**
    - **追加された判断 / 振る舞い** → 該当する `<feature>` の 3 ファイルすべてに追記。Spec は新規 ID として追加。
    - **変更された判断 / 振る舞い** → 既存セクション / 要件を編集 (Spec の REQ ID は維持)。supersede が伴う場合は古い記述を削除。
@@ -95,22 +95,21 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
 
 ## EARS 記法
 
-EARS = Easy Approach to Requirements Syntax。要件を 5 種類のテンプレートに統一して書く。
+EARS = Easy Approach to Requirements Syntax。要件を 5 種類のテンプレートに統一して書く。**要件文の言語は英語に限定しない**。ADR・用件定義・基本設計と同じ言語 (通常はプロジェクトの主要言語) で書く。下記の英語パターンは**構造の参考**とし、実際の Spec では同じ意味をプロジェクト言語で表現する。
 
-- **Ubiquitous (普遍)**: `The <system> shall <response>.` — 常に成立する性質
-- **Event-driven (イベント駆動)**: `When <trigger>, the <system> shall <response>.` — 何かが起きたとき
-- **State-driven (状態駆動)**: `While <state>, the <system> shall <response>.` — ある状態の間
-- **Optional feature (任意機能)**: `Where <feature is included>, the <system> shall <response>.` — 機能フラグ等
-- **Unwanted behaviour (異常系)**: `If <unwanted condition>, then the <system> shall <response>.` — エラー / 例外
+- **Ubiquitous (普遍)**: `<system> は <response> である` (常に成立する性質)
+- **Event-driven (イベント駆動)**: `<trigger> のとき、<system> は <response> する`
+- **State-driven (状態駆動)**: `<state> の間、<system> は <response> する`
+- **Optional feature (任意機能)**: `<feature> が有効な場合、<system> は <response> する`
+- **Unwanted behaviour (異常系)**: `<unwanted condition> の場合、<system> は <response> する`
 
-複合: `When <trigger>, while <state>, if <unwanted>, then the <system> shall <response>.`
+複合: 上記を組み合わせて 1 要件にまとめてよい。
 
 ### 例
 
 ```markdown
 ## REQ-AUTH-001 (Event-driven)
-When a user submits valid credentials,
-the authentication service shall return a JWT token signed with HS256.
+有効な認証情報が送信されたとき、認証サービスは HS256 で署名した JWT トークンを返す。
 
 > Source: docs/adr/draft/auth-jwt.md (Decision: 認証は JWT (HS256) で実装する)
 ```
