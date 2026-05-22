@@ -34,7 +34,7 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
 
 ## 入出力
 
-- 入力: ユーザー要求 + 現コードベース + 既存 ADR (`docs/adr/draft/**` はすべて、`docs/adr/active/index.md` 経由で関係する Active ADR のみ)
+- 入力: ユーザー要求 + 現コードベース + 既存 ADR (`docs/adr/draft/**` はすべて、`docs/adr/active/index.md` 経由で関係する Active ADR のみ) + 既存三種 (`docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md` 経由で関係するファイルのみ。全件読まない)
 - 出力: `docs/adr/draft/<topic>.md` の作成 / 編集 / 削除
 
 ### 出力先のルール
@@ -53,6 +53,7 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
    - `git status` で Draft 段階の差分を確認する (参考)。
    - `docs/adr/draft/` 配下の**すべての** Draft ADR を読む。
    - **Active ADR**: まず `docs/adr/active/index.md` を読み、そこから本 feature に関係する Active ADR のみ読む (全件読まない)。
+   - **用件・設計・Spec** (既存がある場合): 各 `docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md` を読み、本 feature に関係するファイルのみ読む。
    - **`docs/adr/archive/` は原則として読まない**。障害対応・デグレ調査など、過去の背景が明示的に必要なときのみ参照する。
    - 関連する既存コードベースを読み、現状を理解する。
 2. **ADR の作成 / 編集 / 削除**
