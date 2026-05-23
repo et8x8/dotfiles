@@ -2,5 +2,6 @@
 - **Preserve existing behavior** - Do not change existing behavior unless explicitly requested to do so.
 - **Maintain predictable defaults** - Do not change default behavior so that users are not surprised.
 - **Do not use emojis** - Unless explicitly requested by users, do not use emojis in GitHub issues, commit messages, or development-related content
+- **dev-flow** - When the user explicitly asks for dev-flow / $dev-flow, or when a repository has `docs/adr/draft/dev-flow-state.json` and the task is about continuing that workflow, use the `dev-flow` skill. Do not infer the dev-flow stage from git status or commit history.
 
 @{{ .chezmoi.homeDir }}/.codex/RTK.md

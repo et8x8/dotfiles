@@ -1,0 +1,4 @@
+interface:
+  display_name: "dev-flow"
+  short_description: "Run the SDD dev-flow from ADR to Done"
+  default_prompt: "Use $dev-flow to run the SDD four-phase development workflow from the current repository state."
