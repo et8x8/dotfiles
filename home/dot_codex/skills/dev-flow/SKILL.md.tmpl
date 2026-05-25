@@ -4,5 +4,4 @@ description: SDD の 4 工程 (設計束 → 実装(TDD) → ドキュメント 
 metadata:
   short-description: Run ADR-to-Done SDD workflow
 ---
-
-{{ template "agent/dev-flow/skill.md.tmpl" (dict "Agent" "codex" "GuardrailsPath" "~/.codex/skills/dev-flow/references/guardrails.md" "GuardrailsName" "guardrails.md") -}}
+{{ template "agent/dev-flow/skill.md.tmpl" (dict "Agent" "codex" "SkillPath" "~/.codex/skills/dev-flow/SKILL.md" "SubagentReference" "~/.codex/skills/dev-flow/references/dev-flow-<name>.md" "SubagentGlob" "~/.codex/agents/dev-flow-*.toml" "GuardrailsPath" "~/.codex/skills/dev-flow/references/guardrails.md" "GuardrailsName" "guardrails.md" "GuardrailsResourceLabel" "ガードレール") -}}

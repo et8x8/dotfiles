@@ -6,5 +6,4 @@ description: >-
   次工程はユーザー明示指示が必要。PR/レビュー時 (document 完了後含む) は `dev_flow_completed_through` を `adr` に戻して設計束から再確認。
 disable-model-invocation: true
 ---
-
-{{ template "agent/dev-flow/skill.md.tmpl" (dict "Agent" "cursor" "GuardrailsPath" "~/.cursor/rules/dev-flow/dev-flow.mdc" "GuardrailsName" "dev-flow.mdc") -}}
+{{ template "agent/dev-flow/skill.md.tmpl" (dict "Agent" "cursor" "SkillPath" "~/.cursor/skills/dev-flow/dev-flow/SKILL.md" "SubagentReference" "~/.cursor/agents/dev-flow-<name>.md" "SubagentGlob" "~/.cursor/agents/dev-flow-*.md" "GuardrailsPath" "~/.cursor/rules/dev-flow/dev-flow.mdc" "GuardrailsName" "dev-flow.mdc" "GuardrailsResourceLabel" "常時注入ガードレール") -}}

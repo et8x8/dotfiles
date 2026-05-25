@@ -1,16 +1,9 @@
+
 # dev-flow
 
-{{ if eq .Agent "cursor" }}
 ユーザー要求を **設計束 (ADR・用件定義・基本設計・Spec)** で確定させ、それを起点に「実装 (TDD)」「ドキュメント」「完了 (Done)」まで一方向に伝搬させる開発プロセス。本 skill 1 つで全工程を扱う。
 
-このファイル (`SKILL.md`) は**エントリポイント**。状態判定・進行ルール・全体フロー制御のみを含み、各工程の詳細手順は対応する subagent ファイル (`~/.cursor/agents/dev-flow-<name>.md`) に集約されている。
-{{ else if eq .Agent "codex" }}
-Cursor 版 `dev-flow` と同じ操作感で、Codex 上の 4 工程を進める。ユーザーは原則として `$dev-flow` / `dev-flow` / 「次へ」/ 「status」/ 「Done へ」だけを指示すればよい。Codex 側では本 skill が進行を握り、工程ごとの作業は `~/.codex/agents/dev-flow-*.toml` の custom subagent に委譲する。
-
-このファイル (`SKILL.md`) は**エントリポイント**。状態判定・進行ルール・全体フロー制御のみを含み、各工程の詳細手順は phase reference (`~/.codex/skills/dev-flow/references/dev-flow-<name>.md`) と custom subagent TOML (`~/.codex/agents/dev-flow-<name>.toml`) に集約されている。
-{{ else }}
-`dev-flow` は、ユーザー要求を **設計束 (ADR・用件定義・基本設計・Spec)** で確定させ、それを起点に「実装 (TDD)」「ドキュメント」「完了 (Done)」まで一方向に伝搬させる開発プロセス。
-{{ end }}
+このファイル (`SKILL.md`) は**エントリポイント**。状態判定・進行ルール・全体フロー制御のみを含み、各工程の詳細手順は対応する subagent ファイル (`{{ .SubagentReference }}`) に集約されている。
 
 ## 4 工程と対応 subagent
 
@@ -19,11 +12,7 @@ Cursor 版 `dev-flow` と同じ操作感で、Codex 上の 4 工程を進める�
 3. **ドキュメント生成** — 作業: `dev-flow-document-author`。監査: `dev-flow-document-auditor`。ユーザー明示必須。
 4. **完了 (Done)** — 作業: `dev-flow-done-runner`。監査: 4 つの auditor を再実行。ユーザー承認必須。
 
-{{ if eq .Agent "cursor" }}
-各 subagent の詳細 (役割 / 制約 / 手順 / テンプレート) は `~/.cursor/agents/dev-flow-<name>.md` を参照する。本 skill 側からは subagent を**名前で spawn**するだけでよい。
-{{ else if eq .Agent "codex" }}
-各 subagent の詳細 (役割 / 制約 / 手順 / テンプレート) は `~/.codex/skills/dev-flow/references/dev-flow-<name>.md` を参照する。Codex custom agent は `~/.codex/agents/dev-flow-<name>.toml` に置く。
-{{ end }}
+各 subagent の詳細 (役割 / 制約 / 手順 / テンプレート) は `{{ .SubagentReference }}` を参照する。本 skill 側からは subagent を**名前で spawn**するだけでよい。
 
 ## 進行原則 (厳守)
 
@@ -41,6 +30,10 @@ Cursor 版 `dev-flow` と同じ操作感で、Codex 上の 4 工程を進める�
 ## 進捗の正本: `docs/adr/draft/dev-flow-state.json`
 
 ワークフロー進行中のみ、`docs/adr/draft/dev-flow-state.json` に JSON で進捗を記録する。**キー `dev_flow_completed_through` は「どの工程まで完了したか」を表す**。
+
+- キー `dev_flow_completed_through` (string): 下記のいずれか。**最後に完了した工程**。
+
+例:
 
 ```json
 {
@@ -60,13 +53,14 @@ Cursor 版 `dev-flow` と同じ操作感で、Codex 上の 4 工程を進める�
 ### 運用ルール
 
 - **進捗の唯一の正本**は `dev_flow_completed_through`。**git の差分・変更パス・コミット有無から工程を推定してはならない** (`git status` 等は作業ツリー把握用に参照してよいが、工程判定の根拠にしない)。
+- **PR 用ブランチ**では `dev-flow-state.json` が工程ごとに更新され、Done 完了後に本流へマージされると削除される。**そのファイルの git 履歴 (差分) は、現 dev-flow の影響範囲の把握に使ってよい** (工程完了の判定には使わない)。
 - **工程が完了するたび**に対応する値へ書き換える。先取りして進めない。
 - PR / レビュー指摘を反映する場合 (**`document` 完了後を含む**)、必ず `adr` に戻して工程 1 から再確認する。
 - ただし**全工程の成果物を毎回書き換える必要は無い**。各工程で「指摘に照らして変更が必要か」を判断し、不要なら次工程の確認へ進む。
 
 ## ディレクトリ規約 (利用リポジトリ)
 
-```text
+```
 <root>/
   docs/
     adr/
@@ -97,42 +91,63 @@ Cursor 版 `dev-flow` と同じ操作感で、Codex 上の 4 工程を進める�
 1. `docs/adr/draft/dev-flow-state.json` を Read する。
 2. `dev_flow_completed_through` と上表から**次に取るべき行動**を表示する。必要なら参考として `git status --short` のパス一覧を添えるが、進捗の文言は JSON のみに基づく。
 
+#### 出力例
+
 ```markdown
 ## dev-flow status
 
 - **完了している工程 (正本)**: `dev_flow_completed_through: spec` (`docs/adr/draft/dev-flow-state.json` に基づく)
 - **次に取るべき行動**: 工程 2 (実装)。ユーザーの「次へ」指示を待つ。
 - **参考 (進捗決定には使わない)**: 未コミット変更 14 ファイル
+
+整合性に不安があれば工程 X 用の `dev-flow-<phase>-auditor` を実行する。
 ```
 
-## 本 skill が呼ばれたときの動作
+## 本 skill が呼ばれたときの動作 (全体フロー)
 
 1. 上記「判定する手順」で現在地を特定する。
 2. ユーザーの依頼が PR / コードレビュー指摘の反映であれば、`dev_flow_completed_through` を **`adr` に戻し**、工程 1 (設計束) から順に確認する。
-3. 該当工程の作業 subagent を名前で spawn する。
-   - 工程 1 (設計束) → `dev-flow-adr-author` → `dev-flow-adr-auditor`。Open Question が**ゼロ**かつ違反ゼロなら**続けて** `dev-flow-spec-author` → `dev-flow-spec-auditor`。Open Question が**残る**場合は **ADR のみ**で終了し `dev-flow-spec-author` は spawn しない。
-   - 工程 2 → `dev-flow-implementer`。カバレッジ未達なら remediation ループを回し、達成まで `dev_flow_completed_through` を `implementation` に上げない。
-   - 工程 3 → `dev-flow-document-author`
-   - 工程 4 → `dev-flow-done-runner`
-4. 作業 subagent 完了直後に対応する auditor subagent を自動で spawn する。違反があれば auditor の報告に従い該当 subagent を再 spawn して修正する。違反が無ければ `dev_flow_completed_through` を次の値に書き換える (Done を除く)。
-5. 次工程に進む明示指示が無ければ停止する。工程 1 の内部だけは Open Question ゼロかつ ADR 監査通過後に三種へ続行してよい。
-6. 工程 4 (Done) はユーザー承認が必須。承認前は Active 化・確定 commit を行わない。
+3. **該当工程の作業 subagent を Task ツールで spawn** する (subagent ファイルが詳細手順を内包している)。
+   - **工程 1 (設計束)** → `dev-flow-adr-author` → `dev-flow-adr-auditor`。Open Question が**ゼロ**かつ違反ゼロなら**続けて** `dev-flow-spec-author` → `dev-flow-spec-auditor` (ユーザーの「次へ」は不要)。Open Question が**残る**場合は **ADR のみ**で終了し `dev-flow-spec-author` は spawn しない。
+   - **工程 2** → `dev-flow-implementer`。カバレッジ未達なら remediation ループ (`dev-flow-implementer` 再開 / 必要時は設計束) を回し、達成まで `dev_flow_completed_through` を `implementation` に上げない。
+   - **工程 3** → `dev-flow-document-author`
+   - **工程 4** → `dev-flow-done-runner`
+4. **作業 subagent 完了直後**に対応する **auditor subagent を自動で spawn** する (工程 1 は adr 監査後、条件を満たせば spec 監査まで続ける):
+   - 工程 1a 完了 → `dev-flow-adr-auditor`
+   - 工程 1b 完了 (三種を触った場合のみ) → `dev-flow-spec-auditor`
+   - 工程 2 完了 → `dev-flow-impl-auditor`
+   - 工程 3 完了 → `dev-flow-document-auditor`
+   - 工程 4 (Done) 冒頭 → 4 つの auditor をすべて再実行 (最終整合性チェック)
+
+   違反があれば auditor の報告に従い該当 subagent を再 spawn して修正する。違反が無ければ `dev_flow_completed_through` を次の値に書き換える (Done を除く)。**工程 2 はカバレッジ目標達成後のみ** `implementation` に更新する。
+5. **下流 subagent からの上流要望**を受けたとき:
+   - 要望が ADR の Decision / 受け入れ条件と**両立しない**なら下流に**拒否**を返す。必要なら更上流 (ADR) から見直す案を示す。
+   - 妥当なら該当上流 subagent を spawn し、修正後は**変更が生じた工程から下流を再実行**する。
+   - **上流を変更したら必ずユーザーに報告**する (変更概要・理由・次に spawn する工程)。
+6. **次工程に進む条件** (上記「進行原則」) を確認:
+   - 工程 1 の adr 監査通過直後: Open Question ゼロなら**同一バッチ**で spec 周回まで進めてよい。Open Question 残なら**停止**。
+   - 工程 1 全体 (`spec` キー) 完了直後 / 工程 2 / 工程 3 完了直後: ユーザーから明示指示が無ければ**停止**。指示を待つ。
+   - 工程 4 (Done): ユーザー承認が必須。承認前は Active 化・確定 commit を行わない。
+
+引数は任意。何も指定が無ければ現在地から自然に進める。特定トピック / 機能名を指定したい場合は引数で渡してよい。
 
 ## Draft ADR とブランチ前提
 
 - 1 機能 = 1 ブランチ (git worktree 等) を前提とする。
-- **同一ブランチで Draft ADR を複数持ってよい**。設計内容・トピックごとに**別ファイル**に分ける。
-- 設計束 (工程 1) で用件・設計・Spec を書くときは `docs/adr/draft/` 配下の**すべての** Draft を入力とする。
+- **同一ブランチで Draft ADR を複数持ってよい**。設計内容・トピックごとに**別ファイル**に分ける (1 ファイルに無関係な決定を詰め込まない)。
+- 設計束 (工程 1) で用件・設計・Spec を書くときは `docs/adr/draft/` 配下の**すべての** Draft を入力とする (特定 1 件だけを引数で指定する前提にしない)。
+
+## 全工程に共通する厳守事項
+
+- 各工程は前工程の成果物を入力とする。
+- 矛盾が出たら**前工程に戻って**修正する。後工程 subagent が上流成果物を**直接**書き換えない (要望は親が橋渡し。上流変更後はユーザー報告必須)。
+- **Done 完了前**に PR / コードレビューで手直しする場合は、`dev_flow_completed_through` を `adr` に戻し**設計束 (工程 1)** から順に再確認する。**各工程で変更不要なら上流を書き換えず次へ進んでよい**。
+- 古い記述は修正または削除する。将来のために残さない。
+- 各工程はコンテキスト分離して実行する (対応する作業 subagent を spawn する)。
+- 各工程末で対応する auditor subagent を自動で spawn する (ユーザーが手動で呼ぶ想定はない)。
+- **次工程に進む明示指示が無ければ絶対に次工程に進まない** (工程 1 設計束の内部で Open Question ゼロかつ ADR 監査通過後に三種へ続行するケースのみ例外)。
 
 ## 関連リソース
 
-{{ if eq .Agent "cursor" }}
-- 各 subagent: `~/.cursor/agents/dev-flow-*.md` (作業 5 + 監査 4)
-- 常時注入ガードレール: `~/.cursor/rules/dev-flow/dev-flow.mdc`
-{{ else if eq .Agent "codex" }}
-- 各 custom subagent: `~/.codex/agents/dev-flow-*.toml` (作業 5 + 監査 4)
-- phase reference: `~/.codex/skills/dev-flow/references/dev-flow-*.md`
-- ガードレール: `~/.codex/skills/dev-flow/references/guardrails.md`
-{{ else }}
-- 各 subagent: `dev-flow-*` (作業 5 + 監査 4)
-{{ end }}
+- 各 subagent: `{{ .SubagentGlob }}` (作業 5 + 監査 4)
+- 常時注入ガードレール: `{{ .GuardrailsPath }}`
