@@ -27,4 +27,4 @@ chezmoi update
 
 ## dev-flow テンプレート
 
-Cursor / Codex 向けの dev-flow 指示文は `home/.chezmoitemplates/dev-flow/` を正本とし、各エージェント固有の配置先ファイルは `.tmpl` wrapper から展開します。別の AI エージェントへ移植する場合は、共通テンプレートを参照する薄い wrapper だけを追加してください。
+Cursor / Codex 向けの dev-flow 指示文は `home/.chezmoitemplates/agent/dev-flow/` を正本とし、各エージェント固有の配置先ファイルは `.tmpl` wrapper から展開します。別の AI エージェントへ移植する場合は、共通テンプレートを参照する薄い wrapper だけを追加してください。

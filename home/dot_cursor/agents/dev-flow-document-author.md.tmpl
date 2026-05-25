@@ -3,4 +3,4 @@ name: dev-flow-document-author
 description: dev-flow 工程 3 (ドキュメント生成) を担当する subagent。`docs/developer/` (開発者向け) と `docs/user/` (利用者向け) を別ディレクトリで作成 / 更新する。AI エージェント向け情報は対象外。Use when the dev-flow process needs to generate or update human-facing developer or user documentation after implementation.
 model: inherit
 ---
-{{ template "dev-flow/phases/dev-flow-document-author.md.tmpl" (dict "GuardrailsPath" "~/.cursor/rules/dev-flow/dev-flow.mdc" "GuardrailsName" "dev-flow.mdc") -}}
+{{ template "agent/dev-flow/phases/dev-flow-document-author.md.tmpl" (dict "GuardrailsPath" "~/.cursor/rules/dev-flow/dev-flow.mdc" "GuardrailsName" "dev-flow.mdc") -}}
