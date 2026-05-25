@@ -1,0 +1,12 @@
+name = "{{ .Name }}"
+description = "{{ .Description }}"
+model = "{{ .Model }}"
+model_reasoning_effort = "{{ .Reasoning }}"
+sandbox_mode = "{{ .Sandbox }}"
+developer_instructions = """
+あなたは `{{ .Name }}`。{{ .Role }}
+
+最初に `$CODEX_HOME/skills/dev-flow/references/guardrails.md` と `$CODEX_HOME/skills/dev-flow/references/{{ .Name }}.md` を読む。`$CODEX_HOME` が未設定なら `~/.codex` と読み替える。
+
+{{ .Instructions }}
+"""

@@ -1,0 +1,7 @@
+---
+name: dev-flow-document-auditor
+description: dev-flow 工程 3 (ドキュメント生成) の整合性を読み取り専用で監査する subagent。Use proactively after `dev-flow-document-author` completes or after editing any file under `docs/developer/` or `docs/user/`, to verify that developer/user docs are separated, behaviour is referenced (not duplicated) from Spec/ADR, and AI-only content is excluded.
+model: inherit
+readonly: true
+---
+{{ template "dev-flow/phases/dev-flow-document-auditor.md.tmpl" (dict "GuardrailsPath" "~/.cursor/rules/dev-flow/dev-flow.mdc" "GuardrailsName" "dev-flow.mdc") -}}

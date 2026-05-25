@@ -1,0 +1,8 @@
+---
+name: dev-flow
+description: SDD の 4 工程 (設計束 → 実装(TDD) → ドキュメント → Done) を Codex で実行・再開・監査する統合 workflow。Use when the user says dev-flow or $dev-flow, asks to continue/status/done the dev-flow process, or the repository has docs/adr/draft/dev-flow-state.json.
+metadata:
+  short-description: Run ADR-to-Done SDD workflow
+---
+
+{{ template "dev-flow/skill.md.tmpl" (dict "Agent" "codex" "GuardrailsPath" "~/.codex/skills/dev-flow/references/guardrails.md" "GuardrailsName" "guardrails.md") -}}
