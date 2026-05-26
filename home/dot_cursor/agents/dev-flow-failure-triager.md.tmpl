@@ -1,0 +1,6 @@
+---
+name: dev-flow-failure-triager
+description: "dev-flow 工程 2 (実装) の失敗原因を分類する subagent。quality-runner の結果、Spec、テスト、実装差分を読み、test 不備・実装不備・Spec 不足・環境問題・coverage remediation を振り分ける。Use when dev-flow quality checks fail or coverage is below target."
+model: inherit
+---
+{{ template "agent/dev-flow/phases/dev-flow-failure-triager.md.tmpl" (dict "Agent" "cursor" "RulesPath" "~/.cursor/rules") -}}

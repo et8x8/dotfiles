@@ -1,7 +1,7 @@
 
 # dev-flow ガードレール
 
-このリポジトリは「**(1) 設計束 (ADR・用件定義・基本設計・Spec) → (2) 実装 (TDD: テスト + プロダクトコード) → (3) ドキュメント生成 → (4) 完了 (Done)**」の **4 工程の開発プロセス**で運用する。工程 1 の設計束は **1 つの工程**として扱い、ADR と用件・設計・Spec を**別タイミングの工程に分けて運用しない** (後述の Open Question 例外を除く)。本プロセスは **`dev-flow` skill** をエントリポイントとし、各工程は対応する subagent (`dev-flow-<name>`) に委譲する。各工程末では対応する **auditor subagent** (`dev-flow-<phase>-auditor`) を自動で spawn し整合性を監査する (ユーザーが手動で auditor を呼ぶ想定はない)。以下を**例外なく**守ること。
+このリポジトリは「**(1) 設計束 (ADR・用件定義・基本設計・Spec) → (2) 実装 (TDD: テスト + プロダクトコード) → (3) ドキュメント生成 → (4) 完了 (Done)**」の **4 工程の開発プロセス**で運用する。工程 1 の設計束は **1 つの工程**として扱い、ADR と用件・設計・Spec を**別タイミングの工程に分けて運用しない** (後述の Open Question 例外を除く)。本プロセスは **`dev-flow` skill** をエントリポイントとし、各工程は対応する subagent (`dev-flow-<name>`) に委譲する。各工程末では対応する **auditor subagent** を自動で spawn し整合性を監査する (ユーザーが手動で auditor を呼ぶ想定はない)。以下を**例外なく**守ること。
 
 ## 工程 1「設計束」の一体運用
 
@@ -97,16 +97,16 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 ## 工程の入出力
 
 1. **設計束 (ADR・用件・基本設計・Spec)** — 作業: `dev-flow-adr-author` → (Open Question ゼロかつ adr 監査通過後) `dev-flow-spec-author`。監査: `dev-flow-adr-auditor` → `dev-flow-spec-auditor`。入力: ユーザー要求 + 現コードベース + ADR。成果物: `docs/adr/draft/` + 三種 (+ 各 `index.md`)。検証: Open Question 残時は ADR のみ。確定後は三種を同時バッチ。分割・`index.md` 同期を遵守。
-2. **実装 (TDD)** — 作業: `dev-flow-implementer` (テスト + プロダクトコードを同一 subagent で増分作成)。監査: `dev-flow-impl-auditor`。入力: Spec + 既存テスト + 既存実装。成果物: テストコード + プロダクションコード。検証: 各 REQ にテスト必須、Spec 外テスト可、TDD (Red→Green→Refactor)、全 PASS、カバレッジ 80% 以上 (明示指示で例外可)。一括で全テスト先行→全実装後追いは禁止。
+2. **実装 (TDD)** — 作業: `dev-flow-test-author` → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` → `dev-flow-quality-runner` (Green / lint / coverage)。失敗時は `dev-flow-failure-triager`。監査: `dev-flow-implementation-auditor`。入力: Spec + 既存テスト + 既存実装。成果物: テストコード + プロダクションコード。検証: 各 REQ にテスト必須、Spec 外テスト可、小単位 TDD、全 PASS、カバレッジ 80% 以上 (明示指示で例外可)。一括で全テスト先行→全実装後追いは禁止。
 3. **ドキュメント生成** — 作業: `dev-flow-document-author`。監査: `dev-flow-document-auditor`。入力: 上記すべて。成果物: `docs/developer/` `docs/user/`。検証: AI 専用情報は書かない。
-4. **完了 (Done)** — 作業: `dev-flow-done-runner`。監査: 4 つの auditor を再実行 (`dev-flow-adr-auditor` / `dev-flow-spec-auditor` / `dev-flow-impl-auditor` / `dev-flow-document-auditor`)。入力: 上記すべて + ユーザー承認。成果物: `docs/adr/active/` への移動 + `git commit`。検証: バージョンプレフィックス付与 / auditor 全件確認。
+4. **完了 (Done)** — 作業: `dev-flow-done-runner`。監査: 4 つの auditor を再実行 (`dev-flow-adr-auditor` / `dev-flow-spec-auditor` / `dev-flow-implementation-auditor` / `dev-flow-document-auditor`)。入力: 上記すべて + ユーザー承認。成果物: `docs/adr/active/` への移動 + `git commit`。検証: バージョンプレフィックス付与 / auditor 全件確認。
 
 ## 工程進行の原則 (厳守)
 
 - **次工程に進む明示指示が無ければ絶対に次工程に進まない**。
 - **例外 (設計束内部)**: 工程 1 の ADR 部分で `## Open Question` がすべて解消され、`dev-flow-adr-auditor` の監査が違反 0 なら、**ユーザー指示なしで**続けて `dev-flow-spec-author` → `dev-flow-spec-auditor` まで進めてよい (設計束を**1 工程**として完結させるための唯一の「工程内自動進行」)。
 - **Open Question や未確定が ADR に残っている間は**、用件・基本設計・Spec を触らず **ADR のみ**を作成 / 編集する。
-- **工程 2 (実装)** は `dev-flow-implementer` 1 体で TDD を完遂する (テスト subagent と実装 subagent に分割しない)。ただし**Spec に合わせてテストを後追いで書き換えてはならない** (Spec から見直す)。
+- **工程 2 (実装)** は小単位ごとに `dev-flow-test-author` → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` → `dev-flow-quality-runner` (Green) を回す。失敗原因が曖昧な場合は `dev-flow-failure-triager` で分類する。ただし**Spec に合わせてテストを後追いで書き換えてはならない** (Spec から見直す)。
 - **工程 4 (Done) は必ずユーザー承認**を得てから Active 移行 + 確定 commit する。承認前は Active 化や確定 commit を行わない (PR 更新のための途中 commit は可)。
 
 ## 各工程の禁止事項
@@ -153,7 +153,7 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 
 ### 対処の優先順位 (SDD 維持)
 
-1. **Test の追加・強化** (`dev-flow-implementer`) — Spec 由来 REQ テストの補強、または Spec 外テスト (Spec と矛盾しないこと)。
+1. **Test の追加・強化** (`dev-flow-test-author`) — Spec 由来 REQ テストの補強、または Spec 外テスト (Spec と矛盾しないこと)。
 2. **実装の削除・整理** (`dev-flow-implementer`) — 不要・到達不能コードの除去。
 3. **実装の追加** — **Spec / Test で求められる不足を埋める最小限のみ**。カバレッジ数値のためだけの追加は**禁止** (下記)。
 
@@ -161,27 +161,27 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 
 ### 未カバー行の分類と対応
 
-- **A** (Spec / REQ に無いが仕様として必要): 設計束へ `dev-flow-adr-author` → … → `dev-flow-spec-author` → `dev-flow-implementer` (「下流から上流への要望」に従う)。
-- **B** (REQ はあるがテストが薄い・分岐未検証): `dev-flow-implementer` (テスト追加 → Red → 実装 → Green)。
+- **A** (Spec / REQ に無いが仕様として必要): 設計束へ `dev-flow-adr-author` → … → `dev-flow-spec-author` → `dev-flow-test-author` → `dev-flow-implementer` (「下流から上流への要望」に従う)。
+- **B** (REQ はあるがテストが薄い・分岐未検証): `dev-flow-test-author` (テスト追加) → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` (Green)。
 - **C** (不要・到達不能な実装): `dev-flow-implementer` (削除のみ)。
-- **D** (計測範囲・コマンドが広すぎる / 誤っている): プロジェクト規約に従い対象を当該変更に限定して再計測 (閾値変更はユーザー明示時のみ)。
+- **D** (計測範囲・コマンドが広すぎる / 誤っている): `dev-flow-quality-runner` の対象を当該変更に限定して再計測 (閾値変更はユーザー明示時のみ)。
 
 分類 **A** では、下流 subagent が Spec を直接編集せず、親経由で設計束に戻す。
 
 ### ループの 1 周
 
-1. `dev-flow-implementer` (または親) がカバレッジを計測し、未カバー行を分類する。
-2. 分類に応じて `dev-flow-implementer` または設計束 subagent を spawn。
-3. 周回の末尾で `dev-flow-impl-auditor` を実行 (違反 0 を確認)。
+1. `dev-flow-quality-runner` がカバレッジを計測し、未達なら `dev-flow-failure-triager` が未カバー行を分類する。
+2. 分類に応じて `dev-flow-test-author` / `dev-flow-implementer` / `dev-flow-quality-runner` または設計束 subagent を spawn。
+3. 周回の末尾で `dev-flow-implementation-auditor` を実行 (違反 0 を確認)。
 4. まだ目標未満なら 1 に戻る。
 
 ### 工程 2 完了条件 (remediation 含む)
 
 - 全テスト PASS。
 - カバレッジが目標以上 (デフォルト 80%。ユーザー明示があればその値)。
-- カバレッジ水増し実装が無いこと (`dev-flow-impl-auditor` で確認)。
+- カバレッジ水増し実装が無いこと (`dev-flow-implementation-auditor` で確認)。
 
-### 工程 2 実装 — `dev-flow-implementer`
+### 工程 2 実装 — `dev-flow-test-author` / `dev-flow-implementer`
 
 - Spec の**各 REQ に対応するテストが無い**こと。
 - Spec と矛盾するテスト・実装を書くこと。
@@ -213,8 +213,8 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 ## コンテキスト分離
 
 - `dev-flow` skill (`{{ template "agent/dev-flow/skill-reference.tmpl" . }}`) はエントリポイント。状態判定と全体フロー制御のみを行う。**各工程の詳細手順・制約・テンプレートは対応する subagent 定義 `{{ template "agent/dev-flow/subagent-reference.tmpl" . }}`** に集約してある。
-- 各工程は対応する subagent (`dev-flow-adr-author` / `dev-flow-spec-author` / `dev-flow-implementer` / `dev-flow-document-author` / `dev-flow-done-runner`) を名前で起動してコンテキストを分離して実行する。工程 2 は **`dev-flow-implementer` のみ** (テストと実装を同一 subagent が担当)。
-- **各工程の完了時** に対応する **auditor subagent** (`dev-flow-<phase>-auditor`) を親エージェントが自動的に呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程に戻る。**ユーザーが手動で auditor を呼ぶ想定はない**。
+- 各工程は対応する subagent (`dev-flow-adr-author` / `dev-flow-spec-author` / `dev-flow-test-author` / `dev-flow-quality-runner` / `dev-flow-implementer` / `dev-flow-failure-triager` / `dev-flow-document-author` / `dev-flow-done-runner`) を名前で起動してコンテキストを分離して実行する。工程 2 はテスト作成・品質実行・実装・失敗分類を別 subagent に分け、小単位 TDD と低コストな反復実行を両立する。
+- **各工程の完了時** に対応する **auditor subagent** を親エージェントが自動的に呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程に戻る。**ユーザーが手動で auditor を呼ぶ想定はない**。
 - 進行中のみ `docs/adr/draft/dev-flow-state.json` に **`dev_flow_completed_through`** (完了した工程) を記録し、**工程が完了するたびに値を書き換える**。**Done 工程の `git commit` 完了後はそのファイルを削除**する (記録なしはファイル無し)。
 - **進捗はこの JSON のみを正とし、git の状態から推定してはならない**。
 

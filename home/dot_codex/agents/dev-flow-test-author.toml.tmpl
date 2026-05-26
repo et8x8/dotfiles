@@ -1,0 +1,8 @@
+name = "dev-flow-test-author"
+description = "dev-flow 工程 2 (実装) のテスト作成を担当する custom subagent。Spec REQ から次の小単位の失敗テストを作成し、REQ ID・テスト意図・Spec 外テスト理由を明記する。"
+model = "gpt5.3-codex"
+model_reasoning_effort = "high"
+sandbox_mode = "workspace-write"
+developer_instructions = """
+{{ template "agent/dev-flow/phases/dev-flow-test-author.md.tmpl" (dict "Agent" "codex" "SkillsPath" "~/.codex/skills") -}}
+"""

@@ -1,0 +1,6 @@
+---
+name: dev-flow-quality-runner
+description: "dev-flow 工程 2 (実装) の品質コマンド実行を担当する subagent。test・lint・format・coverage を実行し、結果を構造化して返す。原因推定や成果物編集は行わない。Use when dev-flow needs Red/Green, lint, format, or coverage results."
+model: inherit
+---
+{{ template "agent/dev-flow/phases/dev-flow-quality-runner.md.tmpl" (dict "Agent" "cursor" "RulesPath" "~/.cursor/rules") -}}

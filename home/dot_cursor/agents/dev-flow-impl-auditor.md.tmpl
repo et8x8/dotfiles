@@ -1,7 +1,0 @@
----
-name: dev-flow-impl-auditor
-description: dev-flow 工程 2 (実装) の整合性を監査する subagent。Use proactively after `dev-flow-implementer` completes or after editing tests or production code, to verify Spec REQ test coverage, TDD outcomes, all tests pass, coverage threshold, and no Spec-out code.
-model: inherit
-readonly: true
----
-{{ template "agent/dev-flow/phases/dev-flow-impl-auditor.md.tmpl" (dict "Agent" "cursor" "RulesPath" "~/.cursor/rules") -}}

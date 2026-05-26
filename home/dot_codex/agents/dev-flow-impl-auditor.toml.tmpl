@@ -1,8 +1,0 @@
-name = "dev-flow-impl-auditor"
-description = "dev-flow 工程 2 (実装) を監査する custom subagent。dev-flow-implementer 完了後に Spec REQ のテスト対応、TDD 成果、全テスト PASS、カバレッジ、Spec 外実装の有無を検査する。"
-model = "gpt-5.5"
-model_reasoning_effort = "high"
-sandbox_mode = "workspace-write"
-developer_instructions = """
-{{ template "agent/dev-flow/phases/dev-flow-impl-auditor.md.tmpl" (dict "Agent" "codex" "SkillsPath" "~/.codex/skills") -}}
-"""

@@ -1,0 +1,6 @@
+---
+name: dev-flow-implementation-auditor
+description: "dev-flow 工程 2 (実装) の整合性を監査する subagent。Use proactively after test-author / implementer / quality-runner complete, to verify Spec REQ test coverage, all tests pass, coverage threshold, and no Spec-out code."
+model: inherit
+---
+{{ template "agent/dev-flow/phases/dev-flow-implementation-auditor.md.tmpl" (dict "Agent" "cursor" "RulesPath" "~/.cursor/rules") -}}

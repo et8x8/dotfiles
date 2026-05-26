@@ -8,7 +8,7 @@
 ## 4 工程と対応 subagent
 
 1. **設計束 (ADR・用件・基本設計・Spec)** — 作業: `dev-flow-adr-author` → (Open Question ゼロかつ adr 監査通過後) `dev-flow-spec-author`。監査: `dev-flow-adr-auditor` → `dev-flow-spec-auditor`。Open Question 残なら ADR のみ。ゼロなら同一バッチで三種まで自動。設計束完了後はユーザー明示で工程 2 へ。
-2. **実装 (TDD)** — 作業: `dev-flow-implementer` (テスト + プロダクトコードを同一 subagent で増分作成)。監査: `dev-flow-impl-auditor`。ユーザー明示必須。
+2. **実装 (TDD)** — 作業: `dev-flow-test-author` → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` → `dev-flow-quality-runner` (Green / lint / coverage)。失敗時は `dev-flow-failure-triager`。監査: `dev-flow-implementation-auditor`。ユーザー明示必須。
 3. **ドキュメント生成** — 作業: `dev-flow-document-author`。監査: `dev-flow-document-auditor`。ユーザー明示必須。
 4. **完了 (Done)** — 作業: `dev-flow-done-runner`。監査: 4 つの auditor を再実行。ユーザー承認必須。
 
@@ -19,7 +19,7 @@
 1. **次工程に進む明示指示が無ければ絶対に次工程に進まない**。
 2. **例外 (工程 1 設計束の内部)**: `## Open Question` がすべて解消され、`dev-flow-adr-auditor` が違反 0 なら、**ユーザー指示なしで** `dev-flow-spec-author` → `dev-flow-spec-auditor` まで続行し、用件・設計・Spec を**同一バッチ**で整える。Open Question が 1 件でも残る間は **ADR のみ**作成 / 編集し、三種は触らない。
 3. **PR / コードレビューで指摘を受けたとき**: `dev_flow_completed_through` を **`adr` に戻し**、工程 1 (設計束) から順に「指摘に照らして変更が必要か」を判定する。**各工程で変更不要なら成果物はそのまま次工程の確認へ進む**。下流だけで完結させない。
-4. **工程 2 (実装)** は `dev-flow-implementer` 1 体が TDD を完遂する (テスト用・実装用に subagent を分割しない)。関数単位などでテスト→実装を増分繰り返す。全テスト先行→全実装後追いは禁止。**Spec に合わせてテストを後追いで書き換えてはならない** (Spec から見直す)。
+4. **工程 2 (実装)** は小単位ごとに `dev-flow-test-author` → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` → `dev-flow-quality-runner` (Green) を回す。全テスト先行→全実装後追いは禁止。失敗原因が曖昧な場合は `dev-flow-failure-triager` で分類する。**Spec に合わせてテストを後追いで書き換えてはならない** (Spec から見直す)。
 5. **工程 4 (完了) は必ずユーザー承認**を得てから Active 移行と `git commit` を行う。承認前は Active 化や確定 commit をしない (PR 更新のための途中 commit は可)。
 6. **後工程から前工程の成果物を書き換えない**。矛盾が出たら前工程に戻る。下流 subagent は上流を**直接編集せず**、立ち行かないときは**親 (本 skill) に要望**し、親が上流 subagent を spawn して橋渡しする (`{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「下流から上流への要望」)。上流変更後は**必ずユーザーに報告**する。
 7. **工程 2 のカバレッジ**が目標未満なら `implementation` に進めず、remediation ループを回す (`{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「工程 2 カバレッジ不足時の remediation ループ」)。水増し実装は禁止。
@@ -100,7 +100,7 @@
 - **次に取るべき行動**: 工程 2 (実装)。ユーザーの「次へ」指示を待つ。
 - **参考 (進捗決定には使わない)**: 未コミット変更 14 ファイル
 
-整合性に不安があれば工程 X 用の `dev-flow-<phase>-auditor` を実行する。
+整合性に不安があれば該当工程の auditor subagent を実行する。
 ```
 
 ## 本 skill が呼ばれたときの動作 (全体フロー)
@@ -109,13 +109,13 @@
 2. ユーザーの依頼が PR / コードレビュー指摘の反映であれば、`dev_flow_completed_through` を **`adr` に戻し**、工程 1 (設計束) から順に確認する。
 3. **該当工程の作業 subagent を Task ツールで spawn** する (subagent ファイルが詳細手順を内包している)。
    - **工程 1 (設計束)** → `dev-flow-adr-author` → `dev-flow-adr-auditor`。Open Question が**ゼロ**かつ違反ゼロなら**続けて** `dev-flow-spec-author` → `dev-flow-spec-auditor` (ユーザーの「次へ」は不要)。Open Question が**残る**場合は **ADR のみ**で終了し `dev-flow-spec-author` は spawn しない。
-   - **工程 2** → `dev-flow-implementer`。カバレッジ未達なら remediation ループ (`dev-flow-implementer` 再開 / 必要時は設計束) を回し、達成まで `dev_flow_completed_through` を `implementation` に上げない。
+   - **工程 2** → `dev-flow-test-author` → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` → `dev-flow-quality-runner` (Green / lint / coverage) を小単位で繰り返す。失敗やカバレッジ未達は `dev-flow-failure-triager` で分類し、`dev-flow-test-author` / `dev-flow-implementer` / 設計束 / `dev-flow-quality-runner` のいずれかへ戻す。達成まで `dev_flow_completed_through` を `implementation` に上げない。
    - **工程 3** → `dev-flow-document-author`
    - **工程 4** → `dev-flow-done-runner`
 4. **作業 subagent 完了直後**に対応する **auditor subagent を自動で spawn** する (工程 1 は adr 監査後、条件を満たせば spec 監査まで続ける):
    - 工程 1a 完了 → `dev-flow-adr-auditor`
    - 工程 1b 完了 (三種を触った場合のみ) → `dev-flow-spec-auditor`
-   - 工程 2 完了 → `dev-flow-impl-auditor`
+   - 工程 2 完了 → `dev-flow-implementation-auditor`
    - 工程 3 完了 → `dev-flow-document-auditor`
    - 工程 4 (Done) 冒頭 → 4 つの auditor をすべて再実行 (最終整合性チェック)
 
@@ -149,5 +149,5 @@
 
 ## 関連リソース
 
-- 各 subagent: `{{ template "agent/dev-flow/subagent-glob.tmpl" . }}` (作業 5 + 監査 4)
+- 各 subagent: `{{ template "agent/dev-flow/subagent-glob.tmpl" . }}` (作業 / 補助 8 + 監査 4)
 - 常時注入ガードレール: `{{ template "agent/dev-flow/guardrails-path.tmpl" . }}`

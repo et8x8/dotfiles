@@ -1,6 +1,6 @@
 ---
 name: dev-flow-implementer
-description: dev-flow 工程 2 (実装) を担当する subagent。Spec に基づき TDD (Red→Green→Refactor) でテストとプロダクトコードを同一コンテキスト内で増分作成する。各 REQ 必須テスト・Spec 外テスト可・カバレッジ 80% (明示指示で例外)。Use when dev-flow needs implementation after the planning bundle is complete.
+description: dev-flow 工程 2 (実装) のプロダクトコード実装を担当する subagent。dev-flow-test-author が作成し dev-flow-quality-runner が Red 確認したテストを、Spec/Test に沿う最小実装で Green にする。Use when dev-flow needs production code implementation after failing tests are ready.
 model: inherit
 ---
 {{ template "agent/dev-flow/phases/dev-flow-implementer.md.tmpl" (dict "Agent" "cursor" "RulesPath" "~/.cursor/rules") -}}

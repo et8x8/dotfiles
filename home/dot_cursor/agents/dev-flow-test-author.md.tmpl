@@ -1,0 +1,6 @@
+---
+name: dev-flow-test-author
+description: "dev-flow 工程 2 (実装) のテスト作成を担当する subagent。Spec REQ から次の小単位の失敗テストを作成し、REQ ID・テスト意図・Spec 外テスト理由を明記する。Use when dev-flow needs the next failing tests before implementation."
+model: inherit
+---
+{{ template "agent/dev-flow/phases/dev-flow-test-author.md.tmpl" (dict "Agent" "cursor" "RulesPath" "~/.cursor/rules") -}}
