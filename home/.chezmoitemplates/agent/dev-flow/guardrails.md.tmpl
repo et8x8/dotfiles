@@ -212,22 +212,9 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 
 ## コンテキスト分離
 
-{{- if eq .Agent "cursor" }}
-
-- `dev-flow` skill (`~/.cursor/skills/dev-flow/dev-flow/SKILL.md`) はエントリポイント。状態判定と全体フロー制御のみを行う。**各工程の詳細手順・制約・テンプレートは対応する subagent ファイル `~/.cursor/agents/dev-flow-<name>.md`** に集約してある。
-- 各工程は対応する subagent (`dev-flow-adr-author` / `dev-flow-spec-author` / `dev-flow-implementer` / `dev-flow-document-author` / `dev-flow-done-runner`) を Task で spawn してコンテキストを分離して実行する。工程 2 は **`dev-flow-implementer` のみ** (テストと実装を同一 subagent が担当)。
-- **各工程の完了時** に対応する **auditor subagent** (`dev-flow-<phase>-auditor`) を**自動的に**呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程に戻る。auditor は description に "Use proactively after ..." を含み、自動委譲を促す設計。**ユーザーが手動で auditor を呼ぶ想定はない**。
-{{ else if eq .Agent "codex" }}
-
-- `dev-flow` skill (`~/.codex/skills/dev-flow/SKILL.md`) はエントリポイント。状態判定と全体フロー制御のみを行う。**各工程の詳細手順・制約・テンプレートは対応する custom subagent TOML `~/.codex/agents/dev-flow-<name>.toml`** に集約してある。
-- 各工程は対応する custom subagent (`dev-flow-adr-author` / `dev-flow-spec-author` / `dev-flow-implementer` / `dev-flow-document-author` / `dev-flow-done-runner`) を名前で起動してコンテキストを分離して実行する。工程 2 は **`dev-flow-implementer` のみ** (テストと実装を同一 subagent が担当)。
+- `dev-flow` skill (`{{ template "agent/dev-flow/skill-reference.tmpl" . }}`) はエントリポイント。状態判定と全体フロー制御のみを行う。**各工程の詳細手順・制約・テンプレートは対応する subagent 定義 `{{ template "agent/dev-flow/subagent-reference.tmpl" . }}`** に集約してある。
+- 各工程は対応する subagent (`dev-flow-adr-author` / `dev-flow-spec-author` / `dev-flow-implementer` / `dev-flow-document-author` / `dev-flow-done-runner`) を名前で起動してコンテキストを分離して実行する。工程 2 は **`dev-flow-implementer` のみ** (テストと実装を同一 subagent が担当)。
 - **各工程の完了時** に対応する **auditor subagent** (`dev-flow-<phase>-auditor`) を親エージェントが自動的に呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程に戻る。**ユーザーが手動で auditor を呼ぶ想定はない**。
-{{ else }}
-
-- `dev-flow` skill はエントリポイント。状態判定と全体フロー制御のみを行う。**各工程の詳細手順・制約・テンプレートは対応する `dev-flow-<name>` subagent** に集約してある。
-- 各工程は対応する subagent を名前で起動してコンテキストを分離して実行する。工程 2 は **`dev-flow-implementer` のみ** (テストと実装を同一 subagent が担当)。
-- **各工程の完了時** に対応する **auditor subagent** (`dev-flow-<phase>-auditor`) を親エージェントが自動的に呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程に戻る。**ユーザーが手動で auditor を呼ぶ想定はない**。
-{{ end -}}
 - 進行中のみ `docs/adr/draft/dev-flow-state.json` に **`dev_flow_completed_through`** (完了した工程) を記録し、**工程が完了するたびに値を書き換える**。**Done 工程の `git commit` 完了後はそのファイルを削除**する (記録なしはファイル無し)。
 - **進捗はこの JSON のみを正とし、git の状態から推定してはならない**。
 

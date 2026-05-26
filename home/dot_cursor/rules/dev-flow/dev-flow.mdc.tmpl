@@ -2,4 +2,4 @@
 description: AI エージェント前提の開発プロセス (4 工程: 設計束 → 実装(TDD) → ドキュメント → 完了) の常時ガードレール。各工程からの逸脱、後工程から前工程の改変、未承認の Done 移行などを禁止する。各工程の完了時に対応する auditor subagent (`dev-flow-<phase>-auditor`) による整合性監査を自動で行う。
 alwaysApply: true
 ---
-{{ template "agent/dev-flow/guardrails.md.tmpl" (dict "Agent" "cursor") -}}
+{{ template "agent/dev-flow/guardrails.md.tmpl" (dict "Agent" "cursor" "SkillsPath" "~/.cursor/skills" "AgentsPath" "~/.cursor/agents") -}}
