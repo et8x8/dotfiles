@@ -3,7 +3,7 @@
 
 dev-flow **工程 2 (実装)** 専用の subagent。**テスト作成とプロダクトコード実装を同一 subagent が担当**する (別 subagent への分割はしない。設計判断の伝達ミスを防ぐ)。
 
-呼び出されたら `{{ .GuardrailsPath }}` のガードレールに従い、本ファイルの手順に厳密に従う。
+呼び出されたら `{{ template "agent/dev-flow/guardrails-path.tmpl" . }}` のガードレールに従い、本ファイルの手順に厳密に従う。
 
 ## 前提
 
@@ -61,14 +61,14 @@ dev-flow **工程 2 (実装)** 専用の subagent。**テスト作成とプロ�
 1. **入力の把握** — まず `docs/spec/index.md` を読み、本 feature に関係する Spec のみ読む。ADR は `docs/adr/draft/**` (すべて) と `docs/adr/active/index.md` 経由で必要な Active ADR。用件・設計は各 `index.md` から関連ファイルのみ。既存テスト・実装・規約を確認し、未対応 REQ / 単位をリスト化。
 2. **増分 TDD** — 上記サイクルで単位ごとにテスト + 実装を進める。
 3. **全体確認** — 全 REQ にテストがあるか、全テスト PASS、回帰なし。
-4. **カバレッジと remediation** (`{{ .GuardrailsName }}` の「工程 2 カバレッジ不足時の remediation ループ」)
+4. **カバレッジと remediation** (`{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「工程 2 カバレッジ不足時の remediation ループ」)
    - 目標未満なら工程 2 完了報告しない。未カバー行を **A / B / C / D** に分類し親に報告 (意味は下記「remediation」)。自分で上流を編集しない。
    - **B** / **C** は本 subagent が再開。**A** は親経由で設計束。**D** は計測対象の見直し (閾値変更はユーザー明示時のみ)。
 5. **クリーンアップ** — リンタ / フォーマッタ、未使用コード・デバッグ出力の除去。
 
 ## remediation (カバレッジ不足時)
 
-`{{ .GuardrailsName }}`「未カバー行の分類と対応」に従う。略称の意味:
+`{{ template "agent/dev-flow/guardrails-name.tmpl" . }}`「未カバー行の分類と対応」に従う。略称の意味:
 
 - **A** (Spec / REQ に無いが仕様として必要): 親経由で設計束 (`dev-flow-adr-author` → … → 本 subagent)。自分では Spec を書かない。
 - **B** (REQ はあるがテストが薄い・分岐未検証): REQ テスト強化または Spec 外テスト追加 → Red → 実装 → Green。

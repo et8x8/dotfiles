@@ -3,7 +3,7 @@
 
 ユーザー要求を **設計束 (ADR・用件定義・基本設計・Spec)** で確定させ、それを起点に「実装 (TDD)」「ドキュメント」「完了 (Done)」まで一方向に伝搬させる開発プロセス。本 skill 1 つで全工程を扱う。
 
-このファイル (`SKILL.md`) は**エントリポイント**。状態判定・進行ルール・全体フロー制御のみを含み、各工程の詳細手順は対応する subagent ファイル (`{{ .SubagentReference }}`) に集約されている。
+このファイル (`SKILL.md`) は**エントリポイント**。状態判定・進行ルール・全体フロー制御のみを含み、各工程の詳細手順は対応する subagent ファイル (`{{ template "agent/dev-flow/subagent-reference.tmpl" . }}`) に集約されている。
 
 ## 4 工程と対応 subagent
 
@@ -12,7 +12,7 @@
 3. **ドキュメント生成** — 作業: `dev-flow-document-author`。監査: `dev-flow-document-auditor`。ユーザー明示必須。
 4. **完了 (Done)** — 作業: `dev-flow-done-runner`。監査: 4 つの auditor を再実行。ユーザー承認必須。
 
-各 subagent の詳細 (役割 / 制約 / 手順 / テンプレート) は `{{ .SubagentReference }}` を参照する。本 skill 側からは subagent を**名前で spawn**するだけでよい。
+各 subagent の詳細 (役割 / 制約 / 手順 / テンプレート) は `{{ template "agent/dev-flow/subagent-reference.tmpl" . }}` を参照する。本 skill 側からは subagent を**名前で spawn**するだけでよい。
 
 ## 進行原則 (厳守)
 
@@ -21,11 +21,11 @@
 3. **PR / コードレビューで指摘を受けたとき**: `dev_flow_completed_through` を **`adr` に戻し**、工程 1 (設計束) から順に「指摘に照らして変更が必要か」を判定する。**各工程で変更不要なら成果物はそのまま次工程の確認へ進む**。下流だけで完結させない。
 4. **工程 2 (実装)** は `dev-flow-implementer` 1 体が TDD を完遂する (テスト用・実装用に subagent を分割しない)。関数単位などでテスト→実装を増分繰り返す。全テスト先行→全実装後追いは禁止。**Spec に合わせてテストを後追いで書き換えてはならない** (Spec から見直す)。
 5. **工程 4 (完了) は必ずユーザー承認**を得てから Active 移行と `git commit` を行う。承認前は Active 化や確定 commit をしない (PR 更新のための途中 commit は可)。
-6. **後工程から前工程の成果物を書き換えない**。矛盾が出たら前工程に戻る。下流 subagent は上流を**直接編集せず**、立ち行かないときは**親 (本 skill) に要望**し、親が上流 subagent を spawn して橋渡しする (`{{ .GuardrailsName }}` の「下流から上流への要望」)。上流変更後は**必ずユーザーに報告**する。
-7. **工程 2 のカバレッジ**が目標未満なら `implementation` に進めず、remediation ループを回す (`{{ .GuardrailsName }}` の「工程 2 カバレッジ不足時の remediation ループ」)。水増し実装は禁止。
-8. **ADR・用件定義・基本設計・Spec の本文**は常時ルール `{{ .GuardrailsPath }}` の「成果物記述における前後工程参照の禁止」に従う。後工程 (Test・実装・ソース) へ委ねること、および前工程が後工程を唯一の定義源として指すことは、ユーザーの明示指示がない限り禁止。
-9. **設計ドキュメントの分割**は `{{ .GuardrailsName }}` の「設計ドキュメントの分割 (行数・トークン)」に従う (`AGENTS.md` / `CLAUDE.md` があればそちらを優先)。
-10. **`index.md` の同期**は `{{ .GuardrailsName }}` の「設計ドキュメントのインデックス (`index.md`)」に従う。用件・設計・Spec は `dev-flow-spec-author` が三種と同一バッチで更新。Active ADR のみ `docs/adr/active/index.md` を `dev-flow-done-runner` が Active / Archive 化時に更新 (Draft・Archive には index を置かない)。
+6. **後工程から前工程の成果物を書き換えない**。矛盾が出たら前工程に戻る。下流 subagent は上流を**直接編集せず**、立ち行かないときは**親 (本 skill) に要望**し、親が上流 subagent を spawn して橋渡しする (`{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「下流から上流への要望」)。上流変更後は**必ずユーザーに報告**する。
+7. **工程 2 のカバレッジ**が目標未満なら `implementation` に進めず、remediation ループを回す (`{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「工程 2 カバレッジ不足時の remediation ループ」)。水増し実装は禁止。
+8. **ADR・用件定義・基本設計・Spec の本文**は常時ルール `{{ template "agent/dev-flow/guardrails-path.tmpl" . }}` の「成果物記述における前後工程参照の禁止」に従う。後工程 (Test・実装・ソース) へ委ねること、および前工程が後工程を唯一の定義源として指すことは、ユーザーの明示指示がない限り禁止。
+9. **設計ドキュメントの分割**は `{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「設計ドキュメントの分割 (行数・トークン)」に従う (`AGENTS.md` / `CLAUDE.md` があればそちらを優先)。
+10. **`index.md` の同期**は `{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「設計ドキュメントのインデックス (`index.md`)」に従う。用件・設計・Spec は `dev-flow-spec-author` が三種と同一バッチで更新。Active ADR のみ `docs/adr/active/index.md` を `dev-flow-done-runner` が Active / Archive 化時に更新 (Draft・Archive には index を置かない)。
 
 ## 進捗の正本: `docs/adr/draft/dev-flow-state.json`
 
@@ -149,5 +149,5 @@
 
 ## 関連リソース
 
-- 各 subagent: `{{ .SubagentGlob }}` (作業 5 + 監査 4)
-- 常時注入ガードレール: `{{ .GuardrailsPath }}`
+- 各 subagent: `{{ template "agent/dev-flow/subagent-glob.tmpl" . }}` (作業 5 + 監査 4)
+- 常時注入ガードレール: `{{ template "agent/dev-flow/guardrails-path.tmpl" . }}`

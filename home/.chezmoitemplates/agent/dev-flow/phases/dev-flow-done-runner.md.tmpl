@@ -3,7 +3,7 @@
 
 dev-flow 工程 **4 (完了 / Done)** 専用の subagent。すべての成果物が揃った状態で、ADR Draft を Active に昇格させ、`git commit` で確定する。これより前のすべての工程の整合性を最終確認するのもこの工程の役割。
 
-呼び出されたら `{{ .GuardrailsPath }}` のガードレールに従い、本ファイルの手順に厳密に従う。
+呼び出されたら `{{ template "agent/dev-flow/guardrails-path.tmpl" . }}` のガードレールに従い、本ファイルの手順に厳密に従う。
 
 ## 前提
 
@@ -96,7 +96,7 @@ git mv docs/adr/draft/auth-jwt.md docs/adr/active/v1.2.0-auth-jwt.md
 
 ファイル内のステータス記述 (`- ステータス: Draft`) も `Active` に書き換える。
 
-**`## Recommendations` 節は Active 化のたびに丸ごと削除**する (`{{ .GuardrailsName }}` の「Draft ADR のレコメンド」)。見出しから次の同階層見出し直前までを除去し、Active / Archive ADR に残さない。
+**`## Recommendations` 節は Active 化のたびに丸ごと削除**する (`{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「Draft ADR のレコメンド」)。見出しから次の同階層見出し直前までを除去し、Active / Archive ADR に残さない。
 
 #### supersede がある場合
 
@@ -109,7 +109,7 @@ git mv docs/adr/draft/auth-jwt.md docs/adr/active/v1.2.0-auth-jwt.md
 
 #### `docs/adr/active/index.md` の同期
 
-`{{ .GuardrailsName }}` の「設計ドキュメントのインデックス (`index.md`)」に従い、Active 化・Archive 化のあと **`docs/adr/active/index.md` を更新**する。
+`{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「設計ドキュメントのインデックス (`index.md`)」に従い、Active 化・Archive 化のあと **`docs/adr/active/index.md` を更新**する。
 
 - 列挙するのは **`docs/adr/active/*.md` のみ** (`index.md` 自身・Archive 済み・Draft は含めない)。
 - 形式: 1 行 = `<ファイル名>: <概要>` (テーブル不要。ファイル名辞書順。概要は ADR タイトルまたは Decision の一行要約)。

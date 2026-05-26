@@ -3,7 +3,7 @@
 
 dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** を担当する subagent。親エージェントは `dev-flow-adr-auditor` 通過直後かつ Open Question ゼロのとき**のみ**本 subagent を spawn し、**ADR 更新と同一オーケストレーション内**で三種を作成 / 編集する。ADR で確定した設計判断を 3 つの粒度に展開する。**いずれも ADR の生成物**で、ADR にない内容を新規に追加しない。各 Draft ADR の **受け入れ条件**を、要件定義 / 基本設計 / Spec (REQ) で追跡・充足できるようにする。
 
-呼び出されたら `{{ .GuardrailsPath }}` のガードレールに従い、本ファイルの手順に厳密に従う。
+呼び出されたら `{{ template "agent/dev-flow/guardrails-path.tmpl" . }}` のガードレールに従い、本ファイルの手順に厳密に従う。
 
 ## 前提
 
@@ -19,7 +19,7 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
 
 ## 制約
 
-- ADR・用件定義・基本設計・Spec の本文は `{{ .GuardrailsName }}` の「成果物記述における前後工程参照の禁止」に従う。後工程 (Test・実装・ソース) へ詳細を委ねたり、後工程を唯一の定義源として指す記述は、ユーザーが明示した場合のみ許可。
+- ADR・用件定義・基本設計・Spec の本文は `{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「成果物記述における前後工程参照の禁止」に従う。後工程 (Test・実装・ソース) へ詳細を委ねたり、後工程を唯一の定義源として指す記述は、ユーザーが明示した場合のみ許可。
 - ADR にない内容を要件定義 / 基本設計 / Spec のいずれにも書かない。ADR の **`## Recommendations` は設計束の入力に含めない** (読んでも三種・Source に展開・引用しない)。
 - ADR の `## Recommendations` を用件定義 / 基本設計 / Spec から参照しない。
 - ADR と矛盾する記載をしない。
@@ -42,7 +42,7 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
 - **基本設計** → `docs/design/<feature>.md` (読み手: 実装側。どう実現するか)
 - **Spec (EARS)** → `docs/spec/<feature>.md` (読み手: Test / 実装。検証可能な振る舞い。テストやソースを読む前提で欠落を埋めない)
 
-3 つは **同じ feature 単位**で対応するファイル名にし、相互にリンクする。`{{ .GuardrailsName }}` の行数・トークン目安を超えそうなときは `<feature>` を分割し (例: `auth` と `auth-api`)、各トピックごとに 3 ファイルセットを揃える。
+3 つは **同じ feature 単位**で対応するファイル名にし、相互にリンクする。`{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の行数・トークン目安を超えそうなときは `<feature>` を分割し (例: `auth` と `auth-api`)、各トピックごとに 3 ファイルセットを揃える。
 
 ## 手順
 
@@ -74,7 +74,7 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
    - 後述「EARS 記法」に従う。
    - 各要件に**一意な ID** を付ける (例: `REQ-AUTH-001`)。
    - 各要件に **Source として根拠 ADR** を引用する。
-6. **`index.md` の同期** (`{{ .GuardrailsName }}` の「設計ドキュメントのインデックス (`index.md`)」)
+6. **`index.md` の同期** (`{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「設計ドキュメントのインデックス (`index.md`)」)
    - 手順 3〜5 で 3 種の Markdown を追加・削除・リネームしたら、**同一バッチ**で各 `index.md` を更新する。
    - 形式: 1 行 = `<ファイル名>: <概要>` (テーブル不要。ファイル名辞書順。`index.md` 自身は列挙しない)。
    - 存在しないファイルへの行を残さない。

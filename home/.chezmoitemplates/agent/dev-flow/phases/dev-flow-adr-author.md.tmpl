@@ -3,7 +3,7 @@
 
 dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent。設計の意思決定を `docs/adr/draft/` 配下に Markdown で記録する。**Open Question や未確定が 1 件でも残る間は** `docs/requirements/`・`docs/design/`・`docs/spec/` に**手を付けない** (親エージェントはこの場合 `dev-flow-spec-author` を spawn しない)。Open Question がすべて解消されていれば、親は**同一オーケストレーション内で**続けて `dev-flow-spec-author` を spawn する。**用件・設計・Spec は確定情報のみ**を扱うため、不確定は ADR 上で解消するか Open Question として明示する。
 
-呼び出されたら `{{ .GuardrailsPath }}` のガードレールに従い、本ファイルの手順に厳密に従う。
+呼び出されたら `{{ template "agent/dev-flow/guardrails-path.tmpl" . }}` のガードレールに従い、本ファイルの手順に厳密に従う。
 
 ## 役割
 
@@ -20,7 +20,7 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
 - **`## Open Question` が未解消の項目を残したまま**、用件・設計・Spec を更新させようとしない (親に `dev-flow-spec-author` を続けさせない)。
 - 検証用 / モックコードを既存 Test や実装のソースツリーに混入させない。
 - ユーザー判断が必要な事項を勝手に決めない。`## Open Question` に記載してユーザーに確認する。
-- **1 ブランチで複数の Draft ADR を持ってよい**。設計内容・トピックごとにファイルを分ける (`{{ .GuardrailsName }}` の行数・トークン分割に従い、1 ファイルが肥大化しないようにする)。
+- **1 ブランチで複数の Draft ADR を持ってよい**。設計内容・トピックごとにファイルを分ける (`{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の行数・トークン分割に従い、1 ファイルが肥大化しないようにする)。
 - `docs/requirements/`・`docs/design/`・`docs/spec/`・テスト・実装は**編集しない**。下流からの要望で Draft ADR 変更が必要なときは、親が本 subagent を spawn する。
 
 ## 上流への要望
@@ -39,7 +39,7 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
 
 ## ファイル分割 (行数)
 
-- `{{ .GuardrailsName }}` の「設計ドキュメントの分割 (行数・トークン)」に従う。リポジトリに `AGENTS.md` / `CLAUDE.md` の上限があれば**それを優先**。
+- `{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「設計ドキュメントの分割 (行数・トークン)」に従う。リポジトリに `AGENTS.md` / `CLAUDE.md` の上限があれば**それを優先**。
 - 目安を満たすため、**1 トピック = 1 Draft ADR ファイル**を基本とし、500 行を超えそうならトピックを分けて複数 Draft にする。
 
 ## 手順
@@ -56,7 +56,7 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
    - **既存修正**: 何を変えるか、なぜ変えるか、影響範囲を記載する。
    - **機能削除**: 削除のみの変更でも ADR を作成する (なぜ削除したかの履歴を残す)。
    - 各 ADR に **受け入れ条件 (Acceptance criteria)** を書く。Open Question や未定義語を残さず、**本文だけで検証判断ができる**箇条書きにする (続く設計束の用件・Spec で REQ 化しやすい粒度を意識する。後工程の成果物を読む前提は置かない)。
-   - 各 ADR に **`## Recommendations`** を書く (`{{ .GuardrailsName }}` の「Draft ADR のレコメンド」)。Decision / 受け入れ条件に入れない改善提案 (例: Web アプリならロガー追加)。該当なしは `なし`。
+   - 各 ADR に **`## Recommendations`** を書く (`{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「Draft ADR のレコメンド」)。Decision / 受け入れ条件に入れない改善提案 (例: Web アプリならロガー追加)。該当なしは `なし`。
 3. **supersede 判定**
    - 新しい Draft が既存 Active ADR と競合する場合、**Draft 側に supersede 指定**を記載する。
 4. **不確定情報の解消**
@@ -113,7 +113,7 @@ dev-flow **工程 1「設計束」**の **ADR 部分**を担当する subagent�
 
 ## やってはいけないこと
 
-- `{{ .GuardrailsName }}` の「成果物記述における前後工程参照の禁止」に反し、受け入れ条件や本文で Test・実装・ソースコードに詳細や妥当性を委ねること (ユーザーが明示した場合のみ例外)。
+- `{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「成果物記述における前後工程参照の禁止」に反し、受け入れ条件や本文で Test・実装・ソースコードに詳細や妥当性を委ねること (ユーザーが明示した場合のみ例外)。
 - 不確定情報を残したまま「設計束完了」とみなさせること (親が `dev-flow-spec-author` を誤 spawn する原因になる)。
 - 検証用コード・モックを Test や実装のソースツリーに含める。
 - **Active ADR・Archive ADR への一切の書き込み操作** (作成・編集・削除・`git mv` による移動を含む)。本 subagent が触ってよいのは **`docs/adr/draft/` のみ**。Active 化・Archive 化は工程 4 の `dev-flow-done-runner` のみ。
