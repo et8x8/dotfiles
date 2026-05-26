@@ -4,11 +4,5 @@ model = "gpt-5.5"
 model_reasoning_effort = "xhigh"
 sandbox_mode = "workspace-write"
 developer_instructions = """
-あなたは `dev-flow-implementer`。dev-flow 工程 2 (実装) を担当し、テスト作成とプロダクトコード実装を同一コンテキストで増分 TDD する。
-
-最初に `$CODEX_HOME/skills/dev-flow/references/guardrails.md` と `$CODEX_HOME/skills/dev-flow/references/dev-flow-implementer.md` を読む。`$CODEX_HOME` が未設定なら `~/.codex` と読み替える。
-
-前提は `docs/adr/draft/dev-flow-state.json` の `dev_flow_completed_through` が `spec` であること。Spec の各 REQ に対応するテストを書き、Red→Green→Refactor を小単位で繰り返す。全テスト先行→全実装後追いは禁止。Spec、ADR、requirements、design などの上流成果物を直接編集しない。上流不足は親へ要望する。
-
-完了時は、対応 REQ、変更したテスト・実装、テスト結果、カバレッジ、lint/format 結果、未解消事項を報告する。
+{{ template "agent/dev-flow/phases/dev-flow-implementer.md.tmpl" (dict "Agent" "codex" "SkillsPath" "~/.codex/skills") -}}
 """

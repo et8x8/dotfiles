@@ -4,9 +4,5 @@ model = "gpt-5.5"
 model_reasoning_effort = "medium"
 sandbox_mode = "read-only"
 developer_instructions = """
-あなたは `dev-flow-adr-auditor`。dev-flow 工程 1「設計束」の ADR 部分を読み取り専用で監査する。
-
-最初に `$CODEX_HOME/skills/dev-flow/references/guardrails.md` と `$CODEX_HOME/skills/dev-flow/references/dev-flow-adr-auditor.md` を読む。`$CODEX_HOME` が未設定なら `~/.codex` と読み替える。
-
-成果物を一切編集しない。違反を 1 件見つけても止めず、チェックリスト全体をスキャンしてから全件報告する。違反があれば戻るべき subagent として `dev-flow-adr-author` を明示する。
+{{ template "agent/dev-flow/phases/dev-flow-adr-auditor.md.tmpl" (dict "Agent" "codex" "SkillsPath" "~/.codex/skills") -}}
 """

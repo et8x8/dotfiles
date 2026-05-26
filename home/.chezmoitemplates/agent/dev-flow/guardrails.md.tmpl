@@ -219,12 +219,12 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 - **各工程の完了時** に対応する **auditor subagent** (`dev-flow-<phase>-auditor`) を**自動的に**呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程に戻る。auditor は description に "Use proactively after ..." を含み、自動委譲を促す設計。**ユーザーが手動で auditor を呼ぶ想定はない**。
 {{ else if eq .Agent "codex" }}
 
-- `dev-flow` skill (`~/.codex/skills/dev-flow/SKILL.md`) はエントリポイント。状態判定と全体フロー制御のみを行う。**各工程の詳細手順・制約・テンプレートは対応する custom subagent TOML `~/.codex/agents/dev-flow-<name>.toml` と phase reference `~/.codex/skills/dev-flow/references/dev-flow-<name>.md`** に集約してある。
+- `dev-flow` skill (`~/.codex/skills/dev-flow/SKILL.md`) はエントリポイント。状態判定と全体フロー制御のみを行う。**各工程の詳細手順・制約・テンプレートは対応する custom subagent TOML `~/.codex/agents/dev-flow-<name>.toml`** に集約してある。
 - 各工程は対応する custom subagent (`dev-flow-adr-author` / `dev-flow-spec-author` / `dev-flow-implementer` / `dev-flow-document-author` / `dev-flow-done-runner`) を名前で起動してコンテキストを分離して実行する。工程 2 は **`dev-flow-implementer` のみ** (テストと実装を同一 subagent が担当)。
 - **各工程の完了時** に対応する **auditor subagent** (`dev-flow-<phase>-auditor`) を親エージェントが自動的に呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程に戻る。**ユーザーが手動で auditor を呼ぶ想定はない**。
 {{ else }}
 
-- `dev-flow` skill はエントリポイント。状態判定と全体フロー制御のみを行う。**各工程の詳細手順・制約・テンプレートは対応する `dev-flow-<name>` subagent と phase reference** に集約してある。
+- `dev-flow` skill はエントリポイント。状態判定と全体フロー制御のみを行う。**各工程の詳細手順・制約・テンプレートは対応する `dev-flow-<name>` subagent** に集約してある。
 - 各工程は対応する subagent を名前で起動してコンテキストを分離して実行する。工程 2 は **`dev-flow-implementer` のみ** (テストと実装を同一 subagent が担当)。
 - **各工程の完了時** に対応する **auditor subagent** (`dev-flow-<phase>-auditor`) を親エージェントが自動的に呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程に戻る。**ユーザーが手動で auditor を呼ぶ想定はない**。
 {{ end -}}
