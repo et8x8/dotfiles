@@ -109,6 +109,16 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 - **工程 2 (実装)** は小単位ごとに `dev-flow-test-author` → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` → `dev-flow-quality-runner` (Green) を回す。失敗原因が曖昧な場合は `dev-flow-failure-triager` で分類する。ただし**Spec に合わせてテストを後追いで書き換えてはならない** (Spec から見直す)。
 - **工程 4 (Done) は必ずユーザー承認**を得てから Active 移行 + 確定 commit する。承認前は Active 化や確定 commit を行わない (PR 更新のための途中 commit は可)。
 
+## subagent 実行数上限への対応
+
+subagent の実行数には上限がありうる。親エージェントは新規 spawn 前と工程境界で既存 subagent を棚卸しし、上限に達して実行基盤が全 subagent を閉じる事態を避ける。
+
+- auditor 違反の修正は、直前の作業 subagent の id が利用可能で同じ文脈を使う価値が高い場合、新規 spawn ではなく既存 subagent への追加入力を優先する。
+- 上限が近い / 上限に達した場合は、まず **1 つだけ**閉じて再試行する。まだ不足する場合に限り、優先順位に従って追加で閉じる。
+- 閉じる優先順位: 完了済み `dev-flow-quality-runner` → 完了済み auditor → 完了済み `dev-flow-document-author` → 完了済み `dev-flow-failure-triager` → 当面戻らない `dev-flow-test-author` / `dev-flow-implementer` → 当面戻らない `dev-flow-adr-author` / `dev-flow-spec-author` → `dev-flow-done-runner`。
+- 同じ優先度なら、低コストモデル / 低 reasoning、最終利用が古い、成果やレポートが親に残っている subagent から閉じる。
+- 未完了の作業中 subagent、承認待ちや Active 化直前の `dev-flow-done-runner`、直近で修正依頼を送る可能性が高い作業 subagent は閉じない。
+
 ## 各工程の禁止事項
 
 ### 工程 1: 設計束 — `dev-flow-adr-author` / `dev-flow-spec-author`
@@ -215,6 +225,7 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 - `dev-flow` skill (`{{ template "agent/dev-flow/skill-reference.tmpl" . }}`) はエントリポイント。状態判定と全体フロー制御のみを行う。**各工程の詳細手順・制約・テンプレートは対応する subagent 定義 `{{ template "agent/dev-flow/subagent-reference.tmpl" . }}`** に集約してある。
 - 各工程は対応する subagent (`dev-flow-adr-author` / `dev-flow-spec-author` / `dev-flow-test-author` / `dev-flow-quality-runner` / `dev-flow-implementer` / `dev-flow-failure-triager` / `dev-flow-document-author` / `dev-flow-done-runner`) を名前で起動してコンテキストを分離して実行する。工程 2 はテスト作成・品質実行・実装・失敗分類を別 subagent に分け、小単位 TDD と低コストな反復実行を両立する。
 - **各工程の完了時** に対応する **auditor subagent** を親エージェントが自動的に呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程に戻る。**ユーザーが手動で auditor を呼ぶ想定はない**。
+- 既存 subagent の文脈を再利用できる修正は、同じ role の再 spawn より既存 subagent への追加入力を優先する。subagent 実行数上限が近い場合は、完了済みで再利用価値の低い subagent から必要最小限だけ閉じる。
 - 進行中のみ `docs/adr/draft/dev-flow-state.json` に **`dev_flow_completed_through`** (完了した工程) を記録し、**工程が完了するたびに値を書き換える**。**Done 工程の `git commit` 完了後はそのファイルを削除**する (記録なしはファイル無し)。
 - **進捗はこの JSON のみを正とし、git の状態から推定してはならない**。
 

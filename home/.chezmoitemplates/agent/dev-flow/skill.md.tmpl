@@ -27,6 +27,17 @@
 9. **設計ドキュメントの分割**は `{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「設計ドキュメントの分割 (行数・トークン)」に従う (`AGENTS.md` / `CLAUDE.md` があればそちらを優先)。
 10. **`index.md` の同期**は `{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「設計ドキュメントのインデックス (`index.md`)」に従う。用件・設計・Spec は `dev-flow-spec-author` が三種と同一バッチで更新。Active ADR のみ `docs/adr/active/index.md` を `dev-flow-done-runner` が Active / Archive 化時に更新 (Draft・Archive には index を置かない)。
 
+## subagent ライフサイクル管理
+
+subagent の実行数には上限がありうる。親エージェントは、上限に達してから実行基盤に任せて全 subagent を閉じさせるのではなく、spawn 前と工程境界で既存 subagent を棚卸しし、必要最小限を明示的に閉じる。
+
+- auditor が違反を返した場合、直前の作業 subagent の id が利用可能で、同じ文脈で修正する価値が高いなら、新規 spawn ではなく既存 subagent へ追加入力して修正を依頼する。id が不明、文脈が古い、または別工程へ戻る場合のみ同じ role を再 spawn する。
+- 新規 spawn 前に上限が近い / 上限に達している場合は、まず **1 つだけ**閉じて再試行する。まだ不足する場合に限り、優先順位に従って追加で閉じる。
+- 閉じる優先順位: 完了済み `dev-flow-quality-runner` → 完了済み auditor → 完了済み `dev-flow-document-author` → 完了済み `dev-flow-failure-triager` → 当面戻らない `dev-flow-test-author` / `dev-flow-implementer` → 当面戻らない `dev-flow-adr-author` / `dev-flow-spec-author` → `dev-flow-done-runner`。
+- 同じ優先度なら、低コストモデル / 低 reasoning の subagent、最終利用が古い subagent、成果やレポートが親に残っている subagent から閉じる。
+- 未完了の作業中 subagent、承認待ちや Active 化直前の `dev-flow-done-runner`、直近で修正依頼を送る可能性が高い作業 subagent は閉じない。
+- 工程完了後、quality-runner / auditor の結果を親が受け取り、次工程に進む判断に必要な要約を保持したら、それらの subagent は閉じてよい。
+
 ## 進捗の正本: `docs/adr/draft/dev-flow-state.json`
 
 ワークフロー進行中のみ、`docs/adr/draft/dev-flow-state.json` に JSON で進捗を記録する。**キー `dev_flow_completed_through` は「どの工程まで完了したか」を表す**。
@@ -119,7 +130,7 @@
    - 工程 3 完了 → `dev-flow-document-auditor`
    - 工程 4 (Done) 冒頭 → 4 つの auditor をすべて再実行 (最終整合性チェック)
 
-   違反があれば auditor の報告に従い該当 subagent を再 spawn して修正する。違反が無ければ `dev_flow_completed_through` を次の値に書き換える (Done を除く)。**工程 2 はカバレッジ目標達成後のみ** `implementation` に更新する。
+   違反があれば auditor の報告に従い、可能なら直前の該当作業 subagent へ追加入力して修正する。既存 subagent を再利用できない場合のみ再 spawn する。違反が無ければ `dev_flow_completed_through` を次の値に書き換える (Done を除く)。**工程 2 はカバレッジ目標達成後のみ** `implementation` に更新する。
 5. **下流 subagent からの上流要望**を受けたとき:
    - 要望が ADR の Decision / 受け入れ条件と**両立しない**なら下流に**拒否**を返す。必要なら更上流 (ADR) から見直す案を示す。
    - 妥当なら該当上流 subagent を spawn し、修正後は**変更が生じた工程から下流を再実行**する。
@@ -145,6 +156,7 @@
 - 古い記述は修正または削除する。将来のために残さない。
 - 各工程はコンテキスト分離して実行する (対応する作業 subagent を spawn する)。
 - 各工程末で対応する auditor subagent を自動で spawn する (ユーザーが手動で呼ぶ想定はない)。
+- 既存 subagent の文脈を再利用できる修正は、同じ role の再 spawn より既存 subagent への追加入力を優先する。subagent 実行数上限が近い場合は、完了済みで再利用価値の低い subagent から必要最小限だけ閉じる。
 - **次工程に進む明示指示が無ければ絶対に次工程に進まない** (工程 1 設計束の内部で Open Question ゼロかつ ADR 監査通過後に三種へ続行するケースのみ例外)。
 
 ## 関連リソース

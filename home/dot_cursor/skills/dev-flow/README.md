@@ -5,6 +5,8 @@ AI エージェント前提の開発プロセスを支援する Cursor 用のリ
 「**(1) 設計束 (ADR・用件定義・基本設計・Spec) → (2) 実装 (TDD) → (3) ドキュメント生成 → (4) 完了 (Done)**」の **4 工程**を、単一の `dev-flow` skill から **subagent への委譲**で順に進める。工程 1 の設計束では、Open Question が解消したら **ADR 監査の直後に**用件・設計・Spec を**同一バッチ**で作成 / 編集する (未解消なら **ADR のみ**)。各工程の作業は工程専用の **作業 subagent** が担い、完了直後に対応する **監査 subagent** が自動で整合性をチェックする。
 
 > 下流 subagent は上流成果物を直接編集せず、必要時は親 (`dev-flow` skill) に要望 → 親が橋渡し。上流変更後はユーザー報告必須。工程 2 でカバレッジ未達時は remediation ループ (詳細は `dev-flow.mdc`)。工程 2 は `dev-flow-test-author` → `dev-flow-quality-runner` → `dev-flow-implementer` を小単位で回し、失敗時のみ `dev-flow-failure-triager` で分類する。
+>
+> subagent 実行数上限が近い場合は、完了済みで再利用価値の低い subagent から必要最小限だけ閉じる。auditor 違反の修正は、可能なら直前の作業 subagent に追加入力し、同じ role の再起動を避ける。
 
 > 前提: 1 機能 = 1 ブランチ (git worktree など) で開発する。`docs/adr/draft/` にある Draft ADR は**設計トピックごとに複数ファイル**に分けてよい。各 Draft ADR には `## Recommendations` を書く (未実施のままでも工程進行可。Active 化時に削除。他成果物から参照禁止)。用件・設計・Spec を書くときは Draft 配下の**すべて**を入力とする (特定 1 件だけを引数で指定する前提にしない)。設計ドキュメントの**行数・分割**は `dev-flow.mdc` の「設計ドキュメントの分割 (行数・トークン)」に従う。分割後の探索用に、用件・設計・Spec は各 `index.md`、Active ADR は `docs/adr/active/index.md` を同期する (形式は `dev-flow.mdc` の「設計ドキュメントのインデックス (`index.md`)」)。
 >
