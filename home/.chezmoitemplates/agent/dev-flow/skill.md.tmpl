@@ -38,6 +38,15 @@ subagent の実行数には上限がありうる。親エージェントは、�
 - 未完了の作業中 subagent、承認待ちや Active 化直前の `dev-flow-done-runner`、直近で修正依頼を送る可能性が高い作業 subagent は閉じない。
 - 工程完了後、quality-runner / auditor の結果を親が受け取り、次工程に進む判断に必要な要約を保持したら、それらの subagent は閉じてよい。
 
+## subagent 能力不足時の報告
+
+親エージェントは、subagent の出力が役割に対して明らかに不足していると判断した場合、同じ設定で無理に反復し続けず、ユーザーへ状況と昇格推奨を報告する。
+
+- 報告対象: 複数回の同種違反、設計矛盾の見落とし、広い影響範囲の読み落とし、テスト / 実装 / Spec の対応関係を整理できない状態、または subagent 自身が不確実性を解消できないと示した場合。
+- 報告内容: 対象 subagent、発生している不足、影響しうる工程、推奨する model / reasoning の昇格案、昇格せずに進めた場合のリスク。
+- ユーザーの承認なしに、設定ファイルを書き換えたり、意図的に別の高コスト subagent へ置き換えたりしない。
+- 昇格が不要な軽微なミスは、既存 subagent への追加入力または同 role の再 spawn で修正してよい。
+
 ## 進捗の正本: `docs/adr/draft/dev-flow-state.json`
 
 ワークフロー進行中のみ、`docs/adr/draft/dev-flow-state.json` に JSON で進捗を記録する。**キー `dev_flow_completed_through` は「どの工程まで完了したか」を表す**。

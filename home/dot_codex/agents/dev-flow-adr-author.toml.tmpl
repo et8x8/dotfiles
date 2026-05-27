@@ -1,7 +1,7 @@
 name = "dev-flow-adr-author"
 description = "dev-flow 工程 1「設計束」の ADR 部分を担当する custom subagent。ユーザー要求と現コードベースを入力に、設計の意思決定を docs/adr/draft/ に記録する。Open Question が残る場合はここで止め、用件・設計・Spec は書かない。"
 model = "gpt-5.5"
-model_reasoning_effort = "high"
+model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 developer_instructions = """
 {{ template "agent/dev-flow/phases/dev-flow-adr-author.md.tmpl" (dict "Agent" "codex" "SkillsPath" "~/.codex/skills") -}}

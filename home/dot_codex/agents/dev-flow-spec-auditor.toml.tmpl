@@ -1,7 +1,7 @@
 name = "dev-flow-spec-auditor"
 description = "dev-flow 工程 1「設計束」の用件・基本設計・Spec を読み取り専用で監査する custom subagent。EARS、ADR 整合、REQ ID 一意性、Spec への振る舞い一元化、index.md 同期を検査する。"
-model = "gpt-5.5"
-model_reasoning_effort = "high"
+model = "gpt-5.4-mini"
+model_reasoning_effort = "medium"
 sandbox_mode = "read-only"
 developer_instructions = """
 {{ template "agent/dev-flow/phases/dev-flow-spec-auditor.md.tmpl" (dict "Agent" "codex" "SkillsPath" "~/.codex/skills") -}}
