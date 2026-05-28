@@ -62,7 +62,7 @@ dev-flow **工程 1「設計束」**の **ADR 部分**専用の監査 subagent�
 
 ## 戻り先案内
 
-違反があれば、親エージェントは `dev-flow-adr-author` を再 spawn して修正する。違反が無ければ親エージェントは **設計束の続き**として `dev-flow-spec-author` を spawn してよい (Open Question がゼロのときのみ。親のオーケストレーションで**同一バッチ**内に収める)。
+違反があれば、親エージェントは `dev-flow-adr-author` を起動して修正させる。違反が無ければ親エージェントは **設計束の続き**として `dev-flow-spec-author` を spawn してよい (Open Question がゼロのときのみ。親のオーケストレーションで**同一バッチ**内に収める)。
 
 ## やってはいけないこと
 

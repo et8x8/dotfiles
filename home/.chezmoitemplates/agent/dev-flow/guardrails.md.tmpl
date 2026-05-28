@@ -3,6 +3,16 @@
 
 このリポジトリは「**(1) 設計束 (ADR・用件定義・基本設計・Spec) → (2) 実装 (TDD: テスト + プロダクトコード) → (3) ドキュメント生成 → (4) 完了 (Done)**」の **4 工程の開発プロセス**で運用する。工程 1 の設計束は **1 つの工程**として扱い、ADR と用件・設計・Spec を**別タイミングの工程に分けて運用しない** (後述の Open Question 例外を除く)。本プロセスは **`dev-flow` skill** をエントリポイントとし、各工程は対応する subagent (`dev-flow-<name>`) に委譲する。各工程末では対応する **auditor subagent** を自動で spawn し整合性を監査する (ユーザーが手動で auditor を呼ぶ想定はない)。以下を**例外なく**守ること。
 
+## 親エージェントの責務制限
+
+親エージェント (`dev-flow` skill を実行しているオーケストレーター) は、状態判定・工程選択・subagent 起動・結果の受け取り・ユーザー報告だけを行う。**各 subagent が担当する成果物作成 / 編集 / 監査 / 品質コマンド実行 / 失敗分類 / Done 処理を、親エージェントが代行してはならない**。
+
+- `dev-flow-adr-author` / `dev-flow-spec-author` / `dev-flow-test-author` / `dev-flow-implementer` / `dev-flow-document-author` / `dev-flow-done-runner` が担当するファイル作成・編集・削除を親が直接行わない。
+- `dev-flow-quality-runner` が担当するテスト・lint・format・coverage 実行と構造化報告を親が代行しない。
+- 各 auditor が担当するチェックリスト監査と違反判定を親が代行しない。
+- `dev-flow-failure-triager` が担当する失敗原因分類と戻り先判定を親が代行しない。
+- 例外は、`docs/adr/draft/dev-flow-state.json` の工程状態更新、subagent から受け取った結果の要約、ユーザーへの確認・報告、subagent 起動に必要な入力整理に限る。
+
 ## 工程 1「設計束」の一体運用
 
 - **通常**: `dev-flow-adr-author` → `dev-flow-adr-auditor` で Open Question が**ゼロ**かつ違反ゼロになったら、**ユーザーの「次工程へ」を待たずに**続けて `dev-flow-spec-author` → `dev-flow-spec-auditor` を**同一オーケストレーション内**で spawn する。用件定義・基本設計・Spec は **常に同じバッチで**作成 / 編集する (片方だけ先に確定させない)。
@@ -146,16 +156,6 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 - **工程 2 の作業単位**は `docs/adr/draft/tasks.md` の未完了タスクとし、ファイル先頭から順番に実行する。手戻り時は完了済みタスクを変更せず、未完了タスクの修正または新規タスクの追加で対応する。
 - **工程 4 (Done) は必ずユーザー承認**を得てから Active 移行 + 確定 commit する。承認前は Active 化や確定 commit を行わない (PR 更新のための途中 commit は可)。
 
-## subagent 実行数上限への対応
-
-subagent の実行数には上限がありうる。親エージェントは新規 spawn 前と工程境界で既存 subagent を棚卸しし、上限に達して実行基盤が全 subagent を閉じる事態を避ける。
-
-- auditor 違反の修正は、直前の作業 subagent の id が利用可能で同じ文脈を使う価値が高い場合、新規 spawn ではなく既存 subagent への追加入力を優先する。
-- 上限が近い / 上限に達した場合は、まず **1 つだけ**閉じて再試行する。まだ不足する場合に限り、優先順位に従って追加で閉じる。
-- 閉じる優先順位: 完了済み `dev-flow-quality-runner` → 完了済み auditor → 完了済み `dev-flow-document-author` → 完了済み `dev-flow-failure-triager` → 当面戻らない `dev-flow-test-author` / `dev-flow-implementer` → 当面戻らない `dev-flow-adr-author` / `dev-flow-spec-author` → `dev-flow-done-runner`。
-- 同じ優先度なら、低コストモデル / 低 reasoning、最終利用が古い、成果やレポートが親に残っている subagent から閉じる。
-- 未完了の作業中 subagent、承認待ちや Active 化直前の `dev-flow-done-runner`、直近で修正依頼を送る可能性が高い作業 subagent は閉じない。
-
 ## subagent 能力不足時の報告
 
 親エージェントは、subagent の出力が役割に対して明らかに不足していると判断した場合、同じ設定で無理に反復し続けず、ユーザーへ状況と昇格推奨を報告する。
@@ -163,7 +163,7 @@ subagent の実行数には上限がありうる。親エージェントは新�
 - 報告対象: 複数回の同種違反、設計矛盾の見落とし、広い影響範囲の読み落とし、テスト / 実装 / Spec の対応関係を整理できない状態、または subagent 自身が不確実性を解消できないと示した場合。
 - 報告内容: 対象 subagent、発生している不足、影響しうる工程、推奨する model / reasoning の昇格案、昇格せずに進めた場合のリスク。
 - ユーザーの承認なしに、設定ファイルを書き換えたり、意図的に別の高コスト subagent へ置き換えたりしない。
-- 昇格が不要な軽微なミスは、既存 subagent への追加入力または同 role の再 spawn で修正してよい。
+- 昇格が不要な軽微なミスは、該当 role の subagent を起動して修正してよい。
 
 ## 各工程の禁止事項
 
@@ -229,7 +229,7 @@ subagent の実行数には上限がありうる。親エージェントは新�
 ### ループの 1 周
 
 1. `dev-flow-quality-runner` がカバレッジを計測し、未達なら `dev-flow-failure-triager` が未カバー行を分類する。
-2. 分類に応じて `dev-flow-test-author` / `dev-flow-implementer` / `dev-flow-quality-runner` または設計束 subagent を spawn。追加作業が必要なら `tasks.md` に未完了タスクを追加してから実行する。
+2. 分類に応じて `dev-flow-test-author` / `dev-flow-implementer` / `dev-flow-quality-runner` または設計束 subagent を spawn。追加作業が必要なら、対応する subagent に `tasks.md` の未完了タスクを追加 / 更新させてから実行する。
 3. 周回の末尾で `dev-flow-implementation-auditor` を実行 (違反 0 を確認)。
 4. まだ目標未満なら 1 に戻る。
 
@@ -275,7 +275,7 @@ subagent の実行数には上限がありうる。親エージェントは新�
 - `dev-flow` skill (`{{ template "agent/dev-flow/skill-reference.tmpl" . }}`) はエントリポイント。状態判定と全体フロー制御のみを行う。**各工程の詳細手順・制約・テンプレートは対応する subagent 定義 `{{ template "agent/dev-flow/subagent-reference.tmpl" . }}`** に集約してある。
 - 各工程は対応する subagent (`dev-flow-adr-author` / `dev-flow-spec-author` / `dev-flow-test-author` / `dev-flow-quality-runner` / `dev-flow-implementer` / `dev-flow-failure-triager` / `dev-flow-document-author` / `dev-flow-done-runner`) を名前で起動してコンテキストを分離して実行する。工程 2 はテスト作成・品質実行・実装・失敗分類を別 subagent に分け、小単位 TDD と低コストな反復実行を両立する。
 - **各工程の完了時** に対応する **auditor subagent** を親エージェントが自動的に呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程に戻る。**ユーザーが手動で auditor を呼ぶ想定はない**。
-- 既存 subagent の文脈を再利用できる修正は、同じ role の再 spawn より既存 subagent への追加入力を優先する。subagent 実行数上限が近い場合は、完了済みで再利用価値の低い subagent から必要最小限だけ閉じる。
+- 親エージェントは、各 subagent の担当作業を自分で代行しない。必要な作業は対応する subagent を起動して実行させる。
 - 進行中のみ `docs/adr/draft/dev-flow-state.json` に **`dev_flow_completed_through`** (完了した工程) を記録し、工程 2 の作業手順を `docs/adr/draft/tasks.md` に記録する。**工程が完了するたびに state の値を書き換える**。**Done 工程の `git commit` 完了後は state / tasks ファイルを削除**する (記録なしはファイル無し)。
 - **進捗はこの JSON のみを正とし、git の状態から推定してはならない**。
 
