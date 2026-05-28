@@ -61,6 +61,7 @@ dev-flow 工程 **4 (完了 / Done)** 専用の subagent。すべての成果物
 - 各 Spec REQ に対応するテストがあり、すべて成功している (Spec 外テストの存在は可)。
 - 実装が Spec / Test を満たし、未使用コードや Spec 外コードがない。
 - テストカバレッジが目標を満たしている (ユーザー明示が無ければ **80% 以上**)。工程 2 では remediation ループ済みであること。
+- `docs/adr/draft/tasks.md` の全タスクが完了 (`[x]`) している。
 - カバレッジ水増し実装が無いこと。
 - ドキュメントが最新の Spec / 実装を反映している。
 
@@ -135,7 +136,7 @@ ADR: docs/adr/active/v1.2.0-auth-jwt.md
 
 `git config` を変更しない。`--no-verify` 等のフック回避は禁止。
 
-`docs/adr/draft/dev-flow-state.json` が存在する場合は **`git rm` で削除**し、**上記 commit に含める** (Done 後は state ファイルを残さない)。
+`docs/adr/draft/dev-flow-state.json` と `docs/adr/draft/tasks.md` が存在する場合は **`git rm` で削除**し、**上記 commit に含める** (Done 後は state / tasks ファイルを残さない。タスクの実行ログは PR ブランチの git 履歴に残る)。
 
 ### 6. 完了報告
 
@@ -157,4 +158,4 @@ ADR: docs/adr/active/v1.2.0-auth-jwt.md
 
 ブランチがマージされたら、Active な ADR は本流の Active 履歴になる。Archive 化した ADR は本流に反映される。
 
-**`docs/adr/draft/dev-flow-state.json` を必ず削除する** (Done 完了後の状態は「ファイルが無いこと」で表す)。あわせて `docs/adr/draft/` に Draft ADR が残っていないことを確認する。
+**`docs/adr/draft/dev-flow-state.json` と `docs/adr/draft/tasks.md` を必ず削除する** (Done 完了後の状態は「ファイルが無いこと」で表す)。あわせて `docs/adr/draft/` に Draft ADR が残っていないことを確認する。

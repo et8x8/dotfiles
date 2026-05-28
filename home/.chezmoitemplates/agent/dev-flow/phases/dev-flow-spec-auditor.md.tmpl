@@ -11,6 +11,7 @@ dev-flow **工程 1「設計束」**の **用件・基本設計・Spec** 専用�
 - Spec の EARS 記法、REQ ID 一意性、Source 引用を検証する。
 - 振る舞い (EARS 文) が Spec 以外に重複定義されていないかを確認する。
 - 3 種が同じ feature 名で揃っているかを確認する。
+- `docs/adr/draft/tasks.md` が Spec と対応し、工程 2 の作業手順書として使えるか確認する。
 
 ## 制約
 
@@ -20,7 +21,7 @@ dev-flow **工程 1「設計束」**の **用件・基本設計・Spec** 専用�
 
 ## 入出力
 
-- 入力: `docs/requirements/**` `docs/design/**` `docs/spec/**` + `docs/adr/{draft,active}/**` + `docs/adr/draft/dev-flow-state.json` (存在時)
+- 入力: `docs/requirements/**` `docs/design/**` `docs/spec/**` + `docs/adr/{draft,active}/**` + `docs/adr/draft/dev-flow-state.json` (存在時) + `docs/adr/draft/tasks.md` + `git diff` (完了済みタスクの改変検知用)
 - 出力: 監査レポート (Markdown)。下記「報告フォーマット」に従う。
 
 ## チェックリスト (B. Spec)
@@ -40,6 +41,15 @@ dev-flow **工程 1「設計束」**の **用件・基本設計・Spec** 専用�
 - [ ] 各 Markdown が `{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「設計ドキュメントの分割 (行数・トークン)」に照らし**過大でないか** (500 行超・目安超なら分割漏れとして報告)
 - [ ] `docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md` が存在し、各ディレクトリ内の Markdown (`index.md` 除く) と**行が一致**しているか (幽霊エントリ・未登録ファイルがないか)
 - [ ] 要件定義 / 基本設計 / Spec が ADR の **`## Recommendations`** を Source・リンク・要件根拠として参照していないか
+- [ ] `docs/adr/draft/tasks.md` が存在し、Markdown の箇条書きチェックリストで記述されているか
+- [ ] `tasks.md` の各チェック行が、インデント有無に関わらず `- [ ] [dev-flow-test-author] ...` / `- [x] [dev-flow-test-author] ...` / `- [ ] [dev-flow-implementer] ...` / `- [x] [dev-flow-implementer] ...` のいずれかになっているか
+- [ ] `tasks.md` に `dev-flow-test-author` / `dev-flow-implementer` 以外の担当や、quality-runner / auditor / document / done の作業が混入していないか
+- [ ] `tasks.md` の各タスク / サブタスクが 1 行で具体的な作業内容になっているか
+- [ ] `tasks.md` が工程 2 の実作業順に並んでおり、先頭から順に実行できるか
+- [ ] サブタスクを持つ親タスクが作業のまとまりとして使われ、異なる担当のサブタスクが混在していないか
+- [ ] 新規 Spec 由来の作業が、原則としてテスト作成タスク → 実装タスクの順になっているか
+- [ ] `tasks.md` の未完了タスクが現在の Spec / design / requirements と対応しているか
+- [ ] `git diff` 上で完了済みタスク (`[x]`) の本文・担当・インデント・並び順・削除が発生していないか
 
 ## 報告フォーマット
 

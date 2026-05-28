@@ -2,9 +2,9 @@
 
 AI エージェント前提の開発プロセスを支援する Cursor 用のリソース集。
 
-「**(1) 設計束 (ADR・用件定義・基本設計・Spec) → (2) 実装 (TDD) → (3) ドキュメント生成 → (4) 完了 (Done)**」の **4 工程**を、単一の `dev-flow` skill から **subagent への委譲**で順に進める。工程 1 の設計束では、Open Question が解消したら **ADR 監査の直後に**用件・設計・Spec を**同一バッチ**で作成 / 編集する (未解消なら **ADR のみ**)。各工程の作業は工程専用の **作業 subagent** が担い、完了直後に対応する **監査 subagent** が自動で整合性をチェックする。
+「**(1) 設計束 (ADR・用件定義・基本設計・Spec) → (2) 実装 (TDD) → (3) ドキュメント生成 → (4) 完了 (Done)**」の **4 工程**を、単一の `dev-flow` skill から **subagent への委譲**で順に進める。工程 1 の設計束では、Open Question が解消したら **ADR 監査の直後に**用件・設計・Spec と `docs/adr/draft/tasks.md` を**同一バッチ**で作成 / 編集する (未解消なら **ADR のみ**)。各工程の作業は工程専用の **作業 subagent** が担い、完了直後に対応する **監査 subagent** が自動で整合性をチェックする。
 
-> 下流 subagent は上流成果物を直接編集せず、必要時は親 (`dev-flow` skill) に要望 → 親が橋渡し。上流変更後はユーザー報告必須。工程 2 でカバレッジ未達時は remediation ループ (詳細は `dev-flow.mdc`)。工程 2 は `dev-flow-test-author` → `dev-flow-quality-runner` → `dev-flow-implementer` を小単位で回し、失敗時のみ `dev-flow-failure-triager` で分類する。
+> 下流 subagent は上流成果物を直接編集せず、必要時は親 (`dev-flow` skill) に要望 → 親が橋渡し。上流変更後はユーザー報告必須。工程 2 でカバレッジ未達時は remediation ループ (詳細は `dev-flow.mdc`)。工程 2 は `docs/adr/draft/tasks.md` の先頭から未完了タスクを順に、`dev-flow-test-author` → `dev-flow-quality-runner` → `dev-flow-implementer` で小単位に回し、失敗時のみ `dev-flow-failure-triager` で分類する。
 >
 > subagent 実行数上限が近い場合は、完了済みで再利用価値の低い subagent から必要最小限だけ閉じる。auditor 違反の修正は、可能なら直前の作業 subagent に追加入力し、同じ role の再起動を避ける。
 
@@ -26,7 +26,7 @@ AI エージェント前提の開発プロセスを支援する Cursor 用のリ
 <repo>/
   docs/
     adr/
-      draft/      # Draft 段階の ADR + dev-flow-state.json (進捗の正本)
+      draft/      # Draft 段階の ADR + dev-flow-state.json (進捗の正本) + tasks.md
       active/     # Active 段階の ADR
       archive/    # Archive 段階の ADR
     requirements/ # 要件定義 (機能 / 非機能要件)
@@ -48,10 +48,10 @@ AI エージェント前提の開発プロセスを支援する Cursor 用のリ
 
 - 次工程に進む明示指示が無ければ進まない。
 - **例外 (工程 1 内部)**: Open Question がすべて解消され `dev-flow-adr-auditor` が違反 0 なら、**ユーザー指示なしで** `dev-flow-spec-author` まで続行し設計束を完結させる。Open Question 残なら **ADR のみ**。
-- 工程 2 (実装) は `dev-flow-test-author` → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` → `dev-flow-quality-runner` (Green / lint / coverage) を小単位で回す。失敗時は `dev-flow-failure-triager`。全テスト先行→全実装後追いは禁止。
+- 工程 2 (実装) は `docs/adr/draft/tasks.md` の先頭から未完了タスクを順に `dev-flow-test-author` → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` → `dev-flow-quality-runner` (Green / lint / coverage) で回す。失敗時は `dev-flow-failure-triager`。全テスト先行→全実装後追いは禁止。
 - 工程 4 (Done / Active 移行 + commit) は**ユーザー承認必須**。
 
-利用リポジトリの `docs/adr/draft/` には **`dev-flow-state.json`** (JSON) のみで **`dev_flow_completed_through`** (完了した工程) を記録する。**工程が完了するたび**に値を書き換え、**Done の `git commit` 完了後は state ファイルを削除**する。**進捗の判断に git の状態を併用しない**。
+利用リポジトリの `docs/adr/draft/` には **`dev-flow-state.json`** (JSON) で **`dev_flow_completed_through`** (完了した工程) を記録し、**`tasks.md`** で工程 2 の作業順を記録する。**工程が完了するたび**に state の値を書き換え、**Done の `git commit` 完了後は state / tasks ファイルを削除**する。**進捗の判断に git の状態を併用しない**。
 
 #### `dev_flow_completed_through` の値
 
@@ -62,7 +62,7 @@ AI エージェント前提の開発プロセスを支援する Cursor 用のリ
 | `implementation` | 工程 2 (実装 / TDD) |
 | `document` | 工程 3 (ドキュメント生成) |
 
-工程 4 (Done) の commit 完了で state ファイル自体を削除する。
+工程 4 (Done) の commit 完了で state / tasks ファイル自体を削除する。
 
 ### Subagents (作業 / 補助 8 + 監査 4)
 

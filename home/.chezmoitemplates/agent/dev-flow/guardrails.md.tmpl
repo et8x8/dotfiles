@@ -86,6 +86,42 @@ v1.1.0-session.md: セッション Cookie の有効期限と更新方針
 
 エージェントは探索時、まず当該 `index.md` を読み、必要なファイルだけを開く。
 
+## 工程 2 タスク一覧 (`tasks.md`)
+
+工程 1 の `dev-flow-spec-author` は、用件定義・基本設計・Spec と同じバッチで `docs/adr/draft/tasks.md` を作成 / 更新する。このファイルは工程 2 の作業手順書であり、`dev-flow-test-author` と `dev-flow-implementer` に渡す作業単位の正本とする。
+
+### 形式
+
+- `docs/adr/draft/tasks.md` に Markdown の箇条書きチェックリストで書く。
+- 各行は `- [ ] [dev-flow-test-author] <作業内容>` または `- [ ] [dev-flow-implementer] <作業内容>` の形式にする。完了時は `[x]` にする。
+- タスクに書いてよい担当は `dev-flow-test-author` と `dev-flow-implementer` のみ。`dev-flow-quality-runner` / auditor / document / done の作業は書かない。
+- 各タスクは 1 行で、具体的な作業内容を記述する。長い説明、背景、設計判断、複数段落を書かない。
+- タスクが複雑になる場合は、親タスクの下に 2 スペース以上インデントしたサブタスクをチェックリストで作る。サブタスクも 1 行で具体的に書く。
+- サブタスクを持つ親タスクは作業のまとまりを表す。実行対象は、サブタスクを持たない最上位の未完了タスク、または親タスク配下の未完了サブタスクとする。全サブタスクが完了したら親タスクも `[x]` にする。
+- 親タスク配下に異なる担当を混在させない。`dev-flow-test-author` と `dev-flow-implementer` の両方が必要なら、担当ごとに親タスクを分ける。
+- タスクは実際に行う作業順に並べ、工程 2 はファイル先頭から深さ優先で未完了の実行対象タスクを順に実行する。
+- 新規 Spec 由来の実装は、原則として `dev-flow-test-author` のテスト作成タスク → `dev-flow-implementer` の実装タスクの順に並べる。
+
+例:
+
+```markdown
+- [ ] [dev-flow-test-author] REQ-AUTH-001 の正常ログインで JWT を返す失敗テストを追加する
+- [ ] [dev-flow-implementer] REQ-AUTH-001 の JWT 発行処理を最小実装する
+- [ ] [dev-flow-test-author] REQ-AUTH-002 のロックアウト条件を検証する失敗テスト群を追加する
+  - [ ] [dev-flow-test-author] 失敗回数が閾値未満ならロックされない境界テストを追加する
+  - [ ] [dev-flow-test-author] 失敗回数が閾値到達ならロックされる境界テストを追加する
+- [ ] [dev-flow-implementer] REQ-AUTH-002 のロックアウト状態管理を最小実装する
+```
+
+### 更新ルール
+
+- `dev-flow-spec-author` は、Spec の追加 / 変更 / 削除と同じバッチで `tasks.md` を更新する。
+- 手戻りで設計束に戻った場合も、`dev-flow-spec-author` が `tasks.md` を更新する。
+- 完了済みタスク (`[x]`) は実行ログとして扱い、本文・担当・インデント・並び順を変更しない。削除もしない。
+- タスク完了時に `[ ]` を `[x]` へ変えることだけは許可する。いったん `[x]` にした行は以後変更しない。
+- 追加作業が必要になった場合は、新規タスクとして未完了行を追加する。未完了タスク (`[ ]`) は、Spec 変更や手戻りに合わせて修正してよい。
+- 完了済みタスクが現在の Spec と合わなくなった場合も、その行は変更せず、取り消し / 追加 / 修正に相当する新規タスクを追加する。
+
 ## Draft ADR のレコメンド (`## Recommendations`)
 
 Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。本 feature の **Decision / Acceptance criteria には含めない**横断的な改善提案を箇条書きで書く (例: Web アプリならロガー追加、可観測性、セキュリティヘッダ強化)。該当が無い場合は `なし` と書く。
@@ -96,8 +132,8 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 
 ## 工程の入出力
 
-1. **設計束 (ADR・用件・基本設計・Spec)** — 作業: `dev-flow-adr-author` → (Open Question ゼロかつ adr 監査通過後) `dev-flow-spec-author`。監査: `dev-flow-adr-auditor` → `dev-flow-spec-auditor`。入力: ユーザー要求 + 現コードベース + ADR。成果物: `docs/adr/draft/` + 三種 (+ 各 `index.md`)。検証: Open Question 残時は ADR のみ。確定後は三種を同時バッチ。分割・`index.md` 同期を遵守。
-2. **実装 (TDD)** — 作業: `dev-flow-test-author` → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` → `dev-flow-quality-runner` (Green / lint / coverage)。失敗時は `dev-flow-failure-triager`。監査: `dev-flow-implementation-auditor`。入力: Spec + 既存テスト + 既存実装。成果物: テストコード + プロダクションコード。検証: 各 REQ にテスト必須、Spec 外テスト可、小単位 TDD、全 PASS、カバレッジ 80% 以上 (明示指示で例外可)。一括で全テスト先行→全実装後追いは禁止。
+1. **設計束 (ADR・用件・基本設計・Spec)** — 作業: `dev-flow-adr-author` → (Open Question ゼロかつ adr 監査通過後) `dev-flow-spec-author`。監査: `dev-flow-adr-auditor` → `dev-flow-spec-auditor`。入力: ユーザー要求 + 現コードベース + ADR。成果物: `docs/adr/draft/` + 三種 (+ 各 `index.md`) + `docs/adr/draft/tasks.md`。検証: Open Question 残時は ADR のみ。確定後は三種と `tasks.md` を同時バッチ。分割・`index.md` 同期・`tasks.md` 形式を遵守。
+2. **実装 (TDD)** — 作業: `docs/adr/draft/tasks.md` の先頭から未完了タスクを順に `dev-flow-test-author` → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` → `dev-flow-quality-runner` (Green / lint / coverage) で消化する。失敗時は `dev-flow-failure-triager`。監査: `dev-flow-implementation-auditor`。入力: Spec + `tasks.md` + 既存テスト + 既存実装。成果物: テストコード + プロダクションコード + `tasks.md` の完了チェック。検証: 各 REQ にテスト必須、Spec 外テスト可、小単位 TDD、全 PASS、カバレッジ 80% 以上 (明示指示で例外可)。一括で全テスト先行→全実装後追いは禁止。
 3. **ドキュメント生成** — 作業: `dev-flow-document-author`。監査: `dev-flow-document-auditor`。入力: 上記すべて。成果物: `docs/developer/` `docs/user/`。検証: AI 専用情報は書かない。
 4. **完了 (Done)** — 作業: `dev-flow-done-runner`。監査: 4 つの auditor を再実行 (`dev-flow-adr-auditor` / `dev-flow-spec-auditor` / `dev-flow-implementation-auditor` / `dev-flow-document-auditor`)。入力: 上記すべて + ユーザー承認。成果物: `docs/adr/active/` への移動 + `git commit`。検証: バージョンプレフィックス付与 / auditor 全件確認。
 
@@ -107,6 +143,7 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 - **例外 (設計束内部)**: 工程 1 の ADR 部分で `## Open Question` がすべて解消され、`dev-flow-adr-auditor` の監査が違反 0 なら、**ユーザー指示なしで**続けて `dev-flow-spec-author` → `dev-flow-spec-auditor` まで進めてよい (設計束を**1 工程**として完結させるための唯一の「工程内自動進行」)。
 - **Open Question や未確定が ADR に残っている間は**、用件・基本設計・Spec を触らず **ADR のみ**を作成 / 編集する。
 - **工程 2 (実装)** は小単位ごとに `dev-flow-test-author` → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` → `dev-flow-quality-runner` (Green) を回す。失敗原因が曖昧な場合は `dev-flow-failure-triager` で分類する。ただし**Spec に合わせてテストを後追いで書き換えてはならない** (Spec から見直す)。
+- **工程 2 の作業単位**は `docs/adr/draft/tasks.md` の未完了タスクとし、ファイル先頭から順番に実行する。手戻り時は完了済みタスクを変更せず、未完了タスクの修正または新規タスクの追加で対応する。
 - **工程 4 (Done) は必ずユーザー承認**を得てから Active 移行 + 確定 commit する。承認前は Active 化や確定 commit を行わない (PR 更新のための途中 commit は可)。
 
 ## subagent 実行数上限への対応
@@ -154,6 +191,8 @@ subagent の実行数には上限がありうる。親エージェントは新�
 - 3 種 (要件定義 / 基本設計 / Spec) の一部だけ更新し整合が取れていない状態で次工程に進むこと。
 - **`## 設計ドキュメントの分割 (行数・トークン)`** に反する単一巨大ファイル。
 - 三種の Markdown を追加・削除・リネームしたのに、対応する `docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md` を**同一バッチで更新しない**こと。
+- `docs/adr/draft/tasks.md` を作成 / 更新しないこと、または Spec と対応しないタスクを残すこと。
+- 完了済みタスク (`[x]`) の本文・担当・インデント・並び順を変更または削除すること。
 
 ## 工程 2 のテスト・TDD 方針
 
@@ -164,7 +203,7 @@ subagent の実行数には上限がありうる。親エージェントは新�
 3. **テストカバレッジ 80% 以上 (デフォルト)**  
    ユーザーがチャット等で**別の閾値や免除を明示しない限り**、工程 2 完了時点でプロジェクトのカバレッジ計測対象 (通常は当該変更のプロダクションコード。`AGENTS.md` 等の規約を優先) が **80% 以上**であること。計測コマンド・対象パスはプロジェクト規約に従う。
 
-4. **増分進行 (工程 2)** — 関数 (または同等の小単位) ごとにテスト→実装を繰り返す。全テストだけ先に書き後から全実装する進め方は禁止。
+4. **増分進行 (工程 2)** — `docs/adr/draft/tasks.md` の順序に従い、関数 (または同等の小単位) ごとにテスト→実装を繰り返す。全テストだけ先に書き後から全実装する進め方は禁止。
 
 ## 工程 2 カバレッジ不足時の remediation ループ
 
@@ -190,7 +229,7 @@ subagent の実行数には上限がありうる。親エージェントは新�
 ### ループの 1 周
 
 1. `dev-flow-quality-runner` がカバレッジを計測し、未達なら `dev-flow-failure-triager` が未カバー行を分類する。
-2. 分類に応じて `dev-flow-test-author` / `dev-flow-implementer` / `dev-flow-quality-runner` または設計束 subagent を spawn。
+2. 分類に応じて `dev-flow-test-author` / `dev-flow-implementer` / `dev-flow-quality-runner` または設計束 subagent を spawn。追加作業が必要なら `tasks.md` に未完了タスクを追加してから実行する。
 3. 周回の末尾で `dev-flow-implementation-auditor` を実行 (違反 0 を確認)。
 4. まだ目標未満なら 1 に戻る。
 
@@ -203,6 +242,8 @@ subagent の実行数には上限がありうる。親エージェントは新�
 ### 工程 2 実装 — `dev-flow-test-author` / `dev-flow-implementer`
 
 - Spec の**各 REQ に対応するテストが無い**こと。
+- `docs/adr/draft/tasks.md` の先頭から順に未完了タスクを実行しないこと。
+- 自分に割り当てられていないタスクを完了扱いにすること。
 - Spec と矛盾するテスト・実装を書くこと。
 - **全テスト先行 → 全実装後追い**の一括進行。
 - TDD の Red 確認を省略すること (新規 Spec 由来テスト)。
@@ -235,7 +276,7 @@ subagent の実行数には上限がありうる。親エージェントは新�
 - 各工程は対応する subagent (`dev-flow-adr-author` / `dev-flow-spec-author` / `dev-flow-test-author` / `dev-flow-quality-runner` / `dev-flow-implementer` / `dev-flow-failure-triager` / `dev-flow-document-author` / `dev-flow-done-runner`) を名前で起動してコンテキストを分離して実行する。工程 2 はテスト作成・品質実行・実装・失敗分類を別 subagent に分け、小単位 TDD と低コストな反復実行を両立する。
 - **各工程の完了時** に対応する **auditor subagent** を親エージェントが自動的に呼び、対応するチェックリストで違反 0 を確認する。違反があれば該当工程に戻る。**ユーザーが手動で auditor を呼ぶ想定はない**。
 - 既存 subagent の文脈を再利用できる修正は、同じ role の再 spawn より既存 subagent への追加入力を優先する。subagent 実行数上限が近い場合は、完了済みで再利用価値の低い subagent から必要最小限だけ閉じる。
-- 進行中のみ `docs/adr/draft/dev-flow-state.json` に **`dev_flow_completed_through`** (完了した工程) を記録し、**工程が完了するたびに値を書き換える**。**Done 工程の `git commit` 完了後はそのファイルを削除**する (記録なしはファイル無し)。
+- 進行中のみ `docs/adr/draft/dev-flow-state.json` に **`dev_flow_completed_through`** (完了した工程) を記録し、工程 2 の作業手順を `docs/adr/draft/tasks.md` に記録する。**工程が完了するたびに state の値を書き換える**。**Done 工程の `git commit` 完了後は state / tasks ファイルを削除**する (記録なしはファイル無し)。
 - **進捗はこの JSON のみを正とし、git の状態から推定してはならない**。
 
 ## 進捗 state の値
@@ -247,11 +288,11 @@ subagent の実行数には上限がありうる。親エージェントは新�
 - `implementation`: 工程 2 (実装) 完了。次: ユーザー明示で工程 3 へ。
 - `document`: 工程 3 (ドキュメント生成) 完了。次: ユーザー承認で工程 4 (Done) へ。
 
-工程 4 (Done) の commit 完了後は state ファイル自体を削除する。
+工程 4 (Done) の commit 完了後は state ファイルと tasks ファイルを削除する。
 
 ## ブランチ前提
 
-- 1 機能 = 1 ブランチ (git worktree 等)。`docs/adr/draft/` 以下の ADR は現ブランチの作業対象とみなす。**複数の Draft ADR を許容**し、設計内容ごとにファイルを分ける。Draft ADR が無いときは draft を**クリーン**に保つ (`dev-flow-state.json` も置かない)。
+- 1 機能 = 1 ブランチ (git worktree 等)。`docs/adr/draft/` 以下の ADR は現ブランチの作業対象とみなす。**複数の Draft ADR を許容**し、設計内容ごとにファイルを分ける。Draft ADR が無いときは draft を**クリーン**に保つ (`dev-flow-state.json` / `tasks.md` も置かない)。
 
 ## 工程ステージとコミット
 

@@ -7,8 +7,8 @@
 
 ## 4 工程と対応 subagent
 
-1. **設計束 (ADR・用件・基本設計・Spec)** — 作業: `dev-flow-adr-author` → (Open Question ゼロかつ adr 監査通過後) `dev-flow-spec-author`。監査: `dev-flow-adr-auditor` → `dev-flow-spec-auditor`。Open Question 残なら ADR のみ。ゼロなら同一バッチで三種まで自動。設計束完了後はユーザー明示で工程 2 へ。
-2. **実装 (TDD)** — 作業: `dev-flow-test-author` → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` → `dev-flow-quality-runner` (Green / lint / coverage)。失敗時は `dev-flow-failure-triager`。監査: `dev-flow-implementation-auditor`。ユーザー明示必須。
+1. **設計束 (ADR・用件・基本設計・Spec)** — 作業: `dev-flow-adr-author` → (Open Question ゼロかつ adr 監査通過後) `dev-flow-spec-author`。監査: `dev-flow-adr-auditor` → `dev-flow-spec-auditor`。Open Question 残なら ADR のみ。ゼロなら同一バッチで三種と `docs/adr/draft/tasks.md` まで自動。設計束完了後はユーザー明示で工程 2 へ。
+2. **実装 (TDD)** — 作業: `docs/adr/draft/tasks.md` の先頭から未完了タスクを順に `dev-flow-test-author` → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` → `dev-flow-quality-runner` (Green / lint / coverage) で消化する。失敗時は `dev-flow-failure-triager`。監査: `dev-flow-implementation-auditor`。ユーザー明示必須。
 3. **ドキュメント生成** — 作業: `dev-flow-document-author`。監査: `dev-flow-document-auditor`。ユーザー明示必須。
 4. **完了 (Done)** — 作業: `dev-flow-done-runner`。監査: 4 つの auditor を再実行。ユーザー承認必須。
 
@@ -26,6 +26,7 @@
 8. **ADR・用件定義・基本設計・Spec の本文**は常時ルール `{{ template "agent/dev-flow/guardrails-path.tmpl" . }}` の「成果物記述における前後工程参照の禁止」に従う。後工程 (Test・実装・ソース) へ委ねること、および前工程が後工程を唯一の定義源として指すことは、ユーザーの明示指示がない限り禁止。
 9. **設計ドキュメントの分割**は `{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「設計ドキュメントの分割 (行数・トークン)」に従う (`AGENTS.md` / `CLAUDE.md` があればそちらを優先)。
 10. **`index.md` の同期**は `{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「設計ドキュメントのインデックス (`index.md`)」に従う。用件・設計・Spec は `dev-flow-spec-author` が三種と同一バッチで更新。Active ADR のみ `docs/adr/active/index.md` を `dev-flow-done-runner` が Active / Archive 化時に更新 (Draft・Archive には index を置かない)。
+11. **`tasks.md` の作成・更新**は `{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「工程 2 タスク一覧 (`tasks.md`)」に従う。`dev-flow-spec-author` は三種と同一バッチで `docs/adr/draft/tasks.md` を作成 / 更新し、`dev-flow-spec-auditor` が監査する。工程 2 は先頭から未完了タスクを順に実行する。完了済みタスクは実行ログとして変更・削除・並び替えしない。
 
 ## subagent ライフサイクル管理
 
@@ -51,6 +52,8 @@ subagent の実行数には上限がありうる。親エージェントは、�
 
 ワークフロー進行中のみ、`docs/adr/draft/dev-flow-state.json` に JSON で進捗を記録する。**キー `dev_flow_completed_through` は「どの工程まで完了したか」を表す**。
 
+同じディレクトリの `docs/adr/draft/tasks.md` は工程 2 の作業手順書であり、進捗工程の正本ではない。工程判定は常に `dev-flow-state.json` のみを使う。
+
 - キー `dev_flow_completed_through` (string): 下記のいずれか。**最後に完了した工程**。
 
 例:
@@ -68,7 +71,7 @@ subagent の実行数には上限がありうる。親エージェントは、�
 - `implementation`: 工程 2 (実装) 完了。次: ユーザー明示があれば工程 3 へ。
 - `document`: 工程 3 (ドキュメント生成) 完了。次: ユーザー承認があれば工程 4 (Done) へ。
 
-工程 4 (Done) の `git commit` 完了後は **state ファイルを必ず削除**する (状態は「ファイル無し」で表す)。`docs/adr/draft/` に Draft ADR が無い場合は draft をクリーンに保ち、state ファイルも置かない。
+工程 4 (Done) の `git commit` 完了後は **state ファイルと tasks ファイルを必ず削除**する (状態は「ファイル無し」で表す)。`docs/adr/draft/` に Draft ADR が無い場合は draft をクリーンに保ち、state / tasks ファイルも置かない。
 
 ### 運用ルール
 
@@ -84,7 +87,7 @@ subagent の実行数には上限がありうる。親エージェントは、�
 <root>/
   docs/
     adr/
-      draft/      # Draft (作業中) … dev-flow-state.json を置く
+      draft/      # Draft (作業中) … dev-flow-state.json と tasks.md を置く
       active/     # Active (Done 済み)
       archive/    # Archive (廃止済み)
     requirements/ # 要件定義 (機能 / 非機能要件)
@@ -128,8 +131,8 @@ subagent の実行数には上限がありうる。親エージェントは、�
 1. 上記「判定する手順」で現在地を特定する。
 2. ユーザーの依頼が PR / コードレビュー指摘の反映であれば、`dev_flow_completed_through` を **`adr` に戻し**、工程 1 (設計束) から順に確認する。
 3. **該当工程の作業 subagent を Task ツールで spawn** する (subagent ファイルが詳細手順を内包している)。
-   - **工程 1 (設計束)** → `dev-flow-adr-author` → `dev-flow-adr-auditor`。Open Question が**ゼロ**かつ違反ゼロなら**続けて** `dev-flow-spec-author` → `dev-flow-spec-auditor` (ユーザーの「次へ」は不要)。Open Question が**残る**場合は **ADR のみ**で終了し `dev-flow-spec-author` は spawn しない。
-   - **工程 2** → `dev-flow-test-author` → `dev-flow-quality-runner` (Red) → `dev-flow-implementer` → `dev-flow-quality-runner` (Green / lint / coverage) を小単位で繰り返す。失敗やカバレッジ未達は `dev-flow-failure-triager` で分類し、`dev-flow-test-author` / `dev-flow-implementer` / 設計束 / `dev-flow-quality-runner` のいずれかへ戻す。達成まで `dev_flow_completed_through` を `implementation` に上げない。
+   - **工程 1 (設計束)** → `dev-flow-adr-author` → `dev-flow-adr-auditor`。Open Question が**ゼロ**かつ違反ゼロなら**続けて** `dev-flow-spec-author` → `dev-flow-spec-auditor` (ユーザーの「次へ」は不要)。Open Question が**残る**場合は **ADR のみ**で終了し `dev-flow-spec-author` は spawn しない。`dev-flow-spec-author` は三種と同一バッチで `docs/adr/draft/tasks.md` を作成 / 更新し、`dev-flow-spec-auditor` が監査する。
+   - **工程 2** → `docs/adr/draft/tasks.md` の先頭から未完了タスクを読む。次の未完了タスクが `[dev-flow-test-author]` なら `dev-flow-test-author` → `dev-flow-quality-runner` (Red)、`[dev-flow-implementer]` なら `dev-flow-implementer` → `dev-flow-quality-runner` (Green / lint / coverage) を実行する。タスクはファイル順に消化し、全未完了タスクが無くなるまで繰り返す。失敗やカバレッジ未達は `dev-flow-failure-triager` で分類し、`tasks.md` に必要な未完了タスクを追加したうえで `dev-flow-test-author` / `dev-flow-implementer` / 設計束 / `dev-flow-quality-runner` のいずれかへ戻す。達成まで `dev_flow_completed_through` を `implementation` に上げない。
    - **工程 3** → `dev-flow-document-author`
    - **工程 4** → `dev-flow-done-runner`
 4. **作業 subagent 完了直後**に対応する **auditor subagent を自動で spawn** する (工程 1 は adr 監査後、条件を満たせば spec 監査まで続ける):
@@ -161,6 +164,7 @@ subagent の実行数には上限がありうる。親エージェントは、�
 
 - 各工程は前工程の成果物を入力とする。
 - 矛盾が出たら**前工程に戻って**修正する。後工程 subagent が上流成果物を**直接**書き換えない (要望は親が橋渡し。上流変更後はユーザー報告必須)。
+- 工程 2 は `docs/adr/draft/tasks.md` の先頭から未完了タスクを順に実行する。手戻り時は完了済みタスクを変更せず、未完了タスクの修正または新規タスク追加で対応する。
 - **Done 完了前**に PR / コードレビューで手直しする場合は、`dev_flow_completed_through` を `adr` に戻し**設計束 (工程 1)** から順に再確認する。**各工程で変更不要なら上流を書き換えず次へ進んでよい**。
 - 古い記述は修正または削除する。将来のために残さない。
 - 各工程はコンテキスト分離して実行する (対応する作業 subagent を spawn する)。

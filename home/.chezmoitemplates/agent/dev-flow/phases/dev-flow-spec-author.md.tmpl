@@ -15,6 +15,7 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
 - `docs/adr/active/` と `docs/adr/draft/` を入力に、`docs/requirements/` `docs/design/` `docs/spec/` の 3 つを作成 / 更新する。
 - Spec の各要件には一意の ID を付け、Source として根拠 ADR を引用する。
 - 要件定義 / 基本設計の各セクションにも該当 ADR を引用する。
+- 工程 2 で `dev-flow-test-author` / `dev-flow-implementer` が実行する作業単位を `docs/adr/draft/tasks.md` に作成 / 更新する。
 - 仕様変更で不要になった内容は 3 つすべてから削除する。
 
 ## 制約
@@ -28,6 +29,9 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
 - 「将来のために」古い内容を残さない。
 - 振る舞いの定義 (検証単位) は **Spec が単独の正本**。要件定義 / 基本設計には EARS 文を再記述せず、`docs/spec/<feature>.md#REQ-...` への**リンク**で示す。
 - `docs/adr/draft/`・`docs/adr/active/` は**読むのみ** (編集は `dev-flow-adr-author`)。下流からの要望で Spec 変更が必要なときは、親が本 subagent を spawn する。ADR と矛盾する変更は行わない。
+- `docs/adr/draft/tasks.md` には `dev-flow-test-author` と `dev-flow-implementer` の作業だけを書く。quality-runner / auditor / document / done の作業は書かない。
+- `tasks.md` の各タスクは 1 行のチェックリストにし、実行順で並べる。複雑な場合のみインデントしたサブタスクを使い、サブタスクも 1 行で具体的に書く。
+- 完了済みタスク (`[x]`) は実行ログとして扱い、本文・担当・インデント・並び順を変更または削除しない。必要なら未完了タスクの修正または新規タスクの追加で対応する。
 
 ## 上流への要望
 
@@ -35,8 +39,8 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
 
 ## 入出力
 
-- 入力: `docs/adr/draft/**` (すべて) + `docs/adr/active/index.md` 経由で関係する Active ADR + 各 `docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md` 経由で関係する既存三種
-- 出力: `docs/requirements/**` `docs/design/**` `docs/spec/**` の作成 / 編集 / 削除。あわせて各ディレクトリの `index.md` (`docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md`)
+- 入力: `docs/adr/draft/**` (すべて) + `docs/adr/active/index.md` 経由で関係する Active ADR + 各 `docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md` 経由で関係する既存三種 + 既存 `docs/adr/draft/tasks.md` (存在時)
+- 出力: `docs/requirements/**` `docs/design/**` `docs/spec/**` の作成 / 編集 / 削除。あわせて各ディレクトリの `index.md` (`docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md`) と `docs/adr/draft/tasks.md`
 
 - **要件定義** → `docs/requirements/<feature>.md` (読み手: 要求側。何を実現するか)
 - **基本設計** → `docs/design/<feature>.md` (読み手: 実装側。どう実現するか)
@@ -78,7 +82,15 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
    - 手順 3〜5 で 3 種の Markdown を追加・削除・リネームしたら、**同一バッチ**で各 `index.md` を更新する。
    - 形式: 1 行 = `<ファイル名>: <概要>` (テーブル不要。ファイル名辞書順。`index.md` 自身は列挙しない)。
    - 存在しないファイルへの行を残さない。
-7. **検証**
+7. **`tasks.md` の作成 / 更新**
+   - `docs/adr/draft/tasks.md` を作成 / 更新する。形式は `{{ template "agent/dev-flow/guardrails-name.tmpl" . }}` の「工程 2 タスク一覧 (`tasks.md`)」に従う。
+   - Spec の REQ と設計内容から、工程 2 で実際に行う `dev-flow-test-author` / `dev-flow-implementer` の作業だけをチェックリスト化する。
+   - タスクは作業手順書としてそのまま使える順に並べる。原則として、対象単位ごとにテスト作成タスクを先に置き、その後に対応する実装タスクを置く。
+   - 各タスクは 1 行で、対象 REQ / 対象機能 / 期待する作業が分かる具体的な文にする。曖昧な「実装する」「テストを書く」だけの行にしない。
+   - 複雑なタスクはインデントしたサブタスクに分解する。サブタスクも 1 行で具体的に書く。
+   - 既存の完了済みタスク (`[x]`) は変更・削除・並び替えしない。Spec 変更で不要になっても行は残し、必要なら未完了の取り消し / 追加タスクを追記する。
+   - 既存の未完了タスク (`[ ]`) は、現在の Spec に合わせて修正・削除・並び替えしてよい。
+8. **検証**
    - ADR にない内容を 3 種のいずれかに書いていないか?
    - 要件定義 / 基本設計 / Spec の間で**矛盾**していないか?
    - 振る舞いの定義が Spec 以外の場所に二重記述されていないか? (要件定義 / 基本設計は**リンクのみ**)
@@ -87,6 +99,9 @@ dev-flow **工程 1「設計束」**の **用件定義・基本設計・Spec** �
    - Spec の各要件に一意の ID が付いているか?
    - 3 種それぞれに、根拠となる ADR への参照 (Spec は要件単位で `> Source:`) が付いているか?
    - 3 種が**同じ feature 名で揃っている**か?
+   - `tasks.md` が Spec と対応し、工程 2 の作業順として先頭からそのまま実行できるか?
+   - `tasks.md` に `dev-flow-test-author` / `dev-flow-implementer` 以外の作業が混入していないか?
+   - 完了済みタスク (`[x]`) を変更・削除・並び替えしていないか?
 
 ## EARS 記法
 

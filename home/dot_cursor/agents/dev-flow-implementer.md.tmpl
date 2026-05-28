@@ -1,6 +1,6 @@
 ---
 name: dev-flow-implementer
-description: dev-flow 工程 2 (実装) のプロダクトコード実装を担当する subagent。dev-flow-test-author が作成し dev-flow-quality-runner が Red 確認したテストを、Spec/Test に沿う最小実装で Green にする。Use when dev-flow needs production code implementation after failing tests are ready.
+description: dev-flow 工程 2 (実装) のプロダクトコード実装を担当する subagent。docs/adr/draft/tasks.md の次タスクに沿い、dev-flow-test-author が作成し dev-flow-quality-runner が Red 確認したテストを Spec/Test に沿う最小実装で Green にする。Use when dev-flow needs production code implementation after failing tests are ready.
 model: inherit
 ---
 {{ template "agent/dev-flow/phases/dev-flow-implementer.md.tmpl" (dict "Agent" "cursor" "RulesPath" "~/.cursor/rules") -}}
