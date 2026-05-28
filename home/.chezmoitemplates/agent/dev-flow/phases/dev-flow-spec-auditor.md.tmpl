@@ -42,14 +42,16 @@ dev-flow **工程 1「設計束」**の **用件・基本設計・Spec** 専用�
 - [ ] `docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md` が存在し、各ディレクトリ内の Markdown (`index.md` 除く) と**行が一致**しているか (幽霊エントリ・未登録ファイルがないか)
 - [ ] 要件定義 / 基本設計 / Spec が ADR の **`## Recommendations`** を Source・リンク・要件根拠として参照していないか
 - [ ] `docs/adr/draft/tasks.md` が存在し、Markdown の箇条書きチェックリストで記述されているか
-- [ ] `tasks.md` の各チェック行が、インデント有無に関わらず `- [ ] [dev-flow-test-author] ...` / `- [x] [dev-flow-test-author] ...` / `- [ ] [dev-flow-implementer] ...` / `- [x] [dev-flow-implementer] ...` のいずれかになっているか
+- [ ] `tasks.md` の各チェック行が、インデント有無に関わらず `- [ ] <番号>. [dev-flow-test-author] ...` / `- [x] <番号>. [dev-flow-test-author] ...` / `- [ ] <番号>. [dev-flow-implementer] ...` / `- [x] <番号>. [dev-flow-implementer] ...` のいずれかになっているか
+- [ ] 最上位タスクが `1.` `2.` `3.` の整数番号、サブタスクが `1.1.` `1.2.` `2.1.` の親番号付き形式になっているか
 - [ ] `tasks.md` に `dev-flow-test-author` / `dev-flow-implementer` 以外の担当や、quality-runner / auditor / document / done の作業が混入していないか
 - [ ] `tasks.md` の各タスク / サブタスクが 1 行で具体的な作業内容になっているか
+- [ ] `tasks.md` で Spec REQ を参照している箇所が Markdown リンクになっており、`tasks.md` からの相対パスでリンク切れしていないか
 - [ ] `tasks.md` が工程 2 の実作業順に並んでおり、先頭から順に実行できるか
 - [ ] サブタスクを持つ親タスクが作業のまとまりとして使われ、異なる担当のサブタスクが混在していないか
 - [ ] 新規 Spec 由来の作業が、原則としてテスト作成タスク → 実装タスクの順になっているか
 - [ ] `tasks.md` の未完了タスクが現在の Spec / design / requirements と対応しているか
-- [ ] `git diff` 上で完了済みタスク (`[x]`) の本文・担当・インデント・並び順・削除が発生していないか
+- [ ] `git diff` 上で完了済みタスク (`[x]`) の番号・本文・担当・インデント・並び順・削除が発生していないか
 
 ## 報告フォーマット
 

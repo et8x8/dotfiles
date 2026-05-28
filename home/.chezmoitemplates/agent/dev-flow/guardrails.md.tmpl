@@ -103,9 +103,11 @@ v1.1.0-session.md: セッション Cookie の有効期限と更新方針
 ### 形式
 
 - `docs/adr/draft/tasks.md` に Markdown の箇条書きチェックリストで書く。
-- 各行は `- [ ] [dev-flow-test-author] <作業内容>` または `- [ ] [dev-flow-implementer] <作業内容>` の形式にする。完了時は `[x]` にする。
+- 各行は `- [ ] <番号>. [dev-flow-test-author] <作業内容>` または `- [ ] <番号>. [dev-flow-implementer] <作業内容>` の形式にする。完了時は `[x]` にする。
+- 最上位タスクには `1.` `2.` `3.` のような整数番号を付ける。サブタスクには `1.1.` `1.2.` `2.1.` のような親番号を含む小数形式の番号を付ける。
 - タスクに書いてよい担当は `dev-flow-test-author` と `dev-flow-implementer` のみ。`dev-flow-quality-runner` / auditor / document / done の作業は書かない。
 - 各タスクは 1 行で、具体的な作業内容を記述する。長い説明、背景、設計判断、複数段落を書かない。
+- タスクが Spec REQ を参照する場合は、REQ ID を Markdown リンクにする。`tasks.md` からの相対パスで、例: `[REQ-AUTH-001](../../spec/auth.md#req-auth-001)`。
 - タスクが複雑になる場合は、親タスクの下に 2 スペース以上インデントしたサブタスクをチェックリストで作る。サブタスクも 1 行で具体的に書く。
 - サブタスクを持つ親タスクは作業のまとまりを表す。実行対象は、サブタスクを持たない最上位の未完了タスク、または親タスク配下の未完了サブタスクとする。全サブタスクが完了したら親タスクも `[x]` にする。
 - 親タスク配下に異なる担当を混在させない。`dev-flow-test-author` と `dev-flow-implementer` の両方が必要なら、担当ごとに親タスクを分ける。
@@ -115,21 +117,22 @@ v1.1.0-session.md: セッション Cookie の有効期限と更新方針
 例:
 
 ```markdown
-- [ ] [dev-flow-test-author] REQ-AUTH-001 の正常ログインで JWT を返す失敗テストを追加する
-- [ ] [dev-flow-implementer] REQ-AUTH-001 の JWT 発行処理を最小実装する
-- [ ] [dev-flow-test-author] REQ-AUTH-002 のロックアウト条件を検証する失敗テスト群を追加する
-  - [ ] [dev-flow-test-author] 失敗回数が閾値未満ならロックされない境界テストを追加する
-  - [ ] [dev-flow-test-author] 失敗回数が閾値到達ならロックされる境界テストを追加する
-- [ ] [dev-flow-implementer] REQ-AUTH-002 のロックアウト状態管理を最小実装する
+- [ ] 1. [dev-flow-test-author] [REQ-AUTH-001](../../spec/auth.md#req-auth-001) の正常ログインで JWT を返す失敗テストを追加する
+- [ ] 2. [dev-flow-implementer] [REQ-AUTH-001](../../spec/auth.md#req-auth-001) の JWT 発行処理を最小実装する
+- [ ] 3. [dev-flow-test-author] [REQ-AUTH-002](../../spec/auth.md#req-auth-002) のロックアウト条件を検証する失敗テスト群を追加する
+  - [ ] 3.1. [dev-flow-test-author] [REQ-AUTH-002](../../spec/auth.md#req-auth-002) の失敗回数が閾値未満ならロックされない境界テストを追加する
+  - [ ] 3.2. [dev-flow-test-author] [REQ-AUTH-002](../../spec/auth.md#req-auth-002) の失敗回数が閾値到達ならロックされる境界テストを追加する
+- [ ] 4. [dev-flow-implementer] [REQ-AUTH-002](../../spec/auth.md#req-auth-002) のロックアウト状態管理を最小実装する
 ```
 
 ### 更新ルール
 
 - `dev-flow-spec-author` は、Spec の追加 / 変更 / 削除と同じバッチで `tasks.md` を更新する。
 - 手戻りで設計束に戻った場合も、`dev-flow-spec-author` が `tasks.md` を更新する。
-- 完了済みタスク (`[x]`) は実行ログとして扱い、本文・担当・インデント・並び順を変更しない。削除もしない。
+- 完了済みタスク (`[x]`) は実行ログとして扱い、番号・本文・担当・インデント・並び順を変更しない。削除もしない。
 - タスク完了時に `[ ]` を `[x]` へ変えることだけは許可する。いったん `[x]` にした行は以後変更しない。
 - 追加作業が必要になった場合は、新規タスクとして未完了行を追加する。未完了タスク (`[ ]`) は、Spec 変更や手戻りに合わせて修正してよい。
+- 新規タスクを追加する場合は既存の最大番号の後ろに追加し、既存タスク番号を振り直さない。未完了タスクを並び替える場合も、完了済みタスクの番号は変更しない。
 - 完了済みタスクが現在の Spec と合わなくなった場合も、その行は変更せず、取り消し / 追加 / 修正に相当する新規タスクを追加する。
 
 ## Draft ADR のレコメンド (`## Recommendations`)
@@ -192,7 +195,7 @@ Draft ADR には **`## Recommendations` (レコメンド)** 節を設ける。�
 - **`## 設計ドキュメントの分割 (行数・トークン)`** に反する単一巨大ファイル。
 - 三種の Markdown を追加・削除・リネームしたのに、対応する `docs/requirements/index.md` / `docs/design/index.md` / `docs/spec/index.md` を**同一バッチで更新しない**こと。
 - `docs/adr/draft/tasks.md` を作成 / 更新しないこと、または Spec と対応しないタスクを残すこと。
-- 完了済みタスク (`[x]`) の本文・担当・インデント・並び順を変更または削除すること。
+- 完了済みタスク (`[x]`) の番号・本文・担当・インデント・並び順を変更または削除すること。
 
 ## 工程 2 のテスト・TDD 方針
 
