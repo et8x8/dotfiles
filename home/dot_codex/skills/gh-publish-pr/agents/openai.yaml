@@ -1,0 +1,7 @@
+interface:
+  display_name: "GitHub Publish PR"
+  short_description: "Commit, push, and update a GitHub pull request"
+  default_prompt: "Use $gh-publish-pr to commit the approved changes, push the branch, and create or update the GitHub pull request."
+
+policy:
+  allow_implicit_invocation: false
