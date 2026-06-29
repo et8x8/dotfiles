@@ -45,7 +45,10 @@ Require the subagent to:
 - If one exists, preserve its current draft or ready state and update its title and body.
 - Write in English.
 - Treat pull request titles and bodies as the bridge between AI agent sessions.
-- Pull requests are merged into the target branch with Squash and merge, and the pull request body becomes part of the resulting commit message. Write the pull request body so that someone reading the squashed commit message can understand what changed, why it changed, and any important follow-up context.
+- Pull requests are merged into the target branch with Squash and merge, and the pull request body becomes part of the resulting commit message. Write the pull request body so that someone reading the squashed commit message can understand what changed, why it changed, and any commit-relevant follow-up context.
+- Include only durable information that helps a future AI agent or maintainer understand the committed change set.
+- Do not include PR workflow state, review logistics, draft/readiness rationale, reviewer instructions, or other process notes unless they are directly necessary to understand the commits.
+- Before creating or updating the PR, reread the body as a future squash commit message and remove any sentence that would be meaningless or misleading in `git log` after merge.
 - Write pull request titles so that git log --oneline -20 remains the most reliable compact record of what happened recently.
 - Target the confirmed base branch.
 - Never merge the pull request.
