@@ -1,6 +1,9 @@
 autoload -Uz compinit
 compinit
 
+# Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # lazygit（~/.ghq/bin/lazygit を PATH 解決できるよう bin を追加）
 export PATH="$HOME/.ghq/bin:$PATH"
 
