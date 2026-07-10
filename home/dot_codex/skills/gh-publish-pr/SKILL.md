@@ -7,7 +7,7 @@ description: Publish approved repository changes by committing, pushing, and cre
 
 ## Delegate First
 
-Immediately create a subagent using `model: gpt-5.5` and `reasoning_effort: low`. Delegate the entire publishing workflow to that subagent. Keep the parent responsible for user communication and approvals.
+Immediately create a subagent using `model: gpt-5.6-luna` and `model_reasoning_effort: low`. Delegate the entire publishing workflow to that subagent. Keep the parent responsible for user communication and approvals.
 
 If the subagent returns because a rebase has conflicts, do not resolve them. Ask the user how to proceed, then resume the same subagent with the user's answer.
 
