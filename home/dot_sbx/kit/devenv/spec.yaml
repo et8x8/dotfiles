@@ -1,0 +1,71 @@
+description: Installs devbox for Docker Sandboxes.
+schemaVersion: "1"
+kind: mixin
+name: devbox
+displayName: Devbox
+
+caps:
+  network:
+    allow:
+      - archive.ubuntu.com
+      - cache.nixos.org
+      - get.jetify.com
+      - nixos.org
+      - releases.nixos.org
+      - releases.jetify.com
+      - security.ubuntu.com
+
+commands:
+  install:
+    - description: Install devbox
+      user: "1000"
+      command: |
+        set -eu
+        installer="$(mktemp)"
+        trap 'rm -f "$installer"' EXIT
+        curl -fsSL https://get.jetify.com/devbox -o "$installer"
+        bash "$installer" -f
+    - description: Install xz for Nix installer
+      user: "0"
+      command: |
+        set -eu
+        if command -v xz >/dev/null 2>&1; then
+          exit 0
+        fi
+
+        apt-get update
+        DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends xz-utils
+        rm -rf /var/lib/apt/lists/*
+    - description: Install Nix for devbox
+      user: "0"
+      command: |
+        set -eu
+        if command -v nix >/dev/null 2>&1 || [ -x /nix/var/nix/profiles/default/bin/nix ]; then
+          exit 0
+        fi
+
+        installer="$(mktemp)"
+        trap 'rm -f "$installer"' EXIT
+        curl -fsSL https://nixos.org/nix/install -o "$installer"
+
+        sh "$installer" --daemon --yes
+
+        cat >> /etc/sandbox-persistent.sh <<'EOF'
+        if [ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
+          . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+        fi
+        EOF
+  startup:
+    - description: Start Nix daemon
+      user: "0"
+      background: true
+      command:
+        - sh
+        - -c
+        - |
+          if [ -S /nix/var/nix/daemon-socket/socket ]; then
+            exit 0
+          fi
+          if [ -x /nix/var/nix/profiles/default/bin/nix-daemon ]; then
+            exec /nix/var/nix/profiles/default/bin/nix-daemon --daemon
+          fi

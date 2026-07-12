@@ -1,0 +1,57 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "chezmoi@latest": {
+      "last_modified": "2026-06-27T07:37:20Z",
+      "resolved": "github:NixOS/nixpkgs/3d46470bb3030020f7e1361f33514854f5bfa86d#chezmoi",
+      "source": "devbox-search",
+      "version": "2.70.5",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/vybbrjszz985f1dwim139xy6vgba1n9h-chezmoi-2.70.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/vybbrjszz985f1dwim139xy6vgba1n9h-chezmoi-2.70.5"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/wc3ycza0k5fwsjn36drfr1lyjn747mjr-chezmoi-2.70.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/wc3ycza0k5fwsjn36drfr1lyjn747mjr-chezmoi-2.70.5"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/hvkf6dw4rsizz0s75yn9ckygz0m4mdnq-chezmoi-2.70.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/hvkf6dw4rsizz0s75yn9ckygz0m4mdnq-chezmoi-2.70.5"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/qlpsq0m9m8vqxldh59iczrq9r51zlf8g-chezmoi-2.70.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/qlpsq0m9m8vqxldh59iczrq9r51zlf8g-chezmoi-2.70.5"
+        }
+      }
+    },
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2026-07-11T17:41:08Z",
+      "resolved": "github:NixOS/nixpkgs/716c7a2664ca8325617b8a7fbb609273f2c4cae7?lastModified=1783791668&narHash=sha256-zbcZ1dmBTPfJ7Mlqh%2FyLEPGpgJnwuv4Xr1xucy2WqMA%3D"
+    }
+  }
+}
