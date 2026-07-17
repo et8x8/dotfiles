@@ -6,8 +6,9 @@
     "denyWrite": []
   },
   "network": {
-    "allowedDomains": ["chatgpt.com", "mcp.context7.com"],
+    "allowedDomains": ["chatgpt.com", "*.chatgpt.com", "context7.com", "*.context7.com"],
     "deniedDomains": [],
     "allowUnixSockets": ["~/.config/herdr"]
-  }
+  },
+  "enableWeakerNetworkIsolation": true
 }
