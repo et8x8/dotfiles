@@ -1,11 +1,13 @@
 {
+  "allowPty": true,
   "filesystem": {
     "denyRead": [],
-    "allowWrite": ["."],
+    "allowWrite": ["~"],
     "denyWrite": []
   },
   "network": {
     "allowedDomains": [],
-    "deniedDomains": []
+    "deniedDomains": [],
+    "allowUnixSockets": ["~/.config/herdr"]
   }
 }
