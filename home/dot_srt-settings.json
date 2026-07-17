@@ -6,7 +6,7 @@
     "denyWrite": []
   },
   "network": {
-    "allowedDomains": [],
+    "allowedDomains": ["chatgpt.com", "mcp.context7.com"],
     "deniedDomains": [],
     "allowUnixSockets": ["~/.config/herdr"]
   }
