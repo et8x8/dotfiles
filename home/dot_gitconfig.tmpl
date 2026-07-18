@@ -1,7 +1,7 @@
 [ghq]
 	root = ~/ghq/src
 [core]
-	editor = cursor --wait
+	editor = nvim
 	quotepath = false
 	pager = nkf -w | LESSCHARSET=utf-8 LESS=-RSX less
 	excludesfile = ~/.gitignore_global
@@ -16,16 +16,13 @@
 	s = status --short
 	lg = !lazygit
 [diff]
-	tool = cursor
-[difftool "cursor"]
-	cmd = cursor --wait --diff $LOCAL $REMOTE
-[difftool "vscode"]
-	cmd = code --wait --diff $LOCAL $REMOTE
+	tool = nvim
+[difftool "nvim"]
+	cmd = nvim -d "$LOCAL" "$REMOTE"
 [merge]
-	tool = cursor
-[mergetool "cursor"]
-	cmd = cursor --wait --merge $REMOTE $LOCAL $BASE $MERGED
-	trustExitCode = true
+	tool = nvim
+[mergetool "nvim"]
+	cmd = nvim -d "$LOCAL" "$MERGED" "$REMOTE"
 [rebase]
 	autostash = true
 [pager]
