@@ -19,6 +19,14 @@ source <(fzf --zsh)
 # Aliases
 alias cdg="cd \$(ghq root)/\$(ghq list | fzf)"
 
+herdr() {
+  if (( $# == 0 )); then
+    srt herdr
+  else
+    command herdr "$@"
+  fi
+}
+
 # chezmoi
 source <(chezmoi completion zsh)
 
