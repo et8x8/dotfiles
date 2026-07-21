@@ -39,9 +39,9 @@
 	required = true
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
-[credential "https://github.com"]
+[credential]
 	helper =
+[credential "https://github.com"]
 	helper = !{{ lookPath "gh" }} auth git-credential
 [credential "https://gist.github.com"]
-	helper =
 	helper = !{{ lookPath "gh" }} auth git-credential
