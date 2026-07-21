@@ -6,7 +6,7 @@
     "denyWrite": []
   },
   "network": {
-    "allowedDomains": ["localhost", "127.0.0.1", "chatgpt.com", "*.chatgpt.com", "context7.com", "*.context7.com"],
+    "allowedDomains": ["localhost", "127.0.0.1", "chatgpt.com", "*.chatgpt.com", "context7.com", "*.context7.com", "github.com"],
     "deniedDomains": [],
     "allowUnixSockets": ["~/.config/herdr"],
     "allowLocalBinding": true
