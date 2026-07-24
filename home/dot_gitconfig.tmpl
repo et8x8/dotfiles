@@ -3,7 +3,7 @@
 [core]
 	editor = nvim
 	quotepath = false
-	pager = nkf -w | LESSCHARSET=utf-8 LESS=-RSX less
+	pager = hunk pager
 	excludesfile = ~/.gitignore_global
 	ignorecase = false
 	safecrlf = true
@@ -25,10 +25,6 @@
 	cmd = nvim -d "$LOCAL" "$MERGED" "$REMOTE"
 [rebase]
 	autostash = true
-[pager]
-	log = diff-highlight | less
-	show = diff-highlight | less
-	diff = diff-highlight | less
 [user]
 	name = et8x8
 	email = 58-slicers.moxie@icloud.com

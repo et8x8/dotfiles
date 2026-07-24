@@ -2,11 +2,11 @@
   "allowPty": true,
   "filesystem": {
     "denyRead": [],
-    "allowWrite": ["~"],
+    "allowWrite": ["~", "/var/folders/_f/"],
     "denyWrite": []
   },
   "network": {
-    "allowedDomains": ["localhost", "127.0.0.1", "chatgpt.com", "*.chatgpt.com", "context7.com", "*.context7.com", "github.com", "*.github.com"],
+    "allowedDomains": ["localhost", "127.0.0.1", "chatgpt.com", "*.chatgpt.com", "context7.com", "*.context7.com", "github.com", "*.github.com", "registry.npmjs.org", "npmjs.org"],
     "deniedDomains": [],
     "allowUnixSockets": ["~/.config/herdr"],
     "allowLocalBinding": true
