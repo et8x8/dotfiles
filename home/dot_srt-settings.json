@@ -11,5 +11,6 @@
     "allowUnixSockets": ["~/.config/herdr"],
     "allowLocalBinding": true
   },
-  "enableWeakerNetworkIsolation": true
+  "enableWeakerNetworkIsolation": true,
+  "allowAppleEvents": true
 }
