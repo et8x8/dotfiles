@@ -29,6 +29,10 @@ source <(fzf --zsh)
 alias cdg="cd \$(ghq root)/\$(ghq list | fzf)"
 alias vim="nvim"
 
+codex() {
+  command codex --yolo "$@"
+}
+
 herdr() {
   if (( $# == 0 )); then
     srt herdr
