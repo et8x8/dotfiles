@@ -6,7 +6,7 @@
     "denyWrite": []
   },
   "network": {
-    "allowedDomains": ["localhost", "127.0.0.1", "chatgpt.com", "*.chatgpt.com", "context7.com", "*.context7.com", "github.com", "*.github.com", "registry.npmjs.org", "npmjs.org"],
+    "allowedDomains": ["localhost", "127.0.0.1", "chatgpt.com", "*.chatgpt.com", "*.openai.com", "context7.com", "*.context7.com", "github.com", "*.github.com", "registry.npmjs.org", "npmjs.org", "search.devbox.sh", "cache.nixos.org"],
     "deniedDomains": [],
     "allowUnixSockets": ["~/.config/herdr"],
     "allowLocalBinding": true

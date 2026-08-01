@@ -1,7 +1,18 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
   "packages": [
-    "chezmoi@latest"
+    "chezmoi@latest",
+    "git@latest",
+    "ghq@latest",
+    "lazygit@latest",
+    "zsh@latest",
+    "fzf@latest",
+    "starship@latest",
+    "glow@latest",
+    "eza@latest",
+    "herdr@latest",
+    "sandbox-runtime@latest",
+    "hunk@latest"
   ],
   "shell": {
     "init_hook": [],
