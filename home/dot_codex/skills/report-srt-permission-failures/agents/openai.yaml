@@ -1,0 +1,7 @@
+interface:
+  display_name: "Report srt Permission Failures"
+  short_description: "Report permissions required after an srt denial"
+  default_prompt: "Use $report-srt-permission-failures to report the minimal permissions required by this srt failure."
+
+policy:
+  allow_implicit_invocation: true
