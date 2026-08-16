@@ -6,7 +6,7 @@
     "denyWrite": []
   },
   "network": {
-    "allowedDomains": ["localhost", "127.0.0.1", "chatgpt.com", "*.chatgpt.com", "*.openai.com", "context7.com", "*.context7.com", "github.com", "*.github.com", "anthropic.com", "*.anthropic.com", "registry.npmjs.org", "npmjs.org", "search.devbox.sh", "cache.nixos.org", "pypi.org", "files.pythonhosted.org"],
+    "allowedDomains": ["localhost", "127.0.0.1", "chatgpt.com", "*.chatgpt.com", "*.openai.com", "context7.com", "*.context7.com", "github.com", "*.github.com", "anthropic.com", "*.anthropic.com", "claude.com", "*.claude.com", "registry.npmjs.org", "npmjs.org", "search.devbox.sh", "cache.nixos.org", "pypi.org", "files.pythonhosted.org"],
     "deniedDomains": [],
     "allowUnixSockets": ["~/.config/herdr", "/tmp/claude", "/private/tmp/claude"],
     "allowLocalBinding": true
