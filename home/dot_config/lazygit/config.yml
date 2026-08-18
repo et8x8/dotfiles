@@ -1,3 +1,5 @@
 git:
   log:
     showWholeGraph: true
+  pagers:
+    - pager: hunk pager --transparent-bg --mode stack

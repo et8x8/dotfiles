@@ -27,6 +27,7 @@
       "npmjs.org",
       "*.openai.com",
       "pypi.org",
+      "raw.githubusercontent.com",
       "registry.npmjs.org",
       "search.devbox.sh"
     ],
