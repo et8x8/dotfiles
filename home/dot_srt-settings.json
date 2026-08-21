@@ -24,6 +24,8 @@
       "files.pythonhosted.org",
       "github.com",
       "*.github.com",
+      "jetify.com",
+      "*.jetify.com",
       "npmjs.org",
       "*.openai.com",
       "pypi.org",
