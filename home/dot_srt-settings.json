@@ -2,7 +2,7 @@
   "allowPty": true,
   "filesystem": {
     "denyRead": [],
-    "allowWrite": ["~", "/var/folders/_f/", "/private/var/folders/_f/"],
+    "allowWrite": ["~", "/tmp", "/var/folders/_f/", "/private/var/folders/_f/"],
     "denyWrite": []
   },
   "network": {
