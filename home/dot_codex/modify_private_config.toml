@@ -1,0 +1,45 @@
+#!/bin/sh
+
+awk '
+BEGIN {
+  approval_policy_written = 0
+  sandbox_mode_written = 0
+  top_level = 1
+}
+
+function write_missing_settings() {
+  if (!approval_policy_written) {
+    print "approval_policy = \"never\""
+    approval_policy_written = 1
+  }
+  if (!sandbox_mode_written) {
+    print "sandbox_mode = \"danger-full-access\""
+    sandbox_mode_written = 1
+  }
+}
+
+top_level && /^approval_policy[[:space:]]*=/ {
+  print "approval_policy = \"never\""
+  approval_policy_written = 1
+  next
+}
+
+top_level && /^sandbox_mode[[:space:]]*=/ {
+  print "sandbox_mode = \"danger-full-access\""
+  sandbox_mode_written = 1
+  next
+}
+
+top_level && /^\[/ {
+  write_missing_settings()
+  top_level = 0
+}
+
+{ print }
+
+END {
+  if (top_level) {
+    write_missing_settings()
+  }
+}
+'

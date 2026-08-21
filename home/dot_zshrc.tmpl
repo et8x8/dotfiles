@@ -30,15 +30,11 @@ alias cdg="cd \$(ghq root)/\$(ghq list | fzf)"
 alias vim="nvim"
 
 codex() {
-  command codex --yolo "$@"
+  srt codex "$@"
 }
 
-herdr() {
-  if (( $# == 0 )); then
-    srt herdr
-  else
-    command herdr "$@"
-  fi
+claude() {
+  srt claude "$@"
 }
 
 # chezmoi

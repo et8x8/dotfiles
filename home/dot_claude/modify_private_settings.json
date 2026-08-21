@@ -1,10 +1,14 @@
-{
-  "permissions": {
+#!/bin/sh
+
+jq '. * {
+  "permissions": ((.permissions // {}) * {
+    "defaultMode": "bypassPermissions",
+    "skipDangerousModePermissionPrompt": true,
     "allow": [
       "Bash(/usr/bin/afplay -v 5 /System/Library/Sounds/Funk.aiff)"
     ],
     "deny": []
-  },
+  }),
   "hooks": {
     "Notification": [
       {
@@ -12,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "osascript -e 'display notification \"Task is awaiting your input or permission to proceed\" with title \"Claude Code\" sound name \"Funk\"'"
+            "command": "osascript -e '\''display notification \"Task is awaiting your input or permission to proceed\" with title \"Claude Code\" sound name \"Funk\"'\''"
           }
         ]
       }
@@ -23,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "osascript -e 'display notification \"Task completed successfully.\" with title \"Claude Code\" sound name \"Funk\"'"
+            "command": "osascript -e '\''display notification \"Task completed successfully.\" with title \"Claude Code\" sound name \"Funk\"'\''"
           }
         ]
       }
@@ -40,4 +44,4 @@
       }
     ]
   }
-}
+}'
