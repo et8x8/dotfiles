@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hunk"
+  short_description: "Use Hunk for code reviews"
+  default_prompt: "Use the Hunk skill for this review."
