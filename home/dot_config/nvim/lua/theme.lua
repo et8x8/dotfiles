@@ -1,4 +1,4 @@
--- テーマを管理し、Backpackテーマを適用する。
+-- テーマを管理し、VSCodeテーマを適用する。
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
@@ -14,12 +14,13 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {
-    "Mitch1000/backpack.nvim",
+    "Mofiqul/vscode.nvim",
     lazy = false,
     priority = 1000,
     config = function()
-      require("backpack").setup()
-      vim.cmd.colorscheme("backpack")
+      vim.o.background = "dark"
+      require("vscode").setup()
+      vim.cmd.colorscheme("vscode")
     end,
   },
 })
