@@ -4,6 +4,8 @@ vim.opt.clipboard = "unnamedplus"
 vim.opt.autoindent = true
 vim.opt.cursorline = true
 
+require("theme")
+
 -- インデントには空白4文字を使用し、Shift+Tabでインデントを減らす。
 vim.opt.expandtab = true
 vim.opt.shiftwidth = 4
