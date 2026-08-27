@@ -3,6 +3,12 @@ if vim.fn.executable("gopls") == 1 then
   vim.lsp.enable("gopls")
 end
 
+-- Kで表示するLSPホバーに明示的な境界線を付ける。
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+  vim.lsp.handlers.hover,
+  { border = "single" }
+)
+
 -- LSPが接続したバッファで、よく使う操作を有効にする。
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(event)
