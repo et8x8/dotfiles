@@ -28,6 +28,8 @@ vim.opt.concealcursor = ""
 vim.cmd([[syntax match InvisibleWhitespace /\%u200B\|\%u200C\|\%u200D\|\%u2060\|\%uFEFF/ conceal cchar=·]])
 vim.api.nvim_set_hl(0, "InvisibleWhitespace", { ctermfg = 240, fg = "#585858" })
 
+require("lsp")
+
 -- ペーストで挿入された行を自動的に再インデントする。
 local default_paste = vim.paste
 vim.paste = function(lines, phase)
