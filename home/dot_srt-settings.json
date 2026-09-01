@@ -34,12 +34,7 @@
       "search.devbox.sh"
     ],
     "deniedDomains": [],
-    "allowUnixSockets": [
-      "~/.config/herdr",
-      "/nix/var/nix/daemon-socket/socket",
-      "/tmp/claude",
-      "/private/tmp/claude"
-    ],
+    "allowAllUnixSockets": true,
     "allowLocalBinding": true
   },
   "enableWeakerNetworkIsolation": true,
