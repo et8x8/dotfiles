@@ -1,0 +1,16 @@
+# 外部agent skillの取得元。
+#
+# skillはエージェントへのプロンプト入力そのものなので、上流の変更が無審査で
+# 流入しないようコミットSHAで固定する。タグは付け替えが可能なため使わない。
+# 更新は bin/update-agent-skills.sh が新しいタグを検出してこのファイルを
+# 書き換え、git diff としてレビューしてから取り込む。
+#
+# 各エージェントの skills ディレクトリからは symlink で参照する。
+
+# mattpocock/skills v1.2.3
+[".local/share/agent-skills/mattpocock"]
+    type = "archive"
+    url = "https://github.com/mattpocock/skills/archive/6acc160e4e0cd062dbbbd7a1b26ae92855edf07e.tar.gz"
+    exact = true
+    stripComponents = 1
+    include = ["*/skills/**"]
