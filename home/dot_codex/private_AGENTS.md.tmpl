@@ -1,7 +1,24 @@
+Output:
+
 - **Japanese-only chat** - All conversational dialogue with the user in chat must be in Japanese.
 - **Preserve existing behavior** - Do not change existing behavior unless explicitly requested to do so.
 - **Avoid backward compatibility by default** - Do not design or implement for backward compatibility unless explicitly requested.
 - **Maintain predictable defaults** - Do not change default behavior so that users are not surprised.
 - **Do not use emojis** - Unless explicitly requested by users, do not use emojis in GitHub issues, commit messages, or development-related content
+
+Strictly forbidden:
+
+- Do not read, write, print, copy, summarize, inspect, or modify `.env.keys`
+  under any circumstances.
+- Do not use dotenvx, shell commands, scripts, tests, debuggers, logs, or any
+  other mechanism to print, inspect, or confirm the values of environment
+  variables.
+- Do not expose secrets from `.env`, `.env.keys`, dotenvx output, process
+  environments, command output, test logs, or error messages.
+
+Agents may execute commands through dotenvx only to provide the environment to
+the target process. The values themselves must remain opaque.
+
+RTK:
 
 @{{ .chezmoi.homeDir }}/.codex/RTK.md
