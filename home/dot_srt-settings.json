@@ -19,6 +19,8 @@
       "*.claude.ai",
       "claude.com",
       "*.claude.com",
+      "cloudflare.com",
+      "*.cloudflare.com",
       "context7.com",
       "*.context7.com",
       "files.pythonhosted.org",
