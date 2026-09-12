@@ -30,15 +30,15 @@ alias cdg="cd \$(ghq root)/\$(ghq list | fzf)"
 alias vim="nvim"
 
 codex() {
-  srt codex "$@"
+  nono wrap --profile agents --allow-cwd --allow-launch-services -- codex "$@"
 }
 
 claude() {
-  srt claude "$@"
+  nono wrap --profile agents --allow-cwd --allow-launch-services -- claude "$@"
 }
 
 agy() {
-  srt agy "$@"
+  nono wrap --profile agents --allow-cwd --allow-launch-services -- agy "$@"
 }
 
 # chezmoi

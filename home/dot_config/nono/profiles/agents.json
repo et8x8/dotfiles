@@ -1,0 +1,82 @@
+{
+  "extends": "default",
+  "allow_parent_of_protected": true,
+  "meta": {
+    "name": "agents"
+  },
+  "groups": {
+    "include": [],
+    "exclude": []
+  },
+  "commands": {
+    "allow": [],
+    "deny": []
+  },
+  "workdir": {
+    "access": "readwrite"
+  },
+  "filesystem": {
+    "allow": [
+      "$HOME",
+      "$TMPDIR",
+      "/tmp",
+      "/private/tmp",
+      "/var/folders",
+      "/private/var/folders"
+    ],
+    "read": [],
+    "write": [],
+    "allow_file": [],
+    "read_file": [],
+    "write_file": [],
+    "deny": [
+      "$HOME/.nono",
+      "$XDG_STATE_HOME/nono"
+    ],
+    "bypass_protection": [
+      "$HOME/.ssh",
+      "$HOME/.config",
+      "$HOME/.local",
+      "$HOME/.codex",
+      "$HOME/.claude",
+      "$HOME/.zshrc",
+      "$HOME/.zsh_history",
+      "$HOME/.aws",
+      "$HOME/.docker",
+      "$HOME/Library"
+    ],
+    "unix_socket_subtree_bind": [
+      "$HOME",
+      "$TMPDIR",
+      "/tmp",
+      "/private/tmp",
+      "/var/folders",
+      "/private/var/folders",
+      "/var/run",
+      "/private/var/run",
+      "/run",
+      "/nix"
+    ],
+    "suppress_save_prompt": []
+  },
+  "network": {
+    "block": false,
+    "network_profile": null,
+    "allow_domain": [],
+    "credentials": [],
+    "open_port": [0],
+    "listen_port": [0],
+    "custom_credentials": {}
+  },
+  "env_credentials": {},
+  "hooks": {},
+  "rollback": {
+    "exclude_patterns": [],
+    "exclude_globs": []
+  },
+  "open_urls": {
+    "allow_origins": [],
+    "allow_localhost": true
+  },
+  "allow_launch_services": true
+}
