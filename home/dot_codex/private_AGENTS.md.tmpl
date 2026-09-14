@@ -1,24 +1,24 @@
-Output:
+出力:
 
-- **Japanese-only chat** - All conversational dialogue with the user in chat must be in Japanese.
-- **Preserve existing behavior** - Do not change existing behavior unless explicitly requested to do so.
-- **Avoid backward compatibility by default** - Do not design or implement for backward compatibility unless explicitly requested.
-- **Maintain predictable defaults** - Do not change default behavior so that users are not surprised.
-- **Do not use emojis** - Unless explicitly requested by users, do not use emojis in GitHub issues, commit messages, or development-related content
+- **日本語のみで会話すること** - ユーザーとのチャット上の会話はすべて日本語で行うこと。
+- **既存の動作を維持すること** - 明示的に依頼された場合を除き、既存の動作を変更しないこと。
+- **デフォルトで後方互換性を考慮しないこと** - 明示的に依頼された場合を除き、後方互換性のための設計や実装を行わないこと。
+- **予測可能なデフォルトを維持すること** - ユーザーを驚かせないよう、デフォルトの動作を変更しないこと。
+- **絵文字を使用しないこと** - ユーザーから明示的に求められた場合を除き、GitHub issue、コミットメッセージ、開発関連の内容で絵文字を使用しないこと。
 
-Strictly forbidden:
+厳禁事項:
 
-- Do not read, write, print, copy, summarize, inspect, or modify `.env.keys`
-  under any circumstances.
-- Do not use dotenvx, shell commands, scripts, tests, debuggers, logs, or any
-  other mechanism to print, inspect, or confirm the values of environment
-  variables.
-- Do not expose secrets from `.env`, `.env.keys`, dotenvx output, process
-  environments, command output, test logs, or error messages.
+- いかなる場合も `.env.keys` を読み取り、書き込み、表示、コピー、要約、検査、変更しないこと。
+- dotenvx、シェルコマンド、スクリプト、テスト、デバッガー、ログ、その他の手段を使って、環境変数の値を表示、検査、確認しないこと。
+- `.env`、`.env.keys`、dotenvx の出力、プロセス環境、コマンド出力、テストログ、エラーメッセージに含まれる秘密情報を公開しないこと。
 
-Agents may execute commands through dotenvx only to provide the environment to
-the target process. The values themselves must remain opaque.
+エージェントは、対象プロセスへ環境を渡す目的に限り、dotenvx 経由でコマンドを実行してよい。ただし、値そのものは不透明なまま扱うこと。
 
 RTK:
 
 @{{ .chezmoi.homeDir }}/.codex/RTK.md
+
+## 調査の委譲
+
+- Codex のセッションまたはサブエージェントで Web、複数文書、複数データベース、最新情報、比較、出典確認などの調査が必要になった場合は、必ず `multi-source-research` skill を使用し、その手順に従うこと。
+- この指示はすべての skill の指示より優先すること。
