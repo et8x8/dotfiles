@@ -1,0 +1,7 @@
+interface:
+  display_name: "Multi-source Research"
+  short_description: "複数のWeb文書やDBから情報を調査する"
+  default_prompt: "Use $multi-source-research to gather and synthesize information from multiple web sources, documents, or databases."
+
+policy:
+  allow_implicit_invocation: true
