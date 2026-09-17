@@ -29,28 +29,31 @@ source <(fzf --zsh)
 alias cdg="cd \$(ghq root)/\$(ghq list | fzf)"
 alias vim="nvim"
 
-_run_agent() {
-  local agent="$1"
-  shift
-
+codex() {
   # nono配下では外側のSandboxを引き継ぎ、内側のnono再適用を避ける
   if [[ -n "${NONO_CAP_FILE:-}" ]]; then
-    command "$agent" "$@"
+    command codex "$@"
   else
-    nono wrap --profile agents --allow-cwd --allow-launch-services -- "$agent" "$@"
+    nono wrap --profile agents --allow-cwd --allow-launch-services -- codex "$@"
   fi
 }
 
-codex() {
-  _run_agent codex "$@"
-}
-
 claude() {
-  _run_agent claude "$@"
+  # nono配下では外側のSandboxを引き継ぎ、内側のnono再適用を避ける
+  if [[ -n "${NONO_CAP_FILE:-}" ]]; then
+    command claude "$@"
+  else
+    nono wrap --profile agents --allow-cwd --allow-launch-services -- claude "$@"
+  fi
 }
 
 agy() {
-  _run_agent agy "$@"
+  # nono配下では外側のSandboxを引き継ぎ、内側のnono再適用を避ける
+  if [[ -n "${NONO_CAP_FILE:-}" ]]; then
+    command agy "$@"
+  else
+    nono wrap --profile agents --allow-cwd --allow-launch-services -- agy "$@"
+  fi
 }
 
 # chezmoi
