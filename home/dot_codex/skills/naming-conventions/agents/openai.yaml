@@ -1,0 +1,7 @@
+interface:
+  display_name: "Naming Conventions"
+  short_description: "Apply conventions for human-readable technical text"
+  default_prompt: "Use $naming-conventions to apply the project's naming conventions to human-readable text."
+
+policy:
+  allow_implicit_invocation: true
