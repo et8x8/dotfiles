@@ -1,0 +1,7 @@
+interface:
+  display_name: "VOICEVOX Song MusicXML"
+  short_description: "楽譜PDFから移動ド歌唱用MusicXMLを作成する"
+  default_prompt: "$create-voicevox-song-musicxml を使用して、添付された楽譜PDFからVOICEVOX Songで移動ド歌唱するためのMusicXMLを作成してください。"
+
+policy:
+  allow_implicit_invocation: false
