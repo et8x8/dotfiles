@@ -10,6 +10,16 @@ jq '. * {
   "hooks": {
     "PreToolUse": [
       {
+        "matcher": "WebSearch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.local/bin/agent-research-guidance claude-web",
+            "timeout": 5
+          }
+        ]
+      },
+      {
         "matcher": "Bash",
         "hooks": [
           {

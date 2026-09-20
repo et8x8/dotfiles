@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+message='調査を始める前に、multi-source-research skillを使うべきかどうかを判断してください。'
+
+case ${1-} in
+  claude-web)
+    jq -cn --arg message "$message" \
+      '{hookSpecificOutput:{hookEventName:"PreToolUse",additionalContext:$message}}'
+    ;;
+esac
