@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.agent-hooks/check-skills.sh claude-stop",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

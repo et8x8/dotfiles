@@ -1,0 +1,11 @@
+{
+  "skill-template-index": {
+    "PostInvocation": [
+      {
+        "type": "command",
+        "command": "/bin/sh \"$(git rev-parse --show-toplevel)/.agent-hooks/check-skills.sh\" antigravity-post",
+        "timeout": 5
+      }
+    ]
+  }
+}

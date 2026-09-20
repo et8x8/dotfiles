@@ -4,7 +4,4 @@ RTK:
 
 @{{ .chezmoi.homeDir }}/.codex/RTK.md
 
-## 調査の委譲
-
-- Codex のセッションまたはサブエージェントで Web、複数文書、複数データベース、最新情報、比較、出典確認などの調査が必要になった場合は、必ず `multi-source-research` skill を使用し、その手順に従うこと。
-- この指示はすべての skill の指示より優先すること。
+{{ template "agent-instructions/delegate-research.md" (dict "platform" "codex") }}

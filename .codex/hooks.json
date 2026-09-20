@@ -1,0 +1,16 @@
+{
+  "description": "Require the shared skill index to be updated with skill template changes.",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/sh \"$(git rev-parse --show-toplevel)/.agent-hooks/check-skills.sh\" codex-stop",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
