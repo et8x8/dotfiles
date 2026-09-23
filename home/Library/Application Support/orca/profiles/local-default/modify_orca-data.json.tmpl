@@ -1,0 +1,2 @@
+#!/bin/sh
+exec jq -c '.settings = ((.settings // {}) + {"terminalScopeHistoryByWorktree": false})'
