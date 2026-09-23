@@ -52,7 +52,7 @@ Codex、サブエージェント、別の調査セッションを起動しては
 Codex CLIを調査担当として使う。
 
 ```sh
-codex exec --model gpt-5.6-luna --config 'model_reasoning_effort="<EFFORT>"' --dangerously-bypass-approvals-and-sandbox --json "<RESEARCH_PROMPT>"
+codex exec --model gpt-6-luna --config 'model_reasoning_effort="<EFFORT>"' --dangerously-bypass-approvals-and-sandbox --json "<RESEARCH_PROMPT>"
 ```
 
 `<RESEARCH_PROMPT>` は委譲マーカーから始まる完全な調査依頼に置き換える。JSONからは簡潔な最終結果と必要な情報源参照だけをメインコンテキストへ持ち込む。プロンプトや結果に秘密情報を含めず、環境変数値を露出させない。
@@ -64,7 +64,7 @@ codex exec --model gpt-5.6-luna --config 'model_reasoning_effort="<EFFORT>"' --d
 
 ## モデルと推論の負荷
 
-調査担当のモデルには `gpt-5.6-luna` を指定する。Codexのサブエージェント作成時は、モデルを指定できるよう `fork_turns` を `none` または必要最小限のターン数にする。
+調査担当のモデルには `gpt-6-luna` を指定する。Codexのサブエージェント作成時は、モデルを指定できるよう `fork_turns` を `none` または必要最小限のターン数にする。
 
 調査に足りる最低の負荷を選ぶ。
 
