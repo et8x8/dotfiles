@@ -1,0 +1,47 @@
+# かつてこのリポジトリで管理し、削除したファイル。
+#
+# chezmoiはソースから消したファイルをホームから削除しないため、ここに列挙して
+# apply時に削除する。ディレクトリを指定するのは、中身がすべてこのリポジトリ由来の
+# 場合に限る。
+
+# report-srt-permission-failures skill (e4dbc8b)
+.agents/skills/report-srt-permission-failures
+.claude/skills/report-srt-permission-failures
+.codex/skills/report-srt-permission-failures
+
+# Gemini向け設定 (e4dbc8b)
+.gemini/GEMINI.md
+.gemini/hooks/rtk-hook-gemini.sh
+
+# hunk skill (f82cc45)
+.claude/skills/hunk
+.codex/skills/hunk
+
+# feedback-loop skill (f82cc45)
+.codex/skills/feedback-loop
+
+# Cursor向け設定 (f82cc45)
+.cursor/hooks.json
+.cursor/agents/dev-flow-adr-auditor.md
+.cursor/agents/dev-flow-adr-author.md
+.cursor/agents/dev-flow-document-auditor.md
+.cursor/agents/dev-flow-document-author.md
+.cursor/agents/dev-flow-done-runner.md
+.cursor/agents/dev-flow-impl-auditor.md
+.cursor/agents/dev-flow-implementer.md
+.cursor/agents/dev-flow-spec-auditor.md
+.cursor/agents/dev-flow-spec-author.md
+.cursor/rules/dev-flow
+.cursor/skills/andrej-karpathy-skills
+.cursor/skills/dev-flow
+.cursor/skills/domain-modeling
+.cursor/skills/grill-with-docs
+.cursor/skills/grilling
+.cursor/skills/ja-concise-replies
+.cursor/skills/workspace-relative-paths
+
+# devbox環境 (d5ae2fb)
+.sbx/kit/devenv
+
+# tmux (d5ae2fb)
+.tmux.conf
