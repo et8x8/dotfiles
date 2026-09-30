@@ -15,4 +15,3 @@
 | `gh-publish-pr` | 承認済みの変更をコミット・pushし、GitHub pull requestを作成または更新する | ✓ |  |
 | `multi-source-research` | Web・複数文書・データベースを調査し、結果を統合する |  | ✓ |
 | `naming-conventions` | 人間が読む文章におけるプロジェクト固有名詞の書き方を適用する |  | ✓ |
-| `report-srt-permission-failures` | srtによる可能性がある拒否について、必要最小限の権限を報告する | ✓ | ✓ |

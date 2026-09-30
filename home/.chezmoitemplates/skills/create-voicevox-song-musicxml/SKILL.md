@@ -1,9 +1,7 @@
 ---
 name: create-voicevox-song-musicxml
 description: 添付された数字譜または五線譜のPDFから、移動ドで暗譜練習するためのVOICEVOX Song向けMusicXMLを作成する。
-{{- if eq .platform "claude" }}
 disable-model-invocation: true
-{{- end }}
 ---
 
 # VOICEVOX Song用MusicXMLの作成

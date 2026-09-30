@@ -1,6 +1,7 @@
 ---
 name: gh-publish-pr
 description: Publish approved repository changes by committing, pushing, and creating or updating a GitHub pull request. Use only when the user explicitly invokes $gh-publish-pr; never invoke implicitly.
+disable-model-invocation: true
 ---
 
 # GitHub PRの公開
