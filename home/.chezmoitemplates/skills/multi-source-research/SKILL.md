@@ -52,10 +52,11 @@ Codex、サブエージェント、別の調査セッションを起動しては
 Codex CLIを調査担当として使う。
 
 ```sh
-codex exec --model gpt-6-luna --config 'model_reasoning_effort="<EFFORT>"' --dangerously-bypass-approvals-and-sandbox -o "<OUTPUT_FILE>" "<RESEARCH_PROMPT>"
+codex exec --model gpt-6-luna --config 'model_reasoning_effort="<EFFORT>"' --dangerously-bypass-approvals-and-sandbox -o "<OUTPUT_FILE>" "<RESEARCH_PROMPT>" < /dev/null
 ```
 
 - `<RESEARCH_PROMPT>` は委譲マーカーから始まる完全な調査依頼に置き換える。
+- `< /dev/null` は省略しない。`codex exec` は標準入力が端末でない場合、プロンプト引数があっても標準入力をEOFまで読み続けるため、閉じられていない標準入力を渡すと調査が始まらないまま止まる。
 - `<OUTPUT_FILE>` は調査担当の最終報告を書き出すファイルで、調査ごとに新しく作る。エージェント環境がセッション用の一時作業ディレクトリを提供している場合はその中に、ない場合は `mktemp` でOSの一時ディレクトリに作成する。`/tmp` など特定のOSを前提にしたパスを直接書かない。
 - 調査には時間がかかるため、シェルツールの実行時間上限で打ち切られないよう、バックグラウンド実行できる場合はバックグラウンドで起動し、完了を待つ。
 - 成功した場合は `<OUTPUT_FILE>` の内容だけを結果として読む。失敗した場合は標準出力・標準エラーからエラー内容を取り出して報告する。
