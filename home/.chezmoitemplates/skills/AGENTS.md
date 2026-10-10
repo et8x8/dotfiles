@@ -11,6 +11,7 @@
 
 | スキル名 | 概要 | 手動 | 自動 |
 | --- | --- | :---: | :---: |
+| `ask-in-browser` | エージェント標準の質問ツールが使えない場合に、複数の質問を1問ずつブラウザに表示して回答または保留を受け取る | ✓ | ✓ |
 | `create-voicevox-song-musicxml` | 楽譜PDFからVOICEVOX Song向けMusicXMLを作成する | ✓ |  |
 | `gh-publish-pr` | 承認済みの変更をコミット・pushし、GitHub pull requestを作成または更新する | ✓ |  |
 | `multi-source-research` | Web・複数文書・データベースを調査し、結果を統合する |  | ✓ |

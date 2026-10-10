@@ -1,0 +1,7 @@
+interface:
+  display_name: "Ask in Browser"
+  short_description: "標準の質問ツールが使えない場合に、質問を1問ずつブラウザに表示して回答を受け取る"
+  default_prompt: "Use $ask-in-browser to put your questions to me one at a time in the browser."
+
+policy:
+  allow_implicit_invocation: true
