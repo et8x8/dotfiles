@@ -1,7 +1,7 @@
 interface:
   display_name: "Grill Spec"
-  short_description: "質問を通じて要件定義と基本設計を固め、文書化する"
-  default_prompt: "$grill-spec を使用して、質問を通じて要件定義と基本設計を固め、REQUIREMENTS.md と SPECIFICATION.md に文書化してください。"
+  short_description: "質問を通じて要件定義と基本設計を固めて文書化し、それらに基づいて実装する"
+  default_prompt: "$grill-spec を使用して、質問を通じて要件定義と基本設計を固め、REQUIREMENTS.md と SPECIFICATION.md に文書化し、それらに基づいて実装してください。"
 
 policy:
   allow_implicit_invocation: false
