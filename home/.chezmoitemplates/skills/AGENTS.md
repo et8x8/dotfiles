@@ -17,3 +17,4 @@
 | `grill-spec` | 質問を通じて要件定義と基本設計を固め、`REQUIREMENTS.md` と `SPECIFICATION.md` に文書化する | ✓ |  |
 | `multi-source-research` | Web・複数文書・データベースを調査し、結果を統合する |  | ✓ |
 | `naming-conventions` | 人間が読む文章におけるプロジェクト固有名詞の書き方を適用する |  | ✓ |
+| `optimize-skill` | スキルの文章を、機能を保ったまま削除・修正・加筆して最適化する |  | ✓ |

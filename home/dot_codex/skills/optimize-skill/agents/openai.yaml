@@ -1,0 +1,7 @@
+interface:
+  display_name: "Optimize Skill"
+  short_description: "スキルの文章を機能を保ったまま最適化する"
+  default_prompt: "Use $optimize-skill to optimize the wording of a skill without degrading its behavior."
+
+policy:
+  allow_implicit_invocation: true
