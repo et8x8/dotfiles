@@ -1,6 +1,7 @@
 #!/bin/sh
 
 jq '. * {
+  "includeCoAuthoredBy": false,
   "permissions": ((.permissions // {}) * {
     "defaultMode": "bypassPermissions",
     "skipDangerousModePermissionPrompt": true,
