@@ -1,8 +1,8 @@
 ---
 name: optimize-skill
 description: Optimize the wording of an agent skill (SKILL.md including its description, and bundled documents the agent reads) so it contains exactly what the agent needs, without degrading what the skill does. Removes duplication, verbosity, explanations of self-evident terms and irrelevant background, and adds missing information. Use whenever creating or editing a skill, and when asked to optimize, trim, or review a skill's wording.
-user-invocable: false
-disable-slash-command: true
+user-invocable: true
+disable-slash-command: false
 ---
 
 # スキルの最適化
