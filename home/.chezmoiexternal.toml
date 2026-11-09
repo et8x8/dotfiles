@@ -12,3 +12,10 @@
     exact = true
     stripComponents = 1
     include = ["*/skills/**"]
+
+# nrslib/takt-builder-skill (タグなし、2026-04-09時点のmain)
+[".local/share/agent-skills/takt-builder"]
+    type = "archive"
+    url = "https://github.com/nrslib/takt-builder-skill/archive/3da672e1d2b88afad27a233437863a97deb64fa3.tar.gz"
+    exact = true
+    stripComponents = 1
