@@ -17,4 +17,5 @@
 | `grill-spec` | 質問を通じて要件定義と基本設計を固め、`REQUIREMENTS.md` と `SPECIFICATION.md` に文書化する。それらに基づく実装も行い、画面は `DESIGN.md` に従って実装する | ✓ |  |
 | `multi-source-research` | Web・複数文書・データベースを調査し、結果を統合する |  | ✓ |
 | `naming-conventions` | 人間が読む文章におけるプロジェクト固有名詞の書き方を適用する |  | ✓ |
+| `prefer-cli-generators` | ファイルを生成・追加・削除するコマンドがあれば、手書きせずにそのコマンドを使う。コマンドがなければ最新の値を確認してから書く |  | ✓ |
 | `optimize-skill` | スキルの文章を、機能を保ったまま削除・修正・加筆して最適化する | ✓ | ✓ |
