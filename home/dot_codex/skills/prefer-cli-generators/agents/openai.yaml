@@ -1,0 +1,7 @@
+interface:
+  display_name: "Prefer CLI Generators"
+  short_description: "ファイルを生成・追加・削除するコマンドがあれば、手書きせずにそのコマンドを使う"
+  default_prompt: "Use $prefer-cli-generators to create, add, or remove files with the tool's own command instead of hand-writing them."
+
+policy:
+  allow_implicit_invocation: true
