@@ -1,0 +1,7 @@
+interface:
+  display_name: "Write User Docs"
+  short_description: "対象読者を決め、前提知識を仮定せず順に読めて実行できるユーザー向け文書を作る"
+  default_prompt: "Use $write-user-docs to write a user-facing document that a reader with no prior knowledge can follow from the top."
+
+policy:
+  allow_implicit_invocation: true
